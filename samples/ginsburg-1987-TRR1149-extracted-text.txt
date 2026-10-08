@@ -1,0 +1,975 @@
+32 
+1RANSPORTATION RESEARCH RECORD 1149
+Contrast Sensitivity, Drivers' Visi bil ity, and
+Vision Standards
+ARTHUR P. GINSBURG
+The vision standard presently used to evaluate drivers' vision
+ls Snellen visual acuity. Visual acuity, however, bas not been
+found to relate well to everyday visual performance such as
+driving. Because acuity tests the 
+optics of the eye-the ability
+of the eye to focus an 
+image-It Is a measure of quantity, not
+quality, of vision. Furthermore, the black letters on the white
+background impose a high-contrast test 
+condition that cannot
+be related to common low-contrast situations found 
+In the real
+world like dusk, fog, 
+or rain. However, contrast sensitivity, a
+more comprehensive method of evaluating vision, bas recently
+been shown to be related to visual task performance in studies
+involving highway sign dlscrlmlnabillty and pilot target 
+detec-
+tion. Contrast sensitivity bas also been found to more accu-
+rately correlate with functional vision loss due to a disease such
+as cataracts. From health and safety aspects, detecting 
+func-
+tional vision losses Is extremely Important. Cataract patients,
+for example, may have severely Impaired functional vision 
+but
+stlll measure 20/30 or 20/40 on the standard visual acuity test.
+Although acuity may not show a significant loss of vision,
+contrast sensitivity can detect many such losses 
+end alert both
+the Individual and the tester to the problem. 
+In sum, the
+serious health and safety Issues presented by the Inability of
+acuity to measure losses 
+of functional vision and visual quality
+should be addressed, especially with regard to driver visual
+standards. A reasonable replacement for acuity appears to be
+contrast sensitivity, which relates to visual performance and
+can detect visual deficits.
+Because about 
+90 percent of our sensory input is visual, visual
+capability of drivers will remain an important determinant 
+of
+whether or not an individual may drive vehicles. Although
+standards may vary from state to state, all drivers' licensing
+bureaus maintain some visual capability requirements. The
+relevance 
+of the Snellen visual acuity standard currently used
+to distinguish individuals who cannot see well enough to drive
+safely is a matter 
+of increasing concern. Major limitations of
+this vision standard and an emerging new contrast sensitivity
+technology for evaluating the health and performance 
+of vision
+are discussed. Eye diseases such as cataracts represent a major
+safety problem for drivers and are not being properly 
+detected
+by visual acuity testing. Several studies relating to visual per-
+formance and contrast sensitivity, including pilot target detec-
+tion, 
+highway sign discriminability, and alcohol are reviewed
+along with arguments supporting the necessity 
+of new vision
+standards based 
+on contrast sensitivity.
+Vision Research Laboratory, Vistech Consultants, Inc., 1372 N. Fair-
+field Road, Dayton, Ohio 45432.
+THE CURRENT VISION STANDARD-VISUAL
+ACUITY
+The Snellen visual acuity test, the current measure used to
+evaluate vision, is designed to evaluate an individual's ability
+to see black letters on a white chart background. Because it
+tests the resolution ability 
+of the eye, or how well the eye can
+focus an image, 
+Sneiien acuity corresponds to the quantity
+rather than the quality 
+of vision. Although Snellen acuity has
+been the primary measure 
+of visual capability since 1862, it has
+not related well to everyday visual performance such as that 
+of
+driving vehicles. One of the reasons for this lack is that the
+Snellen acuity is a high-contrast vision test. This type 
+of test
+indicates the state 
+of a person's vision in an ideal high-contrast
+situation such as reading well-lit black letters 
+on a white back-
+ground. Objects 
+in the real world, however, are rarely black on
+an unrelieved white background; real-life objects have different
+sizes, shapes, and contrasts and are viewed under such diverse
+conditions as dusk and twilight, rain, snow, fog, or smoke, all
+of which are low-<:ontrast environments. Other conditions fre-
+quently experienced by drivers, such as bright sunlight and
+headlight glare, also 
+affect a driver's visual capability. Looking
+through a windshield, especially one marred by dirt or glare,
+further degrades a driver's ability to optimally detect or iden-
+tify an object such as a road sign, car, or pedestrian. On the
+basis 
+of a single-sized, high-<:ontrast format, Snellen acuity
+simply cannot measure how well an individual will be able to
+see Wlder such variable and less-than-ideal conditions. 
+There-
+fore, the facts that Henderson and Burg (1) and Kinney (2)
+found low correlation between visual acuity under high and
+low illumination levels and that Shinar 
+(3) found a poor rela-
+tionship between visual acuity and driving are not surprising.
+Emerging as a more comprehensive way to measure vision,
+contrast sensitivity evaluates the ability 
+of the eye-brain system
+to distinguish between an object and its backgroWld. Previous
+research has shown that, unlike visual acuity, contrast sen-
+sitivity does relate to visual performance in real-world situa-
+tions (4-9). In addition, contrast sensitivity also overcomes
+many 
+of the drawbacks of the Snellen acuity chart in detecting
+and describing a wide variety 
+of eye diseases such as cataracts
+(10) and poor contact lenses (11 ).
+In visual processing, the retinal image is converted into a
+visual code by the retina-brain system. Contrast sensitivity tests
+this part 
+of vision, which processes an object's size, shape, and
+contrast. Because objects have such varied sizes, shapes, and
+contrasts, testing with only one size and contrast 
+of object, such
+as with the Snellen letters, does not provide comprehensive
+results. Targets capable 
+of relating to any object size, shape,
+and contrast are needed.
+
+Ginsburg
+Sine Wave Gratings
+Sine wave gratings of different sizes and contrasts are ideal
+targets providing the most sensitive testing 
+of contrast sen-
+sitivity (
+12, 13 ). Below each grating is the luminance profile,
+made up by the grating's spatial frequency and contrast (Figure
+1). A contrast sensitivity curve or function is obtained by
+measuring the minimum contrast required to just see the sine
+wave grating. This curve is plotted 
+on the Vistech consultant's
+evaluation form (Figure 2). The shaded area in Figure 2 repre-
+sents the 
+5 to 95 percentile of the normal population. Just an
+audiogram is generated by using single-frequency tones at
+different sound frequencies to measure hearing threshold, a
+contrast sensitivity curve is generated by using pure space
+waves from sine wave gratings at different spatial frequencies
+(sizes) to measure visual threshold. Thus, just as loudness and
+sound frequency relate to hearing, contrast and spatial fre-
+quency relate to seeing. Similarly to how an audiogram de-
+scribes the performance 
+of the auditory system, the contrast
+sensitivity 
+curve shows how well the visual system is
+functioning.
+Indeed, contrast sensitivity testing is standardizing vision
+testing 
+as pure tone audiological testing standardized audiology
+in the 1940s. After 
+20 years of scientific and clinical testing,
+contrast sensitivity, the ability to discern subtle changes in
+shades 
+of gray, is emerging as a more comprehensive way to
+describe vision than Snellen acuity 
+(8-10).
+In addition to measuring the optical quality of vision, con-
+trast sensitivity evaluates the quality 
+of contrast perception at
+the next stage 
+of visual processing-the retina-brain system.
+The retina-brain system converts the retinal image into a neural
+code based primarily 
+on the shape and contrast of the image.
+Because visual objects have a wide variety 
+of sizes, shapes, and
+contrasts, the sensitivity 
+of the visual system should be tested
+with a set 
+of simple targets that can represent any object size,
+shape, or contrast. The sine wave gratings shown in Figure 1
+work well 
+as such targets.
+33
+Threshold visibility to sine wave gratings has been used
+extensively to describe individual visual mechanisms (chan-
+nels) and overall visual sensitivity to spatial objects. Because
+sine wave gratings are special targets mathematically, the spa-
+tial information in any object can be converted into a combina-
+tion 
+of sine wave gratings. Simply put, any complex object can
+be built up 
+or broken down using sine wave gratings of dif-
+ferent spatial frequencies, amplitudes, and orientations. This
+process, known 
+as Fourier analysis, is similar to the way
+complex sounds like speech and music can be broken down or
+built up using single-frequency sound waves 
+of different ampli-
+tudes and phases. Thus, an evaluation 
+of visual sensitivity to
+more complex everyday targets such as letters, faces, aircraft,
+and road signs 
+(4-7, 14, 15) can be made by use of Fourier
+analysis.
+For example, although disks have Fourier components in all
+orientations, sine wave gratings have Fourier components in
+only one orientation, exciting only one visual channel. Dif-
+ferences between disks and sine wave gratings result in dif-
+ferent visual threshold functions whereby sine wave gratings
+are considerably more sensitive visual stimuli than disks
+(12, 13). In addition. any complex object can be broken down
+into sine wave gratings, but not into disks. This ability is an
+important requirement for establishing performance-based rela-
+tionships between the visibility 
+of complex objects and ob-
+server contrast sensitivity functions. Thus, contrast sensitivity
+functions using sine wave gratings offer throughput capability.
+They not only describe relevant spatial information in objects
+but also the transmission characteristics from the object 
+to the
+observer and the observer's sensitivity to those objects. The
+capability 
+of contrast sensitivity functions to predict simulated
+and real complex target acquisition such 
+as road sign discrimi-
+nation is discussed later.
+Comprising a repeated series 
+of light and dark bars, sine
+wave gratings are defined 
+in terms of spatial frequency,
+_J t~ _J tV\/\l\/\JV\N\IV
+D .. D ..
+_J tMWW'i\!NWiWoi\W1MN1."JIMV1"1,~
+D ..
+LOW MEDIUM HIGH
+SPATIAL FREQUENCY
+FIGURE 1 Sine wave gratings, simple targets capable of representing any
+target size, shape, 
+or contrast, with different spatial frequencies and amounts
+of contrast.
+
+34 
+TRANSPORTATION RESEARCH RECORD 1149
+300 
+---------------------------------------------yoo3
+~
+>
+~ 
+~
+100 
+~
+z
+"'
+en
+~
+U'I
+c 
+•
+g 
+30
+CJ 
+@
+<I>
+~
+~
+10 
+~
+CZ>
+©
+3 
+(I)
+@ 
+@
+1.5 
+3
+~
+<I>
+CZ>
+11'\
+"' 
+(l)
+© 
+@
+6 
+12
+•*
+•
+<D
+®
+18
+0
+_,
+0
+::z:::
+I/)
+"'
+cc
+. 01 ::z:::
+~
+t;
+c
+~
+z
+0
+.03 u
+. 1
+.3
+SPATIAL FREQUENCY
+(CYCLES PER DEGREE)
+FIGURE 2 A typical contrast sensitivity function.
+contrast, and orientation. Spatial frequency is defined as the
+number 
+of cycles over a particular distance, or the number of
+cycles per degree (cpd) 
+of visual angle. One light and one dark
+bar 
+of a grating constitute one cycle. As the bars become more
+closely spaced, the frequency 
+of the cycles increases. The
+spatial frequency is the number of cycles 
+of the grating that
+occur over a particular distance.
+Another important aspect of sine wave gratings is their
+contrast. The luminance difference between the light and dark
+bars, each with its own luminance, determines the grating's
+contrast. The Michelson definition is generally used to define
+contrast 
+(C) .
+C 
+= L max - Lm in
+Lmax + Lmin
+where Lmax and Lmin are the maximal and minimal luminances
+of the grating bars. Sine wave gratings having low, medium,
+and high contrast are shown in Figure 
+1.
+The grating's spatial frequency and contrast constitute the
+luminance profile, 
+as shown below each grating in Figure 1. An
+increase in frequency results in a smaller distance between
+cycles, whereas an increase in contrast causes the height of the
+cycles to increase.
+Increasing the contrast 
+of a grating from below its visibility
+or decreasing it until it is invisible to the point at which the
+grating is just seen or just not seen establishes a condition
+called threshold contrast. Different amounts 
+of contrast are
+needed for the observer to reach threshold with gratings 
+of
+different spatial frequencies. The reciprocal of the threshold
+contrast is contrast sensitivity and is plotted 
+as a function of
+spatial frequency. This plot is termed the contrast sensitivity
+function 
+or curve.
+Shown in Figure 3 is a characteristic contrast sensitivity
+function. The wide, inverted 
+U-shaped curve shows the visual
+window that limits the range 
+of the size of objects that can be
+seen under threshold contrast conditions. Above the curve is
+the region 
+of low contrast below threshold, meaning that ob-
+jects cannot 
+be seen. Objects can be seen in the higher-contrast
+region above the curve 
+if spatial frequency is sufficient. Peak
+sensitivity of the visual system typically occurs at about 3 to 6
+cpd. Sensitivity decreases for spatial frequencies greater than
+and less than peak sensitivity with the physiological limit being
+about 
+60 cpd, depending on viewing conditions. Similarly to
+the auditory system, only a limited range 
+of spatial information
+can 
+be conducted by the visual system.
+The narrower curves shown within the contrast sensitivity
+function represent relatively narrow-bandwidth mechanisms
+called channels, which make up the overall contrast sensitivity
+function (Figure 3). Again similarly to independently-tuned
+auditory channels, these channels represent the activity 
+of func-
+tionally independent, size-selective cells in the visual system
+that are considered to play a major role in filtering relevant
+target information such as contrast, size, and basic form
+(14-16) . Just as auditory testing requires pure tones of di fferent
+sound frequencies to test the independent auditory channels,
+vision testing requires sine wave gratings 
+of different spatial
+frequencies to test the independent visual channels.
+As shown in Figure 3, many parts of the visual system
+are needed to make up a clear, complete image. When one or
+more of these areas does not function properly, it affects t..'1e
+
+Ginsburg 
+35
+100
+/:
+> 
+"°
+;::
+iii 
+....
+VI
+z 
+"
+i:ij 
+~
+.... 
+~
+VI
+"
+a: 
+10
+....
+§
+0.1 0-' LO IO
+SPATIAL FREQUENCY ( CYCLES PER DEGREE)
+F1GURE 3 In this CSF, the large Inverted U-shaped curve outlines the area where objects are visible at threshold.
+overall image. Because Snellen visual acuity is affected only
+wh en the small portion of the visual system relating to acuity is
+affected, from 18 to 
+30 cpd as represented by the gray band,
+dysfunctions 
+in other parts of the visual system can go un-
+detected 
+by visual acuity tests. Contrast sensitivity, on the other
+hand, can detect problems not only in the area measured by
+acuity but also throughout the complete range of the visual
+system. A measure 
+of functional vision loss, contrast sensitivity
+losses because 
+of various causes such as cataracts or other
+problems can 
+be related to practical losses in everyday visual
+function.
+Although computer-video systems that test contrast sen-
+sitivity have 
+been available for a few years, these were pri-
+marily used 
+by researchers due to their considerable expense,
+complexity, and the significant time required to master the
+system, perform the daily calibrations, and test patients. To
+overcome these limitations, a new vision test chart, the Vision
+Contrast Test System (VCTS) shown in Figure 4, was de-
+veloped 
+(17, 18). Now used by over 4,000 doctors in the
+United States and 28 countries, the VCTS provides highly
+repeatable contrast sensitivity data similar to computer-video
+systems but at only 
+1
+/3o the cost and 
+1
+/12 the test time, and does
+not require daily contrast calibration 
+(10). Patches of sine wave
+gratings with different contrasts and spatial frequencies are
+visual targets 
+used for testing. The patient is instructed to
+identify the orientation 
+of lines within patches. Furthermore,
+the 
+VCTS can be used to evaluate both near and distant vision,
+both important 
+to drivers. Initial results of the VCTS show
+contrast sensitivity losses for a wide variety 
+of visual pa-
+thologies similar to those found using the computer-video sys-
+tems 
+(18).
+PILOT STUDIES
+The main power of contrast sensitivity relevant to driver vision
+standards has been its ability to measure performance-related
+visual capability. 
+For example, significant research on the pre-
+dictive capabilities 
+of contrast sensitivity with regard to actual
+performance has been accomplished with pilots. One such
+study was done in 1983 under field conditions 
+(6). A total of 84
+Air Force pilots were tested for acuity and contrast sensitivity
+in this study. Aircraft detection testing using a 
+T-39 was
+performed the day after vision evaluation. Aircraft altitude,
+speed, and azimuth were maintained at constant values, in
+order to reduce differences between trials. This ground-to-air
+target detection task was completed under diverse visibility
+conditions, including fog and dusk, ranging from 
+0.5 to more
+than 
+15 mi. Visual acuity and contrast sensitivity measurements
+were taken and correlated to the pilot's detection range in 
+10
+completed field trials.
+
+36 
+rR.ANSP ORTA.T!ON RESEA RCH RECORD 1149
+VISION CONTRAST TEST SYSTEM
+2 3 4
+A
+e
+c
+0
+E
+5 6 
+7 8 
+9
+. COJl¥RIGHT. ""'tl CONSUlTANTS~ .. '9U
+DArn>N.OHIO U U ..
+U9 Pe\lEHT 4,.,,171 c
+FIGURE 4 Vistech vision contrast test system (VCTS) photographic plates used to evaluate contrast
+sensitivity.
+There was a significant positive correlation for contrast sen-
+sitivity in 8 
+of these field trials. Of the 10 trials performed, 3
+showed correlation for acuity, 2 positive and 1 negative. Be-
+cause 
+of bad weather that curtailed data gathering, one of the
+trials had no correlation with either contrast sensitivity or
+acuity. The average differences for all conditions in detection
+range and time between the most and least sensitive pilots were
+2.2 mi and 56 sec.
+These individual differences are significant factors, not only
+to the ability 
+of pilots to fly an aircraft but also to drivers of
+automobiles, trucks, and heavy equipment, and others who
+perform visually oriented tasks. Here again, contrast sensitivity
+showed these large differences in detection range, not acuity.
+Similar results were seen in the trial with meteorological
+visibility 
+of 15 mi. The differences in detectability between the
+most and least sensitive pilots were 6.5 mi and 2.8 min. 
+In this
+instance, the corresponding Snellen results ranged from 
+20/10
+to 20/20, but their contrast sensitivity differed by a factor of
+3.4. Data from another trial included a visibility factor of 1 to 2
+mi, and a 0.42-mi (9.2-sec) difference in detection range be-
+tween the two pilots, with Snellen acuity ranging from 
+20/13 to
+20/20 and a factor of 3.7 difference between the two pilots'
+contrast sensitivity.
+In another study using Air Force instructor pilots, a set of
+simulated landings focusing on air-to-ground target detection
+was performed at Williams AFB 
+(4). On spotting a MIG craft at
+the end 
+of the runway, 11 Air Force instructor pilots each
+pressed a button. Comparisons were made 
+of the detection
+range and visual ability, including contrast sensitivity and stan-
+dard visual acuity measures. Contrast sensitivity was found to
+'hP thP mn.ct ~rrnT'gfp nrPitirtf'\r nf t'hP nilAtc' ilPtPrt1nn T!l1''Hl'P in
+...... _. ...... _. ............ ..,. .. - ........................ r .............................. --~ ~·- r ................ ..................................... a .........o- ....... ...
+these trials also. The correlation between target detection and
+contrast sensitivity 
+of the pilots was 0.83; for visual acuity the
+correlation was 
+- 0.13. Recent Canadian studies have confirmed
+large differences in contrast sensitivity between Canadian pi-
+lots even when their acuity was 
+20/20 or better. Another study
+using 
+55 search-and-rescue scene analysts had high correlation
+to the complex scene task performance and contrast sensitivity
+but negative correlation to acuity 
+(19).
+Contrast sensitivity provides additional practical applica-
+tions both for the aviation field and the automobile field. 
+In
+general, problems with target perception contrast in a heads-up
+display (HUD) are linked to one or more factors, including
+target background, atmosphere, windscreen, HUD optics, eye-
+glasses, visors, and 
+of course, the visual system. Because the
+HUDs in aircraft are intended to allow the pilot to see HUD
+symbols and targets at the same time, the system should maxi-
+mize visual ability. Instead, some HUD systems, designed
+without specific attention to or knowledge 
+of contrast sen-
+sitivity, actually reduce perceived contrast 
+(20). This, in turn,
+reduces visibility.
+A HUD system that reduces visibility and sensitivity sup-
+plies extra risk that 
+could be avoided. Using contrast sensitivity
+to measure around and through the system, both HUDs and
+automobile windshields with especially impregnated and stick-
+on window tints can 
+be better designed to aid in visual tasks
+rather than decreasing visibility.
+HIGHWAY 
+SIGN DISCRIMINABILITY STUDY
+Another performance-related study more directly related to
+driver vision standards was concerned with the ability 
+of con-
+trgct C'Pnc1t1u1h.1 tn nrl'llr11,...t acu:11_T"Pl"-J.tor1 ,-1;.f'.fa ... a.Tl,...ac- !~ ... t-..:1:r.., t .....
+~,......,., ..,_.... ~.o.•.o.•.o.•J '"'-' t'.1....,~.1.""''" Mf)V .l.V.1.114•~ U.1..1..1.V.l.V.l.J."'"''3 .l.J.J. UUJ.J.J.LJ LV
+
+Ginsburg
+discriminate basic road signs (5). Contrast sensitivity, Snellen
+visual acuity, and discrimination distances for projected mov-
+ing images 
+of highway signs were measured for seven older
+observers, ages 
+55 to 79, and 13 younger observers, ages 19 to
+30. Although all subjects had 20/20 visual acuity or better, the
+older group 
+had significantly lower contrast sensitivity than the
+younger group at three spatial 
+frequencies-3, 6, and 12 cpd of
+visual angle. The older group, having to get 24 percent closer to
+the sign, required a significantly larger sign symbol in order to
+determine 
+if it denoted a + or T intersection. Correlations
+between measures showed that highway sign discrimination
+distance was significantly related 
+to contrast sensitivity at two
+spatial frequencies, 1.5 and 12 cpd, but discrimination distance
+was 
+not related to visual acuity. Implications for highway sign
+design and driver vision standards are evident.
+The result of this highway sign discrimination study re-
+iterated the results found 
+in the pilot study. The younger group
+could discriminate the road signs at significantly greater dis-
+tances than the older group, even though there was no 
+dif-
+ference in Snellen acuity between the groups. A significant
+age-related drop in visual capability was also found with con-
+trast sensitivity. Furthermore, significant relationships were
+found between contrast sensitivities at two spatial frequencies
+and discrimination distance, although no significant relation-
+ship was found between 
+Snellen acuity and discrimination
+distance.
+Contrast sensitivity related directly to the observer's ca-
+pability to discriminate highway signs. Contrast sensitivity, not
+acuity, appears useful in standardizing highway sign contrast,
+size, and lighting requirements for safe and effective driving.
+The inability 
+of Snellen visual acuity to predict visual perfor-
+mance is shown 
+by these results. Because contrast sensitivity
+can detect losses in visual capability that cannot 
+be detected by
+current visual acuity techniques, especially for older subjects
+and others having low contrast sensitivity, it appears to 
+be a
+suitable replacement for evaluating vision. These results do 
+not
+mean that older drivers will necessarily be eliminated from
+driving but rather that road 
+signs and highway lighting should
+be designed to compensate for the effects of decreased contrast
+sensitivity 
+of the older drivers.
+CONTRAST SENSITIVITY AND ALCOHOL
+An area of paramount concern today with regard to drivers is
+that 
+of driving and drinking. The main determinant for estab-
+lishing intoxication when driving is blood alcohol content. A
+study 
+on the effects of alcohol on contrast sensitivity provided
+interesting insights as to the ability 
+of blood alcohol content to
+determine the effects 
+on driver vision (21 ).
+Contrast sensitivity was measured for seven subjects having
+different levels 
+of blood alcohol content (BAC) under photopic
+(daytime) and mesopic (dusk) luminance conditions. 
+In gen-
+eral, a blood alcohol content 
+of less than 0.1 percent resulted in
+contrast sensitivity changes at all spatial frequencies tested
+(1.5, 3, 6, 12, 
+and 18 cpd). Although several gains in contrast
+sensitivity were found, these were all at the higher spatial
+frequencies and the higher luminance levels. Contrast sen-
+sitivity losses, however, were evident at all spatial frequencies.
+37
+Significant differences in the patterns of sensitivity gains and
+losses for individuals appeared in the 
+data. The highest intox-
+ication levels produced the greatest change in contrast sen-
+sitivity in some subjects, whereas a delayed change in contrast
+sensitivity was found in other subjects. Recovery 
+of contrast
+sensitivity also varied; some subjects returned to baseline sen-
+sitivity as BAC decreased, whereas the contrast sensitivity 
+of
+others increased or remained suppressed even after BAC re-
+turned to initial levels. 
+The alcohol-based contrast sensitivity
+losses were significant when compared to previous perfor-
+mance-based target acquisition research. These results suggest
+that some serious loss in visibility 
+of certain objects, especially
+under low luminance conditions, may be experienced when an
+individual ingests alcohol, even at moderate rates 
+of alcohol
+ingestion.
+HEALTH AND SAFETY IMPLICATIONS FOR
+CATARACT PATIENTS
+Perhaps one of the most serious health and safety issues con-
+cerning the inadequacies 
+of visual acuity as a driving standard
+is its inability to measure the loss 
+of functional vision of people
+having cataracts. Although used for medical and legal purposes
+as documentation, the 125-year-old 
+Snellen eye chart is not an
+appropriate measure 
+of vision loss due to cataracts. Acuity
+measures the effect 
+of optical defocus on the ability to see
+small black and white targets. Cataracts are opacities 
+of the lens
+that cause light scatter, and 
+do not cause optical defocus.
+Accordingly, acuity cannot give a meaningful estimate 
+of the
+severity 
+of the cataract. Because the light scattering effect
+decreases contrast at the retina, the quality 
+of vision is reduced,
+causing cataract patients 
+to complain of washed-out or color-
+less sight. Bright sunny days 
+or headlights at night greatly
+affect cataract patients because 
+of the increased light that re-
+sults in even more light scatter. This increased vision loss
+creates a serious dilemma for drivers. Although visual quality
+may 
+be reduced, sometimes even severely, acuity may still be
+20/30 or 20/40, still within the legal limit for drivers in all
+states. 
+An example of the lack of relationship between visual
+acuity and the contrast sensitivity function is shown 
+in Figure 5
+(18). Although each patient has 20/30 acuity, one patient has a
+considerably more severe loss 
+in functional vision than the
+other patient. 
+Under the current standard, these drivers would
+be considered equally capable of driving a car or piloting an
+aircraft. 
+The patient can legally drive despite impaired vision.
+However, measuring functional vision would show the degra-
+dation 
+of vision and alert both the driver and the licensing
+bureau to the patient's disability. With today's medical technol-
+ogy, cataracts can 
+be quickly and economically removed al-
+lowing drivers now at risk to themselves 
+and others to become
+safer and more effective drivers.
+Similar losses in contrast sensitivity are found in young
+drivers having contact lenses that have been mishandled or
+have excessive deposits. One example is a 26-year-old male
+driver having 
+20/30 acuity whose contrast sensitivity due to
+deposited lenses was greatly reduced, especially at the middle
+spatial frequencies, worse than that 
+of a healthy 80-year-old
+(11). A deposited lens is like having a cataract in front of the
+eye.
+
+38 
+TRANSPORTATION RESEARCH RECORD 1149
+·--- 
+20/30 
+NUCLEAR SCLEROTIC CATARACT
+20130 POSTERIOR SUBCAPSULAR CATARACT
+3CO 
+003
+0
+@ 
+...J
+0
+> 
+(f) 
+:z:
+$ 
+@
+.(. 
+rn
+a> 
+w
+E 
+F 
+a:
+® 
+" 
+.01 :z:
+rn 
+100 
+,. 
+$ 
+I-
+z 
+~·
+• 
+.. 
+I-
+w 
+rn,.,
+rn 
+<!>
+• 
+c
+I- 
+,,-- 1' •
+~
+rn
+c 
+, 
+@
+a: 
+-fl'.· 
+0
+I-
+z 
+30 
+.---. 
+.03 0
+0
+0
+10 
+,1
+3 
+.3
+1.5 
+3 
+6 
+12 18
+SPATIAL FREQUENCY
+(CYCLES PER DEGREE)
+FIGURE S Lack of relationship between visual acuity and contrast sensitivity.
+CONCLUSIONS
+Research has shown that an individual's contrast sensitivity
+function, but 
+not ,acuity, relates to letter and face recognition,
+discrimination distance of road signs, pilot detection range,
+blood alcohol content, and scene analyses. 
+The results of these
+studies have great significance, especially 
+in relation to the
+tasks required of drivers. For the safety of the driver and others,
+the driver needs to 
+be able to detect and recognize objects at
+reasonable distances in a short time. 
+As evidenced by previous
+studies, contrast sensitivity 
+can help predict an individual's
+ability to see an oncoming target or stationary object at the first
+possible moment. Furthermore, contrast sensitivity 
+can detect
+cataracts and poor contact lenses that 
+go undetected by visual
+acuity testing. Therefore, driver vision standards should 
+be
+based on a performance-related vision test for contrast
+sensitivity.
+REFERENCES
+1. R. L. Henderson and A. Burg. Vision and Audition in Driving.
+Report TM(L)-5297 /000/00. System Development Cmporation,
+Santa Monica. Calif.. April 1974.
+2. J. A. S. Kinney. Clinical Measurement of Night Vision. In Proc.,
+Armed Forces NCR Committee on Vision, National Academy of
+Sciences, Spring Meeting, 1968.
+3. 
+D. Shinar. Driver Visual Limitations, Diagnosis and Treatment.
+Institute for Research in Publie Safety, Indiana University School
+of Public and Environmental Affairs, Bloomington, Ind., Sept.
+1977.
+4. A. Ginsburg, D. Evans, R. Sekuler, and S. A. Harp. Contrast
+Sensitivity Predicts Pilots' Performance 
+in Aircraft Simulators.
+American Journal of Optometry and Physiological Optics, Vol.
+59, No. 1, 1982, pp. 105-lOCJ.
+5. D. W. Evans and A. P. Ginsburg. Contrast Sensitivity Predicts
+Age-Related Differences in Highway Sign Discriminability. 
+Hu-
+man Factors, 
+Vol. 27, No. 12, 1985, pp. 637-642.
+6. A. Ginsburg, J. Easterly, and D. Evans. Contrast Sensitivity Pre-
+dicts Turget Detection Field Performance of Pilots. In Proc.,
+Human Factors Society, 27th Annual Meeting, Vol. 1, 1983, pp.
+269-273.
+7. R. D. Koppa. Visibility Through Spray. Texas Transportation In-
+stitute, Texas A&M University, College Station, Tex., 1984.
+8. Committee on Vision, National Research Council. Emergent Tech-
+niques 
+for the Assessment of Visual Performance. National Acad-
+emy Press, Washington, D.C., 1985.
+9. A. P. Ginsburg. Proposed New Vision Standards for the 1980's
+and Beyond: Contrast Sensitivity. In Proc., AGARD/NATO Spe-
+cialist Aerospace Medical Panel Meeting, No. 310, Toronto, Can-
+ada, Sept. 
+1980, pp. 15-19.
+
+Ginsburg
+10. A. P. Ginsburg. Spatial Filtering and Vision: Implications for
+Nonna! and Abnormal Vision. In L. Proenza, J. Enoch, and
+A.Jampolsky (eds.), 
+Clinical Applications of Visual Psycho-
+physics. 
+Cambridge University Press, New York, 1981, pp.
+70-106.
+11. A. P. Ginsburg. The Evaluation of Contact Lenses and Refractive
+Surgery Using Contrast Sensitivity. Contact Lenses, Update 2
+(The 
+CLAO Guide lo Basic Science and Clinical Practice), 0. H.
+Dabezies (ed.), Jan. 1987, pp. 56.1-56.17.
+12. 
+S. K. Guth and J. F. McNelis. Visual Performance: Subjective
+Differences. 
+Illuminating Engineering, Vol. 64, No. 9, 1969, pp.
+576-578.
+13. A. P. Ginsburg. Sine-Wave Gratings Are More Visually Sensitive
+Than Disks 
+or Letters. Journal of the Optical Society of America,
+Vol. 1, No. 12, 1984, p. 1301.
+14. A. P. Ginsburg. Visual Information Processing Based on Spatial
+Filters Constrained 
+by Biological Data. Air Force Aerospace
+Research Medical Laboratory Technical Report, 1978, pp.
+78-129.
+15. L. Spillman and D.R. Wooten (eds.). Visual Fonn Perception
+Based on Biological Filtering. In Sensory Experience, Adaptation,
+and Perception. 
+Lawrence Erlbaum Associates, New Jersey, 1984.
+39
+16. R. L. DeValois and K. K. DeValois. Spatial Vision, Annual Re-
+view of Psychology, Vol. 31, 1980, pp. 309-341.
+17. A. P. Ginsburg. A New Contrast Sensitivity Vision Test Chart
+American Journal of Optometry and Physiological Optics, Vol.
+61, No. 6, 1984, pp. 403-407.
+18. A. P. Ginsburg and D. W. Evans. Initial Results of Rapid Clinical
+Screening Using a New Contrast Sensitivity Vision Test Chart.
+Presented at the Optical Society of America, Special Session on
+Medical Optics, Lake Tahoe, Nev., March 1985.
+19. 
+P. Stager and D. Hameluck. Contrast Sensitivity and Visual Detec-
+tion in Search and Rescue. Defence and Civil Institute of Environ-
+mental Medicine, 
+N. York, Canada, June 1986.
+20. A. P. Ginsburg. Direct Performance Assessment of HUD Display
+Systems Using Contrast Sensitivity. In IEEE: NAECON Mini-
+Course Notes, Dayton, Ohio, May 17-19, 1983, pp. 33-44.
+· 21. A. P. Ginsburg, D. W. Evans, L. McNinch, K. Blauvelt, and H.
+Siegal. The Effect 
+of Alcohol on Contrast Sensitivity. Presented at
+the Annual Meeting 
+of the Human Factors Society, Baltimore,
+1985.
+22. C. 
+Owsley, R. Sekuler, and C. Boldt Aging and Low-Contrast
+Vision: Face Perception. 
+Investigative Ophthalmology and Visual
+Science, Vol. 21, No. 2, 1981, pp. 362-368.

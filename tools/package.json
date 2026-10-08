@@ -1,0 +1,1 @@
+{ "name": "vcs-screen-tools", "private": true, "dependencies": { "jspdf": "2.5.1" } }

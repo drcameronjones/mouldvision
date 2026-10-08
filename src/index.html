@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>VCS Screen</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="brand"><img class="hdrlogo" src="../assets/bhs-logo.png" alt="Biological Health Services"><div><h1>VCS Screen</h1><div class="small muted">Visual contrast sensitivity, sine-wave gratings at 1.5–18 cpd</div><div class="topbhs">Concept by <b>Dr Cameron Jones, PhD</b> · Biological Health Services</div></div></div>
+    <nav class="steps" id="steps"></nav>
+  </header>
+
+  <!-- HOME -->
+  <section id="v-home" class="stack">
+    <div class="card stack">
+      <span class="eyebrow">What this measures</span>
+      <h2>How faint a striped pattern can you still see, at five bar sizes?</h2>
+      <p>Each trial shows a circular patch of parallel bars tilted left, straight up, or tilted right. You pick the tilt. Bars get fainter down each column and narrower across the five columns (A–E, 1.5 to 18 cycles per degree). The faintest patch you still identify at each bar size gives your contrast sensitivity curve, one per eye.</p>
+      <div class="key" id="homeKey"></div>
+      <div class="notice">Screening only. This page does not diagnose anything. Low scores can come from screen limits, uncorrected vision, cataract, fatigue, or many other causes. Discuss results with an optometrist or doctor who knows contrast sensitivity testing.</div>
+      <div class="row">
+        <button class="primary" id="btnStart">Calibrate and start</button>
+        <button id="btnHistory">Past results</button>
+      </div>
+    </div>
+    <div class="card stack" id="homeHistory" hidden>
+      <h3>Past results on this device</h3>
+      <div class="tablewrap"><table id="histTable"></table></div>
+      <div class="row"><button class="ghost" id="btnClearHist">Clear history</button></div>
+    </div>
+  </section>
+
+  <!-- CALIBRATION -->
+  <section id="v-cal" class="stack" hidden>
+    <div class="card stack">
+      <span class="eyebrow">Step 1 of 3</span>
+      <h2>Calibrate your screen</h2>
+      <p>Spatial frequency is measured in cycles per degree of visual angle, so the page needs your pixel size and viewing distance. Hold a bank card against the screen and drag the slider until the dashed box matches it exactly.</p>
+      <div class="sizer-box"><div class="card-sizer" id="sizer"></div></div>
+      <label for="pxcm">Card width on screen</label>
+      <input type="range" id="pxcm" min="20" max="100" step="0.5" value="40">
+      <div class="small muted mono" id="pxcmOut"></div>
+      <div class="grid2">
+        <div class="stack" style="gap:6px">
+          <label for="dist">Viewing distance (cm)</label>
+          <input type="number" id="dist" min="30" max="150" value="50">
+          <div class="small muted">Sit comfortably, measure eye to screen, and keep that distance for the whole test. 50 cm is typical for a laptop.</div>
+        </div>
+        <div class="stack" style="gap:6px">
+          <label for="mode">Test length</label>
+          <select id="mode">
+            <option value="full">Full: 9 contrast levels × 5 columns per eye (90 trials)</option>
+            <option value="quick">Quick: stop a column after 2 misses in a row</option>
+          </select>
+          <div class="small muted">Quick mode scores skipped patches as not seen.</div>
+        </div>
+      </div>
+      <div class="card" style="background:var(--accent-soft);border-color:transparent">
+        <div class="small"><strong>Derived calibration</strong></div>
+        <div class="mono small" id="calOut"></div>
+      </div>
+      <div class="notice" id="calWarn" hidden></div>
+      <div class="row">
+        <button class="ghost" data-go="home">Back</button>
+        <button class="primary" id="btnToInstr">Continue</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- INSTRUCTIONS -->
+  <section id="v-instr" class="stack" hidden>
+    <div class="card stack">
+      <span class="eyebrow">Step 2 of 3</span>
+      <h2>Before you begin</h2>
+      <ol>
+        <li>Set screen brightness to maximum and turn off night-shift or blue-light filters.</li>
+        <li>Sit in a normally lit room with no glare on the screen.</li>
+        <li>Wear the glasses or contacts you normally use for the screen.</li>
+        <li>Cover one eye with your palm (do not press). The page tests the <strong>right eye first</strong>, then the left.</li>
+        <li>For each patch, answer <strong>Left</strong>, <strong>Up</strong> or <strong>Right</strong>. Keyboard arrows work too. Guess if you are unsure; use <strong>Can't see</strong> only when there is no pattern at all.</li>
+      </ol>
+      <div class="key" id="instrKey"></div>
+      <p class="small muted">Bars are tilted 15° from vertical, as in the FACT / VCTS charts. Patches start easy (column A, high contrast) and get harder.</p>
+      <div class="row">
+        <button class="ghost" data-go="cal">Back</button>
+        <button class="primary" id="btnBegin">Begin right eye</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- TEST -->
+  <section id="v-test" class="stack" hidden>
+    <div class="stage">
+      <div class="eyebar">
+        <div><span class="eyebrow">Step 3 of 3</span><h2 id="eyeTitle">Right eye</h2></div>
+        <span class="pill" id="coverPill">Cover your left eye</span>
+      </div>
+      <div class="progress"><i id="prog"></i></div>
+      <div class="field"><canvas id="stim" width="512" height="512"></canvas><div class="fix" id="fix" hidden>+</div></div>
+      <div class="answers">
+        <button data-ans="left"><svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="24" y1="6" x2="16" y2="34"/><line x1="15" y1="6" x2="7" y2="34"/><line x1="33" y1="6" x2="25" y2="34"/></svg>Left</button>
+        <button data-ans="up"><svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="20" y1="6" x2="20" y2="34"/><line x1="11" y1="6" x2="11" y2="34"/><line x1="29" y1="6" x2="29" y2="34"/></svg>Up</button>
+        <button data-ans="right"><svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="16" y1="6" x2="24" y2="34"/><line x1="7" y1="6" x2="15" y2="34"/><line x1="25" y1="6" x2="33" y2="34"/></svg>Right</button>
+      </div>
+      <div class="row" style="justify-content:space-between;width:100%;max-width:560px">
+        <button class="ghost" data-ans="none">Can't see a pattern</button>
+        <span class="small muted mono" id="trialLabel"></span>
+      </div>
+    </div>
+  </section>
+
+  <!-- SWITCH EYE -->
+  <section id="v-switch" class="stack" hidden>
+    <div class="card stack">
+      <h2>Right eye done</h2>
+      <p>Now cover your <strong>right</strong> eye and test the left. Keep the same distance from the screen.</p>
+      <div class="row"><button class="primary" id="btnLeft">Begin left eye</button></div>
+    </div>
+  </section>
+
+  <!-- RESULTS -->
+  <section id="v-results" class="stack" hidden>
+    <div class="banner" id="banner"></div>
+    <div class="tiles" id="tiles"></div>
+    <div class="charts" id="charts"></div>
+    <div class="card stack">
+      <h3>Reading the charts</h3>
+      <p class="small">Each circle is one patch. Green means you identified its tilt; red means you did not, and the short tail shows the tilt the patch actually had. The red line joins the faintest patch you got right in each column (the highest sensitivity). The grey line is a typical curve for healthy adults on FACT-style charts. Columns C and D (6 and 12 cpd) are outlined because research on biotoxin-associated illness reports deficits concentrated there; column E (18 cpd) is often tracked during treatment.</p>
+      <p class="small muted">Displays cannot render the very lowest contrasts precisely (the bottom one or two rows push 8-bit panels to their limit), so treat results near the floor with caution and compare tests taken on the same screen and settings.</p>
+    </div>
+    <div class="card stack">
+      <h3>Summary</h3>
+      <pre class="mono small" id="summaryText" style="white-space:pre-wrap;margin:0"></pre>
+      <div class="row">
+        <button id="btnPdf" class="primary">Download PDF report</button>
+        <button id="btnCopy">Copy summary</button>
+        <button id="btnAgain">Run again</button>
+        <button class="ghost" data-go="home">Home</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="card stack" id="refs" style="margin-top:24px">
+    <h3>References</h3>
+    <p class="small muted">Numbers in square brackets refer to this list. The chart layout, scoring columns and biotoxin interpretation on this page follow the published sources below. They are listed so a clinician can check the basis of the screen; none of them describes this page itself.</p>
+    <ol class="small" style="line-height:1.45">
+      <li>Ginsburg AP. A new contrast sensitivity vision test chart. <em>Am J Optom Physiol Opt</em>. 1984;61(6):403–407. (The Vistech VCTS: five spatial frequencies A–E, nine contrast steps, three bar tilts.)</li>
+      <li>Ginsburg AP. Contrast sensitivity, drivers' visibility, and vision standards. <em>Transportation Research Record</em>. 1987;1149:32–39. (Sine-wave gratings, Michelson contrast, the contrast sensitivity function.)</li>
+      <li>Ginsburg AP. Contrast sensitivity and functional vision. <em>Int Ophthalmol Clin</em>. 2003;43(2):5–15.</li>
+      <li>Hudnell HK, House D, Schmid J, Koltai D, Stopford W, Wilkins J, Savitz DA, Swinker M, Music S. Human visual function in the North Carolina clinical study on possible estuary-associated syndrome. <em>J Toxicol Environ Health A</em>. 2001;62(8):575–594. doi:10.1080/15287390151079633</li>
+      <li>Shoemaker RC, Hudnell HK. Possible estuary-associated syndrome: symptoms, vision, and treatment. <em>Environ Health Perspect</em>. 2001;109(5):539–545. (Mid-spatial-frequency VCS deficit as a marker, and its reversal with cholestyramine.)</li>
+      <li>Hudnell HK. Chronic biotoxin-associated illness: multiple-system symptoms, a vision deficit, and effect of cholestyramine. <em>Neurotoxicol Teratol</em>. 2005;27(5):733–743.</li>
+      <li>Shoemaker RC, House DE. A time-series study of sick building syndrome: chronic, biotoxin-associated illness from exposure to water-damaged buildings. <em>Neurotoxicol Teratol</em>. 2005;27(1):29–46.</li>
+      <li>Shoemaker RC, House DE. Sick building syndrome (SBS) and exposure to water-damaged buildings: time series study, clinical trial and mechanisms. <em>Neurotoxicol Teratol</em>. 2006;28(5):573–588.</li>
+      <li>McMahon SW, Kundomal KA, Yangalasetty S. Pediatrics norms for visual contrast sensitivity using an APT VCS tester. <em>Med Res Arch</em>. 2017;5(5).</li>
+      <li>Pelli DG, Bex P. Measuring contrast sensitivity. <em>Vision Res</em>. 2013;90:10–14. (Why display calibration and luminance matter for any contrast test.)</li>
+      <li>Owsley C. Contrast sensitivity. <em>Ophthalmol Clin North Am</em>. 2003;16(2):171–177. (Ageing, cataract and other common causes of reduced contrast sensitivity.)</li>
+      <li>Thomas G, Burton NC, Mueller C, Page E, Vesper S. Comparison of work-related symptoms and visual contrast sensitivity between employees at a severely water-damaged school and a school without significant water damage. <em>Am J Ind Med</em>. 2012;55(9):844–854. doi:10.1002/ajim.22059</li>
+      <li>Jimenez-Barbosa IA, Di Lizio S, Ahn SB, et al. Assessment of visual contrast sensitivity in biotoxin-exposed individuals using four testing methods. <em>Ann Med</em>. 2026;58(1):2646821. doi:10.1080/07853890.2026.2646821</li>
+      <li>American College of Medical Toxicology. Position statement: medical toxicology considerations in the diagnosis and treatment of patients with concerns about mold-related inhalation exposures. 2025.</li>
+      <li>Denning DW, Chakrabarti A. Pulmonary and sinus fungal diseases in non-immunocompromised patients. <em>Lancet Infect Dis</em>. 2017;17(11):e357–e366. doi:10.1016/S1473-3099(17)30309-2</li>
+      <li>Valtonen V. Clinical diagnosis of the dampness and mold hypersensitivity syndrome: review of the literature and suggested diagnostic criteria. <em>Front Immunol</em>. 2017;8:951. doi:10.3389/fimmu.2017.00951</li>
+    </ol>
+    <h3 style="margin-top:8px">Evidence status</h3>
+    <p class="small">VCS testing measures contrast discrimination across spatial frequencies, which reflects visual processing in the central nervous system rather than the optics of the eye. It was popularised by Shoemaker as a bedside marker of biotoxin-related illness after exposure to water-damaged buildings. The evidence is mixed and the test is not validated as a diagnostic tool for mould-related illness:</p>
+    <ul class="small" style="line-height:1.45">
+      <li>A NIOSH study found lower VCS values at every spatial frequency among employees of a severely water-damaged school compared with a comparison school, together with more work-related rash, respiratory and constitutional symptoms. The same investigators nevertheless advised against recommending VCS for evaluating mould-exposed people, citing non-representative samples, confounding by conditions such as fibromyalgia and chronic fatigue, missing comparison groups and poor exposure characterisation in earlier work [12].</li>
+      <li>A 2026 comparison of four methods found that the original handheld Shoemaker chart did not separate biotoxin-exposed people from controls, whereas three digital tests did, the best reaching 100% sensitivity at 60–80% specificity. Test method matters, and the digital tools remain investigational [13].</li>
+      <li>The American College of Medical Toxicology states that no validated biomarker exists for mould or mycotoxin exposure; fungal IgE/IgG testing bears only on allergic sensitisation [14]. A Lancet Infectious Diseases review notes there is no diagnostic test for building-related illness, which rests on history, exposure assessment and exclusion of other causes [15]; a proposed framework for dampness and mould hypersensitivity syndrome likewise uses clinical and exposure criteria rather than any laboratory or visual test [16].</li>
+    </ul>
+    <p class="small muted">In an Australian clinical context, VCS should be treated as non-validated and not a stand-alone diagnostic or monitoring tool. Suspected building-related illness is better approached through a thorough exposure history, exclusion of alternative causes (inflammatory markers, anaemia, liver, renal and thyroid function, chest imaging), assessment for fungal sensitisation where allergic or respiratory symptoms dominate, and remediation of the damp or mould source. The Hudnell 2001 cohort found visual deficits but could not attribute them to Pfiesteria exposure; reduced contrast sensitivity is also produced by refractive error, cataract, glaucoma, macular disease, diabetes, alcohol and many drugs.</p>
+  </section>
+  <div class="bhs" id="bhsBlock">
+    <div class="logo">
+      <img id="bhsLogo" src="../assets/bhs-logo.png" alt="Biological Health Services">
+    </div>
+    <div class="contact">
+      <div><strong>Head office:</strong> Level 1, 459 Toorak Road, Toorak VIC 3142</div>
+      <div><strong>Laboratory:</strong> 7/4 Weddel Court, Laverton North VIC 3026</div>
+      <div><a href="https://www.biologicalhealthservices.com.au" target="_blank" rel="noopener">www.biologicalhealthservices.com.au</a> · ISO 9001:2015 · ISO/IEC 17025:2017</div>
+      <div>Concept: Dr Cameron Jones, PhD, Principal Environmental Microbiologist</div>
+    </div>
+  </div>
+  <footer>Sine-wave grating screening based on the Vistech VCTS / FACT layout (Ginsburg 1984). Not affiliated with any commercial VCS provider. Results stay on this device.</footer>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
