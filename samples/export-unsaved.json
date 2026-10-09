@@ -2149,12 +2149,14 @@
   },
   "validation": {
     "software": {
-      "status": "not_run",
+      "status": "passed",
       "suite": "phase0-T01-T28",
       "version": "v0.7.0",
-      "runAt": null,
-      "sourceHash": "testhash0000000000000000",
-      "reason": "test results are for a different source hash"
+      "runAt": "2026-10-09",
+      "passed": 36,
+      "total": 36,
+      "sourceHash": "b13bf1e353f1692980427ee8842d636c88f1bd00d9413f7a7155589b82fbe007",
+      "gitCommit": "2f0ef98ccf49c03e42e31f87e38a45fa6ecf66e3"
     },
     "measurement": {
       "status": "not_performed",
