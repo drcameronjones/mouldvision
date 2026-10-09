@@ -14,7 +14,7 @@ try { const r = JSON.parse(fs.readFileSync(path.join(root, 'tests/results.json')
     const run = JSON.parse(fs.readFileSync(path.join(root, 'tests/fixtures', `run-${name}.json`), 'utf8'));
     const MV = load({ validation, logo, buildTarget: 'staging', build });
     run.validation = MV.buildValidation();           // the report states the status of the build that renders it
-    run.versions.buildTarget = 'staging';
+    run.versions.buildTarget = 'staging'; run.versions.sourceHash = build.sourceHash; run.versions.gitCommit = build.gitCommit; run.versions.builtAt = build.builtAt;
     const blob = MV.buildPdf(run);
     fs.writeFileSync(path.join(out, `report-${name}.pdf`), Buffer.from(await blob.arrayBuffer()));
     fs.writeFileSync(path.join(out, `export-${name}.json`), MV.exportJson(run));

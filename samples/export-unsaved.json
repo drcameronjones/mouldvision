@@ -9,7 +9,10 @@
     "buildTarget": "staging",
     "protocol": "full-5x9-v1",
     "scoring": "score-v1-maxcorrect",
-    "stimulus": "gauss-0.42R-sRGB-dither-v1"
+    "stimulus": "gauss-0.42R-sRGB-dither-v1",
+    "sourceHash": "b13bf1e353f1692980427ee8842d636c88f1bd00d9413f7a7155589b82fbe007",
+    "gitCommit": "1b6774ddb09eac62ed5224398d4ee66d6062a5a5",
+    "builtAt": "2026-10-09T00:22:33.707Z"
   },
   "geometry": {
     "pxPerCm": 44.5,
