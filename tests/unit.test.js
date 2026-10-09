@@ -209,9 +209,10 @@ test(tag('T23', 'sampling sentence bands; never "accurate"'), async () => {
 });
 
 test(tag('T24', 'identification block: heading, versions, build target, integrity wording, validation statuses'), async () => {
-  const MV = load({ validation: { software: { status: 'passed', suite: 'phase0-T01-T28', version: 'v0.7.0', runAt: '2026-10-09', passed: 28, total: 28 } } });
+  const MV = load({ validation: { software: { status: 'passed', suite: 'phase0-T01-T28', version: 'v0.7.0', runAt: '2026-10-09', passed: 28, total: 28, sourceHash: 'testhash0000000000000000', gitCommit: 'deadbeef' } } });
   const run = await runTest(MV, { mode: 'full', answerFn: ({ orient }) => orient });
   const T = MV.reportText(run);
+  assert.match(T.ident, /Source testhash0000 · Commit deadbeef/); assert.match(T.valid, /bound to source testhash0000/);
   assert.equal(T.heading, 'Visual contrast test results');
   assert.match(T.ident, /Software v0\.7\.0 \(live\)/); assert.match(T.ident, /Protocol full-5x9-v1/); assert.match(T.ident, /Scoring score-v1-maxcorrect/); assert.match(T.ident, /Stimulus gauss/);
   assert.match(T.ident, /Integrity SHA-256 [0-9a-f]{12} over test definition and responses \(local integrity check, not proof of origin\)/);
@@ -221,13 +222,32 @@ test(tag('T24', 'identification block: heading, versions, build target, integrit
   assert.ok(['passed', 'failed', 'not_run'].includes(run.validation.software.status)); assert.equal(run.validation.measurement.status, 'not_performed'); assert.equal(run.validation.clinical.status, 'not_performed');
 });
 
-test(tag('S1', 'safeguard 1: a build without passing results never claims passed tests'), async () => {
-  for (const v of [null, { software: { status: 'failed', suite: 'phase0-T01-T28', version: 'v0.7.0', runAt: 'x', passed: 20, total: 28 } }]) {
+test(tag('S1', 'safeguard 1: a build without passing results, or with results for another source hash, never claims passed tests'), async () => {
+  const stale = { software: { status: 'passed', suite: 'phase0-T01-T28', version: 'v0.7.0', runAt: 'x', passed: 36, total: 36, sourceHash: 'OTHERHASH', gitCommit: 'cafebabe' } };
+  for (const v of [null, { software: { status: 'failed', suite: 'phase0-T01-T28', version: 'v0.7.0', runAt: 'x', passed: 20, total: 28 } }, stale]) {
     const MV = load({ validation: v });
     const run = await runTest(MV, { mode: 'full', answerFn: ({ orient }) => orient });
     assert.notEqual(run.validation.software.status, 'passed');
     assert.ok(!/verification: passed/.test(MV.reportText(run).valid));
+    if (v === stale) assert.match(run.validation.software.reason, /different source hash/);
   }
+  // build level: tools/build.js refuses results whose sourceHash differs from the current source
+  const { sourceHash } = require('../tools/source-hash');
+  const execFileSync = require('child_process').execFileSync;
+  const rp = path.join(__dirname, 'results.json'); const had = fs.existsSync(rp) ? fs.readFileSync(rp, 'utf8') : null;
+  const version = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'package.json'), 'utf8')).version;
+  fs.writeFileSync(rp, JSON.stringify({ suite: 'phase0-T01-T28', version, runAt: '2026-01-01', passed: 36, failed: 0, sourceHash: '0000stale', sourceChangedDuringRun: false }));
+  let out;
+  try { out = execFileSync('node', ['tools/build.js', 'staging'], { cwd: path.join(__dirname, '..') }).toString(); }
+  finally { if (had !== null) fs.writeFileSync(rp, had); else fs.unlinkSync(rp); }
+  assert.match(out, /not_run \(source changed since tests ran/);
+  // and a results file whose hash matches the current source is accepted
+  const h = sourceHash(); const had2 = fs.existsSync(rp) ? fs.readFileSync(rp, 'utf8') : null;
+  fs.writeFileSync(rp, JSON.stringify({ suite: 'phase0-T01-T28', version, runAt: '2026-01-01', passed: 36, failed: 0, sourceHash: h, sourceChangedDuringRun: false }));
+  try { out = execFileSync('node', ['tools/build.js', 'staging'], { cwd: path.join(__dirname, '..') }).toString(); }
+  finally { if (had2 !== null) fs.writeFileSync(rp, had2); else fs.unlinkSync(rp); }
+  assert.match(out, /validation: passed/);
+
 });
 
 test(tag('T25', 'export round-trip and re-score leave the hash unchanged'), async () => {

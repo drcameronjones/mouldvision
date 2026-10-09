@@ -1988,12 +1988,12 @@
   },
   "validation": {
     "software": {
-      "status": "passed",
+      "status": "not_run",
       "suite": "phase0-T01-T28",
       "version": "v0.7.0",
-      "runAt": "2026-10-09",
-      "passed": 36,
-      "total": 36
+      "runAt": null,
+      "sourceHash": "testhash0000000000000000",
+      "reason": "test results are for a different source hash"
     },
     "measurement": {
       "status": "not_performed",

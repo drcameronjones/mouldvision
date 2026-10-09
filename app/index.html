@@ -144,7 +144,7 @@
       <li>Valtonen V. Clinical diagnosis of the dampness and mold hypersensitivity syndrome: review of the literature and suggested diagnostic criteria. <em>Front Immunol</em>. 2017;8:951. doi:10.3389/fimmu.2017.00951</li>
     </ol>
     <h3 style="margin-top:8px">Evidence status</h3>
-    <p class="small">VCS testing measures contrast discrimination across spatial frequencies, which reflects visual processing in the central nervous system rather than the optics of the eye. It was popularised by Shoemaker as a bedside marker of biotoxin-related illness after exposure to water-damaged buildings. The evidence is mixed and the test is not validated as a diagnostic tool for mould-related illness:</p>
+    <p class="small">Visual contrast sensitivity measures how faint a pattern can be discriminated across spatial frequencies. It depends on both optical factors (refractive error, clarity of the cornea and lens, pupil size, light scatter) and neural factors (retina, optic nerve and visual cortex), so reduced sensitivity can arise from ocular disease such as cataract, glaucoma or macular disease, from uncorrected refractive error, and from neurological conditions, medication, alcohol and fatigue. It was popularised by Shoemaker as a bedside marker of biotoxin-related illness after exposure to water-damaged buildings. The evidence is mixed and the test is not validated as a diagnostic tool for mould-related illness:</p>
     <ul class="small" style="line-height:1.45">
       <li>A NIOSH study found lower VCS values at every spatial frequency among employees of a severely water-damaged school compared with a comparison school, together with more work-related rash, respiratory and constitutional symptoms. The same investigators nevertheless advised against recommending VCS for evaluating mould-exposed people, citing non-representative samples, confounding by conditions such as fibromyalgia and chronic fatigue, missing comparison groups and poor exposure characterisation in earlier work [12].</li>
       <li>A 2026 comparison of four methods found that the original handheld Shoemaker chart did not separate biotoxin-exposed people from controls, whereas three digital tests did, the best reaching 100% sensitivity at 60–80% specificity. Test method matters, and the digital tools remain investigational [13].</li>
@@ -167,7 +167,7 @@
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script>window.MV_BUILD_TARGET="live";window.MV_VALIDATION={"software":{"status":"passed","suite":"phase0-T01-T28","version":"v0.7.0","runAt":"2026-10-09","passed":36,"total":36}};</script>
+<script>window.MV_BUILD_TARGET="live";window.MV_VALIDATION={"software":{"status":"passed","suite":"phase0-T01-T28","version":"v0.7.0","runAt":"2026-10-09","passed":36,"total":36,"sourceHash":"b13bf1e353f1692980427ee8842d636c88f1bd00d9413f7a7155589b82fbe007","gitCommit":"2f0ef98ccf49c03e42e31f87e38a45fa6ecf66e3"}};window.MV_BUILD={"sourceHash":"b13bf1e353f1692980427ee8842d636c88f1bd00d9413f7a7155589b82fbe007","gitCommit":"2f0ef98ccf49c03e42e31f87e38a45fa6ecf66e3","gitDirty":true,"builtAt":"2026-10-09T00:22:06.369Z","verificationReason":null};</script>
 <script>
 'use strict';
 /* MouldVision / VCS Screen — Phase 0 (v0.7.0)
@@ -184,6 +184,7 @@ const STIMULUS_VERSION = 'gauss-0.42R-sRGB-dither-v1';
 const PROTOCOLS = { full: 'full-5x9-v1', quick: 'quick-2miss-v1' };
 const BUILD_TARGET = (typeof globalThis !== 'undefined' && globalThis.MV_BUILD_TARGET) || 'live';
 const BUILD_VALIDATION = (typeof globalThis !== 'undefined' && globalThis.MV_VALIDATION) || null;
+const BUILD_INFO = (typeof globalThis !== 'undefined' && globalThis.MV_BUILD) || { sourceHash: null, gitCommit: null, gitDirty: null, builtAt: null, verificationReason: 'unbuilt source' };
 const STORE_KEY = BUILD_TARGET === 'staging' ? 'mv-staging-runs-v1' : 'mv-runs-v1';
 const DRAFT_KEY = BUILD_TARGET === 'staging' ? 'mv-staging-draft' : 'mv-draft';
 const EXPORTED_KEY = BUILD_TARGET === 'staging' ? 'mv-staging-exported' : 'mv-exported';
@@ -340,7 +341,7 @@ function startRun(mode){
   S.run = {
     schema: RECORD_SCHEMA, id: uuid(), status: 'RUNNING_RIGHT',
     startedAt: nowIso(), completedAt: null,
-    versions: { software: SOFTWARE_VERSION, buildTarget: BUILD_TARGET, protocol: PROTOCOLS[S.mode], scoring: SCORING_VERSION, stimulus: STIMULUS_VERSION },
+    versions: { software: SOFTWARE_VERSION, buildTarget: BUILD_TARGET, protocol: PROTOCOLS[S.mode], scoring: SCORING_VERSION, stimulus: STIMULUS_VERSION, sourceHash: BUILD_INFO.sourceHash, gitCommit: BUILD_INFO.gitCommit, builtAt: BUILD_INFO.builtAt },
     geometry: geometry(), device: S.calDevice, ladder: LADDER, renderingModel: RENDERING_MODEL,
     trials: [], integrity: null, scoring: null,
     validation: buildValidation(), notes: []
@@ -354,9 +355,9 @@ function startRun(mode){
 function buildValidation(){
   const sw = BUILD_VALIDATION && BUILD_VALIDATION.software ? BUILD_VALIDATION.software : null;
   return {
-    software: sw && sw.status==='passed' ? { status:'passed', suite:sw.suite, version:sw.version, runAt:sw.runAt, passed:sw.passed, total:sw.total }
-            : sw && sw.status==='failed' ? { status:'failed', suite:sw.suite, version:sw.version, runAt:sw.runAt, passed:sw.passed, total:sw.total }
-            : { status:'not_run', suite:'phase0-T01-T28', version:SOFTWARE_VERSION, runAt:null },
+    software: sw && sw.status==='passed' && sw.sourceHash && sw.sourceHash===BUILD_INFO.sourceHash ? { status:'passed', suite:sw.suite, version:sw.version, runAt:sw.runAt, passed:sw.passed, total:sw.total, sourceHash:sw.sourceHash, gitCommit:sw.gitCommit }
+            : sw && sw.status==='failed' ? { status:'failed', suite:sw.suite, version:sw.version, runAt:sw.runAt, passed:sw.passed, total:sw.total, sourceHash:sw.sourceHash, gitCommit:sw.gitCommit }
+            : { status:'not_run', suite:'phase0-T01-T28', version:SOFTWARE_VERSION, runAt:null, sourceHash:BUILD_INFO.sourceHash, reason: sw && sw.status==='passed' ? 'test results are for a different source hash' : (BUILD_INFO.verificationReason||'no test results for this build') },
     measurement: { status:'not_performed', method:null, displayRef:null, note:'display luminance and contrast not measured (N3 pending)' },
     clinical: { status:'not_performed', claim:'none', note:'no diagnostic or exposure claim' }
   };
@@ -528,10 +529,11 @@ function reportText(run){
   const s6 = `This test does not tell you whether your vision needs attention; an eye examination does. See an optometrist or your doctor if you have persistent difficulty seeing in dim light, fog, rain or glare, difficulty reading or recognising faces, any visual symptoms such as blur, haloes, distortion or a shadow in your vision, or any sudden change in your sight, which needs same-day attention. A consistent change across repeat tests taken under the same conditions is also worth discussing. Take this report with you; the numbers and charts are meant to be read alongside a clinical examination, not instead of one.`;
   const s7 = `A contrast sensitivity result on its own does not identify mould, mycotoxin or any other environmental exposure, and cannot diagnose any illness. Research has reported group-level associations between reduced contrast sensitivity and exposure to water-damaged buildings; it has also reported that the handheld chart version does not separate exposed people from controls, and expert bodies have concluded that no validated test for such exposure exists. Questions about your home or workplace are answered by an environmental assessment, and questions about your health by a medical practitioner.`;
   const v = run.validation;
-  const swLine = v.software.status==='passed' ? `Software verification: passed, suite ${v.software.suite}, ${v.software.version}, ${v.software.runAt}${v.software.total?` (${v.software.passed}/${v.software.total} tests)`:''}.`
+  const src = run.versions.sourceHash ? ` · Source ${run.versions.sourceHash.slice(0,12)}${run.versions.gitCommit?` · Commit ${run.versions.gitCommit.slice(0,8)}`:''}` : ' · Source hash unavailable';
+  const swLine = v.software.status==='passed' ? `Software verification: passed, suite ${v.software.suite}, ${v.software.version}, ${v.software.runAt}${v.software.total?` (${v.software.passed}/${v.software.total} tests)`:''}, bound to source ${String(v.software.sourceHash).slice(0,12)}.`
                : v.software.status==='failed' ? `Software verification: FAILED for this build (${v.software.suite}).`
-               : `Software verification: not run for this build.`;
-  const ident = `Run ${run.id} · ${run.completedAt||run.startedAt} · Software ${run.versions.software} (${run.versions.buildTarget}) · Protocol ${run.versions.protocol} · Scoring ${run.versions.scoring} · Stimulus ${run.versions.stimulus} · Integrity SHA-256 ${run.integrity&&run.integrity.hash ? run.integrity.hash.slice(0,12) : 'unavailable'} over test definition and responses (local integrity check, not proof of origin) · Geometry ${g.pxPerCm.toFixed(1)} px/cm, ${g.distanceCm} cm, ${g.ppd.toFixed(1)} px/°, ${ppc.toFixed(2)} px/cycle at 18 cpd, DPR ${d.devicePixelRatio}`;
+               : `Software verification: not verified for this build (${v.software.reason||'no test results'}).`;
+  const ident = `Run ${run.id} · ${run.completedAt||run.startedAt} · Software ${run.versions.software} (${run.versions.buildTarget}) · Protocol ${run.versions.protocol} · Scoring ${run.versions.scoring} · Stimulus ${run.versions.stimulus} · Integrity SHA-256 ${run.integrity&&run.integrity.hash ? run.integrity.hash.slice(0,12) : 'unavailable'} over test definition and responses (local integrity check, not proof of origin) · Geometry ${g.pxPerCm.toFixed(1)} px/cm, ${g.distanceCm} cm, ${g.ppd.toFixed(1)} px/°, ${ppc.toFixed(2)} px/cycle at 18 cpd, DPR ${d.devicePixelRatio}${src}`;
   const valid = `${swLine} Physical measurement validation: not performed. Clinical validation: not performed; no diagnostic or exposure claim.`;
   const banner = `Right eye ${R.correct} of ${R.presented} patches identified · Left eye ${L.correct} of ${L.presented} · Clinical significance not established`;
   const under = e => `${e.correct} of ${e.presented} presented patches identified; ${e.cantSee} answered can't see; ${e.notPresented} not presented; ${e.isolated.filter(Boolean).length} isolated correct responses.`;
@@ -775,7 +777,7 @@ function buildPdf(run){
   heading('7. What this test does not show'); para(T.s7, 8.2, 20, 4);
   heading('Identification', 9); para(T.ident, 7.4, 40, 1.5); para(T.valid, 7.4, 40, 4);
   heading('Evidence status', 9.5);
-  para('VCS measures contrast discrimination across spatial frequencies, reflecting visual processing in the central nervous system rather than the optics of the eye. Shoemaker popularised it as a bedside marker of biotoxin-related illness after exposure to water-damaged buildings. The evidence is mixed and the test is not validated as a diagnostic tool for mould-related illness.', 7.6, 40, 1.8);
+  para('Visual contrast sensitivity measures how faint a pattern can be discriminated across spatial frequencies. It depends on both optical factors (refractive error, clarity of the cornea and lens, pupil size, light scatter) and neural factors (retina, optic nerve and visual cortex), so reduced sensitivity can arise from ocular disease such as cataract, glaucoma or macular disease, from uncorrected refractive error, and from neurological conditions, medication, alcohol and fatigue. Shoemaker popularised it as a bedside marker of biotoxin-related illness after exposure to water-damaged buildings. The evidence is mixed and the test is not validated as a diagnostic tool for mould-related illness.', 7.6, 40, 1.8);
   para('A NIOSH study (ref 12) found lower VCS values at every spatial frequency among employees of a severely water-damaged school than at a comparison school, with more rash, respiratory and constitutional symptoms, yet advised against recommending VCS for mould-exposed people because earlier studies used non-representative samples, lacked comparison groups, characterised exposure poorly and were confounded by conditions such as fibromyalgia and chronic fatigue. A 2026 four-method comparison (ref 13) found the handheld Shoemaker chart did not separate exposed people from controls while digital tests did; the digital tools remain investigational and their figures do not apply to this software.', 7.6, 40, 1.8);
   para('The American College of Medical Toxicology (ref 14) states there is no validated biomarker for mould or mycotoxin exposure; a Lancet Infectious Diseases review (ref 15) notes no diagnostic test exists for building-related illness; a proposed framework for dampness and mould hypersensitivity syndrome (ref 16) uses clinical and exposure criteria only. In an Australian clinical context VCS should be treated as non-validated and not a stand-alone diagnostic or monitoring tool.', 7.6, 40, 3);
   heading('References', 9.5);

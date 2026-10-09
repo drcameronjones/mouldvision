@@ -5,12 +5,14 @@ const { load } = require('../tests/harness');
 const root = path.join(__dirname, '..');
 const out = path.join(root, 'samples'); fs.mkdirSync(out, { recursive: true });
 const logo = 'data:image/png;base64,' + fs.readFileSync(path.join(root, 'assets/bhs-logo.png')).toString('base64');
-let validation = null;
-try { const r = JSON.parse(fs.readFileSync(path.join(root, 'tests/results.json'), 'utf8')); validation = { software: { status: r.failed === 0 && r.passed > 0 ? 'passed' : 'failed', suite: r.suite, version: r.version, runAt: r.runAt, passed: r.passed, total: r.passed + r.failed } }; } catch (e) {}
+const { sourceHash, gitCommit } = require('./source-hash');
+const currentHash = sourceHash(), git = gitCommit();
+let validation = null, build = { sourceHash: currentHash, gitCommit: git.commit, gitDirty: git.dirty, builtAt: new Date().toISOString(), verificationReason: 'no test results for this source' };
+try { const r = JSON.parse(fs.readFileSync(path.join(root, 'tests/results.json'), 'utf8')); if (r.sourceHash === currentHash && !r.sourceChangedDuringRun) { validation = { software: { status: r.failed === 0 && r.passed > 0 ? 'passed' : 'failed', suite: r.suite, version: r.version, runAt: r.runAt, passed: r.passed, total: r.passed + r.failed, sourceHash: r.sourceHash, gitCommit: r.gitCommit } }; build.verificationReason = null; } } catch (e) {}
 (async () => {
   for (const name of ['full', 'quick', 'unsaved']) {
     const run = JSON.parse(fs.readFileSync(path.join(root, 'tests/fixtures', `run-${name}.json`), 'utf8'));
-    const MV = load({ validation, logo, buildTarget: 'staging' });
+    const MV = load({ validation, logo, buildTarget: 'staging', build });
     run.validation = MV.buildValidation();           // the report states the status of the build that renders it
     run.versions.buildTarget = 'staging';
     const blob = MV.buildPdf(run);

@@ -1,8 +1,18 @@
 {
+  "sourceHash": "b13bf1e353f1692980427ee8842d636c88f1bd00d9413f7a7155589b82fbe007",
+  "sourceFiles": [
+    "src/app.js",
+    "src/index.html",
+    "src/styles.css",
+    "tools/build.js"
+  ],
+  "gitCommit": "2f0ef98ccf49c03e42e31f87e38a45fa6ecf66e3",
+  "gitDirty": true,
+  "sourceChangedDuringRun": false,
   "suite": "phase0-T01-T28",
   "version": "v0.7.0",
   "runAt": "2026-10-09",
-  "runAtFull": "2026-10-09T00:13:32.987Z",
+  "runAtFull": "2026-10-09T00:22:06.302Z",
   "node": "v22.22.0",
   "platform": "linux",
   "passed": 36,
@@ -125,7 +135,7 @@
     },
     {
       "id": "S1",
-      "name": "safeguard 1: a build without passing results never claims passed tests",
+      "name": "safeguard 1: a build without passing results, or with results for another source hash, never claims passed tests",
       "ok": true,
       "kind": "node"
     },

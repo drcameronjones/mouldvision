@@ -14,7 +14,7 @@ function load(opts = {}) {
   const ctx = {
     console, setTimeout, clearTimeout, TextEncoder, Blob: globalThis.Blob, URL: globalThis.URL, performance,
     localStorage: ls, sessionStorage: ss, crypto: cryptoObj,
-    MV_BUILD_TARGET: opts.buildTarget || 'live', MV_BLANK_MS: opts.blankMs || 1, MV_VALIDATION: opts.validation || null, MV_LOGO: opts.logo || null,
+    MV_BUILD_TARGET: opts.buildTarget || 'live', MV_BLANK_MS: opts.blankMs || 1, MV_VALIDATION: opts.validation || null, MV_BUILD: opts.build || { sourceHash: 'testhash0000000000000000', gitCommit: 'deadbeef', gitDirty: false, builtAt: '2026-10-09T00:00:00Z', verificationReason: null }, MV_LOGO: opts.logo || null,
     jspdf: { jsPDF },
     navigator: { userAgent: 'HarnessUA Chrome/130 Linux', maxTouchPoints: 0 },
     Math, JSON, Date, Array, Object, Number, String, Promise, Error, Uint8Array, Map, Set, RegExp,
