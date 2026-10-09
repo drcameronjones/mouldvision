@@ -1,0 +1,229 @@
+{
+  "suite": "phase0-T01-T28",
+  "version": "v0.7.0",
+  "runAt": "2026-10-09",
+  "runAtFull": "2026-10-09T00:13:32.987Z",
+  "node": "v22.22.0",
+  "platform": "linux",
+  "passed": 36,
+  "failed": 0,
+  "statement": "Passing these tests establishes software behaviour only. It establishes nothing about measurement accuracy or clinical meaning.",
+  "tests": [
+    {
+      "id": "T05",
+      "name": "state machine: submitAnswer is a no-op outside ARMED; ARMED only entered by nextTrial; random sequences never duplicate n",
+      "ok": true,
+      "kind": "node"
+    },
+    {
+      "id": "T06",
+      "name": "full run: 90 presented trials, contiguous n, typed fields",
+      "ok": true,
+      "kind": "node"
+    },
+    {
+      "id": "T07",
+      "name": "quick mode: after two consecutive misses the rest of the column is not presented, nulls, reason quick-stop",
+      "ok": true,
+      "kind": "node"
+    },
+    {
+      "id": "T08",
+      "name": "scoring counts over presented only; v1 rule reproduced; rows-1-to-6 variant ignores rows 7-9",
+      "ok": true,
+      "kind": "node"
+    },
+    {
+      "id": "T09",
+      "name": "isolated flag: correct 1-4, miss 5-6, correct 7, miss 8-9",
+      "ok": true,
+      "kind": "node"
+    },
+    {
+      "id": "T10",
+      "name": "interocular log10 difference and null handling",
+      "ok": true,
+      "kind": "node"
+    },
+    {
+      "id": "T11",
+      "name": "integrity scope: definition+responses change the hash; scoring/validation/timestamps/status do not; canonical form",
+      "ok": true,
+      "kind": "node"
+    },
+    {
+      "id": "T12",
+      "name": "finaliseRun is idempotent: three concurrent calls, one write, same promise",
+      "ok": true,
+      "kind": "node"
+    },
+    {
+      "id": "T13",
+      "name": "storage failure gives COMPLETE_UNSAVED and keeps the record exportable",
+      "ok": true,
+      "kind": "node"
+    },
+    {
+      "id": "T14",
+      "name": "crypto.subtle absent: hash null, hashError set, record still saved",
+      "ok": true,
+      "kind": "node"
+    },
+    {
+      "id": "T15",
+      "name": "interrupted run: draft after every trial, INCOMPLETE export with no scoring, no report",
+      "ok": true,
+      "kind": "node"
+    },
+    {
+      "id": "T16",
+      "name": "ladder: computed code amplitudes and exploratory flags",
+      "ok": true,
+      "kind": "node"
+    },
+    {
+      "id": "T17",
+      "name": "storage limit: warning at 80, stop saving at 100, nothing deleted",
+      "ok": true,
+      "kind": "node"
+    },
+    {
+      "id": "T18",
+      "name": "legacy vcs-history untouched by a run",
+      "ok": true,
+      "kind": "node"
+    },
+    {
+      "id": "T20",
+      "name": "forbidden result labels absent from report text and SVG",
+      "ok": true,
+      "kind": "node"
+    },
+    {
+      "id": "T21",
+      "name": "reference curve hidden unless SHOW_REFERENCE_CURVE",
+      "ok": true,
+      "kind": "node"
+    },
+    {
+      "id": "T22",
+      "name": "chart marks: hollow not-presented, red can't-see without tail, isolated ring, band and dashed line",
+      "ok": true,
+      "kind": "node"
+    },
+    {
+      "id": "T23",
+      "name": "sampling sentence bands; never \"accurate\"",
+      "ok": true,
+      "kind": "node"
+    },
+    {
+      "id": "T24",
+      "name": "identification block: heading, versions, build target, integrity wording, validation statuses",
+      "ok": true,
+      "kind": "node"
+    },
+    {
+      "id": "S1",
+      "name": "safeguard 1: a build without passing results never claims passed tests",
+      "ok": true,
+      "kind": "node"
+    },
+    {
+      "id": "T25",
+      "name": "export round-trip and re-score leave the hash unchanged",
+      "ok": true,
+      "kind": "node"
+    },
+    {
+      "id": "S2",
+      "name": "safeguard 2: full and quick both finalise, including quick runs whose final scheduled trials are skipped",
+      "ok": true,
+      "kind": "node"
+    },
+    {
+      "id": "S4",
+      "name": "safeguard 4: report counts and wording follow the actual protocol and trials",
+      "ok": true,
+      "kind": "node"
+    },
+    {
+      "id": "T28",
+      "name": "fixture reports: three PDFs build and carry section 5 wording for each case",
+      "ok": true,
+      "kind": "node"
+    },
+    {
+      "id": "T27",
+      "name": "rollback: v0.6.0 source still builds its sample report from the v0.6.0 fixture (file-level check)",
+      "ok": true,
+      "kind": "node"
+    },
+    {
+      "id": "T01",
+      "name": "two pointerup events within 100 ms record one trial",
+      "ok": true,
+      "kind": "browser"
+    },
+    {
+      "id": "T02",
+      "name": "ArrowLeft then ArrowRight within 100 ms, and held key repeats, record one trial",
+      "ok": true,
+      "kind": "browser"
+    },
+    {
+      "id": "T03",
+      "name": "touch tap and mouse click from different pointers within 50 ms record one trial",
+      "ok": true,
+      "kind": "browser"
+    },
+    {
+      "id": "T04",
+      "name": "inputs during LOCKED/BLANK are ignored (default 250 ms blank)",
+      "ok": true,
+      "kind": "browser"
+    },
+    {
+      "id": "T19",
+      "name": "zoom/DPR change during a run is recorded and reported",
+      "ok": true,
+      "kind": "browser"
+    },
+    {
+      "id": "T26",
+      "name": "staging isolation: build target, banner, separate storage keys, live build reads neither",
+      "ok": true,
+      "kind": "browser"
+    },
+    {
+      "id": "T17b",
+      "name": "storage limit in the browser: 100 records → run ends COMPLETE_UNSAVED, prominent notice, export-all offered, nothing deleted",
+      "ok": true,
+      "kind": "browser"
+    },
+    {
+      "id": "T13b+S3",
+      "name": "storage disabled: COMPLETE_UNSAVED with immediate export and beforeunload warning",
+      "ok": true,
+      "kind": "browser"
+    },
+    {
+      "id": "T15b",
+      "name": "interrupted run: reload mid-test shows banner; export is INCOMPLETE; discard clears; no report path",
+      "ok": true,
+      "kind": "browser"
+    },
+    {
+      "id": "T18b",
+      "name": "legacy vcs-history byte-identical after a run; shown read-only",
+      "ok": true,
+      "kind": "browser"
+    },
+    {
+      "id": "T24b",
+      "name": "results view: heading, no forbidden labels, PDF download works",
+      "ok": true,
+      "kind": "browser"
+    }
+  ]
+}

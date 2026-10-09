@@ -102,3 +102,9 @@ footer{margin-top:28px;font-size:.8rem;color:var(--muted)}
 .bhs .contact a:hover{text-decoration:underline}
 .topbhs{font-size:.78rem;color:var(--muted);display:flex;gap:6px;align-items:center}
 .topbhs b{color:var(--fg);font-weight:600}
+
+.banner.neutral{background:var(--accent-soft);color:var(--fg);font-size:1rem}
+.notice.crit{border-left-color:var(--bad);background:color-mix(in srgb,var(--bad) 12%,var(--surface))}
+.notice.warnbar{margin-bottom:16px}
+.notice button{margin-left:6px}
+button.small{padding:4px 8px;font-size:.8rem}

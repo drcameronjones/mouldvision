@@ -13,6 +13,8 @@
     <div class="brand"><img class="hdrlogo" src="../assets/bhs-logo.png" alt="Biological Health Services"><div><h1>VCS Screen</h1><div class="small muted">Visual contrast sensitivity, sine-wave gratings at 1.5–18 cpd</div><div class="topbhs">Concept by <b>Dr Cameron Jones, PhD</b> · Biological Health Services</div></div></div>
     <nav class="steps" id="steps"></nav>
   </header>
+  <div class="notice warnbar" id="stagingBanner" hidden>STAGING BUILD — development version for review. Records written here are kept separately from the live page.</div>
+  <div class="notice crit" id="draftBanner" hidden></div>
 
   <!-- HOME -->
   <section id="v-home" class="stack">
@@ -23,14 +25,15 @@
       <div class="key" id="homeKey"></div>
       <div class="notice">Screening only. This page does not diagnose anything. Low scores can come from screen limits, uncorrected vision, cataract, fatigue, or many other causes. Discuss results with an optometrist or doctor who knows contrast sensitivity testing.</div>
       <div class="row">
-        <button class="primary" id="btnStart">Calibrate and start</button>
+        <button class="primary" id="btnStart">Set up and start</button>
         <button id="btnHistory">Past results</button>
       </div>
     </div>
     <div class="card stack" id="homeHistory" hidden>
       <h3>Past results on this device</h3>
       <div class="tablewrap"><table id="histTable"></table></div>
-      <div class="row"><button class="ghost" id="btnClearHist">Clear history</button></div>
+      <div class="row"><button id="btnExportAll" hidden>Export all records</button><button class="ghost" id="btnDeleteExported" hidden>Delete exported records…</button></div>
+      <div class="notice crit" id="confirmDelete" hidden>Delete the records you have already exported from this browser? This cannot be undone. <button id="btnDeleteYes">Delete them</button> <button class="ghost" id="btnDeleteNo">Keep them</button></div>
     </div>
   </section>
 
@@ -38,8 +41,8 @@
   <section id="v-cal" class="stack" hidden>
     <div class="card stack">
       <span class="eyebrow">Step 1 of 3</span>
-      <h2>Calibrate your screen</h2>
-      <p>Spatial frequency is measured in cycles per degree of visual angle, so the page needs your pixel size and viewing distance. Hold a bank card against the screen and drag the slider until the dashed box matches it exactly.</p>
+      <h2>Set up screen size and distance</h2>
+      <p>Spatial frequency is measured in cycles per degree of visual angle, so the page needs your pixel size and viewing distance. Hold a bank card against the screen and drag the slider until the dashed box matches it exactly. This sets size only; screen brightness and contrast are not measured.</p>
       <div class="sizer-box"><div class="card-sizer" id="sizer"></div></div>
       <label for="pxcm">Card width on screen</label>
       <input type="range" id="pxcm" min="20" max="100" step="0.5" value="40">
@@ -56,11 +59,11 @@
             <option value="full">Full: 9 contrast levels × 5 columns per eye (90 trials)</option>
             <option value="quick">Quick: stop a column after 2 misses in a row</option>
           </select>
-          <div class="small muted">Quick mode scores skipped patches as not seen.</div>
+          <div class="small muted">Quick mode records skipped patches as not presented; they are never counted as misses.</div>
         </div>
       </div>
       <div class="card" style="background:var(--accent-soft);border-color:transparent">
-        <div class="small"><strong>Derived calibration</strong></div>
+        <div class="small"><strong>Derived geometry</strong></div>
         <div class="mono small" id="calOut"></div>
       </div>
       <div class="notice" id="calWarn" hidden></div>
@@ -76,6 +79,7 @@
     <div class="card stack">
       <span class="eyebrow">Step 2 of 3</span>
       <h2>Before you begin</h2>
+      <div class="notice" id="storeNotice" hidden></div>
       <ol>
         <li>Set screen brightness to maximum and turn off night-shift or blue-light filters.</li>
         <li>Sit in a normally lit room with no glare on the screen.</li>
@@ -123,26 +127,7 @@
   </section>
 
   <!-- RESULTS -->
-  <section id="v-results" class="stack" hidden>
-    <div class="banner" id="banner"></div>
-    <div class="tiles" id="tiles"></div>
-    <div class="charts" id="charts"></div>
-    <div class="card stack">
-      <h3>Reading the charts</h3>
-      <p class="small">Each circle is one patch. Green means you identified its tilt; red means you did not, and the short tail shows the tilt the patch actually had. The red line joins the faintest patch you got right in each column (the highest sensitivity). The grey line is a typical curve for healthy adults on FACT-style charts. Columns C and D (6 and 12 cpd) are outlined because research on biotoxin-associated illness reports deficits concentrated there; column E (18 cpd) is often tracked during treatment.</p>
-      <p class="small muted">Displays cannot render the very lowest contrasts precisely (the bottom one or two rows push 8-bit panels to their limit), so treat results near the floor with caution and compare tests taken on the same screen and settings.</p>
-    </div>
-    <div class="card stack">
-      <h3>Summary</h3>
-      <pre class="mono small" id="summaryText" style="white-space:pre-wrap;margin:0"></pre>
-      <div class="row">
-        <button id="btnPdf" class="primary">Download PDF report</button>
-        <button id="btnCopy">Copy summary</button>
-        <button id="btnAgain">Run again</button>
-        <button class="ghost" data-go="home">Home</button>
-      </div>
-    </div>
-  </section>
+  <section id="v-results" class="stack" hidden></section>
 
   <section class="card stack" id="refs" style="margin-top:24px">
     <h3>References</h3>
