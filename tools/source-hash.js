@@ -1,8 +1,8 @@
-// SHA-256 over the exact source that becomes the page: src/app.js, src/index.html, src/styles.css, tools/build.js.
+// SHA-256 over the exact source that becomes the pages (desktop and phone) and the build script.
 // Used by the test runner (recorded in tests/results.json) and by the build (must match, or the build is marked not verified).
 const fs = require('fs'); const path = require('path'); const crypto = require('crypto'); const { execSync } = require('child_process');
 const root = path.join(__dirname, '..');
-const FILES = ['src/app.js', 'src/index.html', 'src/styles.css', 'tools/build.js'];
+const FILES = ['src/app.js', 'src/index.html', 'src/styles.css', 'tools/build.js', 'src/mobile/index.html', 'src/mobile/mobile.js', 'src/mobile/mobile.css', 'src/mobile/devices.js', 'src/mobile/distance.js', 'src/mobile/sw.js', 'src/mobile/manifest.webmanifest'];
 function sourceHash() {
   const h = crypto.createHash('sha256');
   for (const f of FILES) { h.update(f + '\0'); h.update(fs.readFileSync(path.join(root, f))); h.update('\0'); }

@@ -43,7 +43,7 @@ function wrapped(file) { const body = fs.readFileSync(path.join(root, 'app', fil
   });
   await t('T02', 'ArrowLeft then ArrowRight within 100 ms, and held key repeats, record one trial', async () => {
     const before = await state();
-    await page.keyboard.press('ArrowLeft'); await page.keyboard.press('ArrowRight');
+    await page.evaluate(() => { for (const key of ['ArrowLeft', 'ArrowRight']) document.dispatchEvent(new KeyboardEvent('keydown', { key, bubbles: true })); });   // both inside one task: well within 100 ms (two keyboard.press calls can straddle the 5 ms test blank)
     await settle(); let s = await state(); assert.equal(s.n, before.n + 1);
     await page.evaluate(() => { for (let i = 0; i < 5; i++) document.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowUp', repeat: i > 0, bubbles: true })); });
     await settle(); s = await state(); assert.equal(s.n, before.n + 2);

@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<meta name="theme-color" content="#0b6e8e">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="MouldVision">
+<title>MouldVision</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="mobile.css">
+</head>
+<body class="mobile">
+<div class="notice warnbar stagingBanner" id="stagingBanner" hidden>TEST BUILD — development copy for review. Records are kept separately from any released version.</div>
+
+<!-- START -->
+<section id="m-start" class="screen stack">
+  <header class="mhead">
+    <img class="hdrlogo" src="bhs-logo.png" alt="Biological Health Services">
+    <div><h1>MouldVision</h1><div class="small muted">Visual contrast test · phone edition</div></div>
+  </header>
+  <div class="notice crit" id="draftBanner" hidden></div>
+  <div class="card stack">
+    <span class="eyebrow">What this measures</span>
+    <h2>How faint a striped patch can you still see?</h2>
+    <p>You will see circular patches of faint bars that lean <strong>left</strong>, stand <strong>upright</strong> or lean <strong>right</strong>. Swipe in the direction they lean. Patches get fainter and finer; one eye at a time; about three minutes per eye.</p>
+    <div class="key" id="startKey"></div>
+    <details class="ctx"><summary>Why environmental toxin exposure matters to this test</summary><p class="small" id="ctxParagraph"></p><p class="small muted">Draft wording, under review. References are numbered as in the report.</p></details>
+    <div class="row">
+      <label class="seg"><input type="radio" name="mode" value="full" checked><span>Full test</span></label>
+      <label class="seg"><input type="radio" name="mode" value="quick"><span>Quick test</span></label>
+    </div>
+    <p class="small muted">Full: every patch is shown (45 per eye). Quick: a column stops after two misses in a row; skipped patches are recorded as not presented.</p>
+    <button class="primary big" id="btnStart">Start</button>
+    <button class="ghost" id="btnHistory">Past results on this phone</button>
+  </div>
+  <div class="card stack" id="installCard" hidden>
+    <strong>Add MouldVision to your home screen</strong>
+    <p class="small" id="installText"></p>
+    <button id="btnInstall" hidden>Install</button>
+  </div>
+  <div class="card stack" id="m-history" hidden>
+    <h3>Past results on this phone</h3>
+    <div class="tablewrap"><table id="histTable"></table></div>
+    <div class="row"><button id="btnExportAll" hidden>Export all records</button><button class="ghost" id="btnDeleteExported" hidden>Delete exported records…</button></div>
+    <div class="notice crit" id="confirmDelete" hidden>Delete the records you have already exported from this phone? This cannot be undone. <button id="btnDeleteYes">Delete them</button> <button class="ghost" id="btnDeleteNo">Keep them</button></div>
+  </div>
+  <footer class="small muted">Concept: Dr Cameron Jones, PhD · Biological Health Services · <a href="https://www.biologicalhealthservices.com.au" target="_blank" rel="noopener">biologicalhealthservices.com.au</a><br>Screening only; this app does not diagnose anything. Results stay on this phone unless you export them. <span id="buildLine" class="mono"></span></footer>
+</section>
+
+<!-- HOLD THE PHONE -->
+<section id="m-hold" class="screen stack" hidden>
+  <div class="card stack">
+    <span class="eyebrow">Step 1 of 3</span>
+    <h2>Hold the phone where you would read a message</h2>
+    <p class="small">The front camera estimates how far the screen is from your eyes so the patches can be drawn at the right size. Nothing is recorded or sent; only the distance number is kept. About 40 cm is ideal.</p>
+    <div class="camwrap" id="camwrap">
+      <video id="cam" playsinline muted autoplay></video>
+      <div class="ring" id="ring"><span id="ringText">starting camera…</span></div>
+    </div>
+    <div class="mono small" id="distLine">—</div>
+    <div class="notice" id="camNotice" hidden></div>
+    <details class="small"><summary>Camera not available, or want to check it?</summary>
+      <div class="stack" style="gap:10px;margin-top:8px">
+        <label for="typedDist">Typed distance (cm), used only if the camera cannot measure</label>
+        <input type="number" id="typedDist" min="20" max="100" value="40" inputmode="numeric">
+        <button class="small" id="btnUseTyped">Use the typed distance instead</button>
+        <p class="small muted">One-time check (optional, improves accuracy): measure 40 cm from your eyes to the screen with a tape or ruler, hold there, and tap.</p>
+        <button class="small" id="btnCalib">That is 40 cm now</button>
+        <div class="small muted mono" id="focalLine"></div>
+      </div>
+    </details>
+    <div class="stack" style="gap:8px">
+      <label class="chk"><input type="checkbox" id="chkBright"> Brightness is at maximum and auto-brightness is off</label>
+      <label class="chk"><input type="checkbox" id="chkNight"> Night Shift / blue-light filter / dark mode is off</label>
+      <label for="lighting" class="small">Room lighting</label>
+      <select id="lighting"><option value="">— choose —</option><option value="daylight">Indoor daylight</option><option value="artificial">Artificial light</option><option value="dim">Dim</option></select>
+    </div>
+    <div class="mono small muted" id="densityLine"></div>
+    <div class="notice" id="geomWarn" hidden></div>
+    <div class="row"><button class="ghost" data-mgo="start">Back</button><button class="primary" id="btnHoldNext" disabled>Continue</button></div>
+  </div>
+</section>
+
+<!-- COVER EYE -->
+<section id="m-cover" class="screen stack" hidden>
+  <div class="card stack center">
+    <span class="eyebrow">Step 2 of 3</span>
+    <h2 id="coverTitle">Cover your left eye</h2>
+    <svg class="eyes" viewBox="0 0 200 80" aria-hidden="true"><g id="eyeL"><ellipse cx="55" cy="40" rx="30" ry="18" fill="none" stroke="currentColor" stroke-width="3"/><circle cx="55" cy="40" r="8" fill="currentColor"/></g><g id="eyeR"><ellipse cx="145" cy="40" rx="30" ry="18" fill="none" stroke="currentColor" stroke-width="3"/><circle cx="145" cy="40" r="8" fill="currentColor"/></g><rect id="handL" x="18" y="12" width="74" height="56" rx="14" fill="var(--accent)" opacity=".9"/><rect id="handR" x="108" y="12" width="74" height="56" rx="14" fill="var(--accent)" opacity=".9" hidden/></svg>
+    <p id="coverText">Use your palm, without pressing on the eye. Keep wearing your usual glasses or contacts. The <strong>right eye</strong> is tested first.</p>
+    <ul class="small" style="text-align:left">
+      <li>Swipe <strong>up-left</strong> if the bars lean left, <strong>straight up</strong> if upright, <strong>up-right</strong> if they lean right.</li>
+      <li>Guess if unsure. Tap <strong>Can't see</strong> only when there is no pattern at all.</li>
+      <li>The first two patches are easy and count as practice if you get them wrong.</li>
+    </ul>
+    <div class="key" id="coverKey"></div>
+    <button class="primary big" id="btnBegin">Begin</button>
+  </div>
+</section>
+
+<!-- TEST (ids used by the engine) -->
+<section id="v-test" class="screen test" hidden>
+  <div class="eyebar">
+    <div><span class="eyebrow">Step 3 of 3</span><h2 id="eyeTitle">Right eye</h2></div>
+    <span class="pill" id="coverPill">Cover your left eye</span>
+  </div>
+  <div class="progress"><i id="prog"></i></div>
+  <div class="stage">
+    <div class="field" id="field"><canvas id="stim" width="512" height="512"></canvas><div class="fix" id="fix" hidden>+</div><div class="swipehint" id="swipeHint" hidden></div></div>
+  </div>
+  <div class="answers" id="answerButtons" hidden>
+    <button data-ans="left">Left</button><button data-ans="up">Up</button><button data-ans="right">Right</button>
+  </div>
+  <div class="testfoot">
+    <button class="ghost" data-ans="none" id="btnNone">Can't see a pattern</button>
+    <button class="ghost small" id="btnToggleButtons">Use buttons</button>
+  </div>
+  <div class="small muted mono" id="trialLabel"></div>
+  <div class="small muted mono" id="liveDist"></div>
+</section>
+
+<!-- SWITCH EYE (id used by the engine) -->
+<section id="v-switch" class="screen stack" hidden>
+  <div class="card stack center">
+    <h2>Right eye done</h2>
+    <svg class="eyes" viewBox="0 0 200 80" aria-hidden="true"><ellipse cx="55" cy="40" rx="30" ry="18" fill="none" stroke="currentColor" stroke-width="3"/><circle cx="55" cy="40" r="8" fill="currentColor"/><ellipse cx="145" cy="40" rx="30" ry="18" fill="none" stroke="currentColor" stroke-width="3"/><circle cx="145" cy="40" r="8" fill="currentColor"/><rect x="108" y="12" width="74" height="56" rx="14" fill="var(--accent)" opacity=".9"/></svg>
+    <p>Now cover your <strong>right</strong> eye and test the left. Keep the phone at the same distance.</p>
+    <div class="mono small" id="switchDist"></div>
+    <button class="primary big" id="btnLeft">Begin left eye</button>
+  </div>
+</section>
+
+<!-- RESULTS (engine renders into this) -->
+<section id="v-results" class="screen stack results" hidden></section>
+
+<!-- QUESTIONNAIRE OVERLAY -->
+<section id="m-context" class="overlay" hidden>
+  <div class="card stack">
+    <span class="eyebrow">Optional · 1 minute</span>
+    <h2>A few questions about your environment</h2>
+    <p class="small">Stored beside this test record as context and shown in the report as "What you told us". Never used to calculate anything. No name, address or date of birth is collected.</p>
+    <div id="ctxForm" class="stack"></div>
+    <div class="row"><button class="primary" id="btnCtxDone">Save answers and see results</button><button class="ghost" id="btnCtxSkip">Skip</button></div>
+  </div>
+</section>
+
+<div id="camKeep" style="position:fixed;left:-4px;top:-4px;width:2px;height:2px;opacity:.01;overflow:hidden;pointer-events:none"></div>
+<img id="bhsLogo" src="bhs-logo.png" alt="" hidden>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="build-info.js"></script>
+<script src="app.js"></script>
+<script src="devices.js"></script>
+<script src="distance.js"></script>
+<script src="mobile.js"></script>
+</body>
+</html>

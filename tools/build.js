@@ -35,5 +35,18 @@ function build(target) {
   fs.writeFileSync(path.join(root, file), out.trim() + '\n');
   return file;
 }
+// Phase 1: the phone edition is a folder of files (service worker needs separate URLs), built into app/mobile/.
+// `mobile` builds with target 'staging' (test copy, banner on); `mobile-live` with target 'live'. Nothing here touches app/index.html.
+function buildMobile(target) {
+  const outDir = path.join(root, 'app', 'mobile');
+  fs.rmSync(outDir, { recursive: true, force: true }); fs.mkdirSync(path.join(outDir, 'icons'), { recursive: true });
+  const copy = (from, to) => fs.copyFileSync(path.join(root, from), path.join(outDir, to || path.basename(from)));
+  ['src/mobile/index.html', 'src/mobile/mobile.css', 'src/mobile/mobile.js', 'src/mobile/devices.js', 'src/mobile/distance.js', 'src/mobile/manifest.webmanifest', 'src/styles.css', 'src/app.js', 'assets/bhs-logo.png'].forEach(f => copy(f));
+  ['icon-192.png', 'icon-512.png'].forEach(f => copy('src/mobile/icons/' + f, 'icons/' + f));
+  fs.writeFileSync(path.join(outDir, 'build-info.js'), `window.MV_BUILD_TARGET=${JSON.stringify(target)};window.MV_VALIDATION=${JSON.stringify(validation)};window.MV_BUILD=${JSON.stringify(buildInfo)};\n`);
+  fs.writeFileSync(path.join(outDir, 'sw.js'), read('src/mobile/sw.js').replace('__MV_BUILD_ID__', currentHash.slice(0, 16) + '-' + target));
+  fs.writeFileSync(path.join(outDir, '.nojekyll'), '');
+  return 'app/mobile/ (' + target + ')';
+}
 const targets = process.argv.slice(2).length ? process.argv.slice(2) : ['staging'];
-targets.forEach(t => console.log('built', build(t), 'validation:', validation ? validation.software.status : 'not_run (' + reason + ')', 'source', currentHash.slice(0, 12), 'commit', (git.commit || 'none').slice(0, 8)));
+targets.forEach(t => console.log('built', t === 'mobile' ? buildMobile('staging') : t === 'mobile-live' ? buildMobile('live') : build(t), 'validation:', validation ? validation.software.status : 'not_run (' + reason + ')', 'source', currentHash.slice(0, 12), 'commit', (git.commit || 'none').slice(0, 8)));

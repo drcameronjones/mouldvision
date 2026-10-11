@@ -1,14 +1,16 @@
 {
   "name": "mouldvision",
-  "version": "v0.7.0",
+  "version": "v0.8.0",
   "private": true,
-  "description": "MouldVision / VCS Screen — visual contrast test web application (Phase 0)",
+  "description": "MouldVision / VCS Screen — visual contrast test web application (Phase 0 desktop + Phase 1 phone edition)",
   "scripts": {
     "fixtures": "node tools/make-fixtures.js",
     "test:unit": "node --test tests/unit.test.js",
     "test:browser": "node tests/browser.test.js",
     "test": "node tests/run-all.js",
-    "build": "node tools/build.js live staging",
+    "build": "node tools/build.js live staging mobile",
+    "build:mobile": "node tools/build.js mobile",
+    "test:mobile": "node --test tests/mobile.test.js && node tests/mobile-browser.test.js",
     "samples": "node tools/build-sample-pdf.js"
   },
   "dependencies": { "jspdf": "2.5.1" },

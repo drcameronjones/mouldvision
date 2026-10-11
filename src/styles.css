@@ -17,6 +17,7 @@
   --good:#4fc47f; --bad:#ef7a6c; --warn:#e3a53a; --warn-soft:#3a2d13;
   --bio:#86a9ee; --bio-soft:#1d2b45; color-scheme:dark}
 *{box-sizing:border-box}
+[hidden]{display:none!important}
 body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--body);font-size:16px;line-height:1.5}
 .wrap{max-width:860px;margin:0 auto;padding-block:20px 48px;padding-inline:16px}
 h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0}

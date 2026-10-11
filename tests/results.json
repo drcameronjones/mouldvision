@@ -1,24 +1,67 @@
 {
-  "sourceHash": "b13bf1e353f1692980427ee8842d636c88f1bd00d9413f7a7155589b82fbe007",
+  "sourceHash": "39fbc40aa6acf8f5d13a1edbacc8ec59b4833c1529751b349dc39129d53efbb3",
   "sourceFiles": [
     "src/app.js",
     "src/index.html",
     "src/styles.css",
-    "tools/build.js"
+    "tools/build.js",
+    "src/mobile/index.html",
+    "src/mobile/mobile.js",
+    "src/mobile/mobile.css",
+    "src/mobile/devices.js",
+    "src/mobile/distance.js",
+    "src/mobile/sw.js",
+    "src/mobile/manifest.webmanifest"
   ],
-  "gitCommit": "2f0ef98ccf49c03e42e31f87e38a45fa6ecf66e3",
+  "gitCommit": "daa67d372827c84844f42013248143c7fdd14269",
   "gitDirty": true,
   "sourceChangedDuringRun": false,
-  "suite": "phase0-T01-T28",
-  "version": "v0.7.0",
-  "runAt": "2026-10-09",
-  "runAtFull": "2026-10-09T00:22:06.302Z",
+  "suite": "phase0-T01-T28+phase1-M01-M13",
+  "version": "v0.8.0",
+  "runAt": "2026-10-11",
+  "runAtFull": "2026-10-11T00:30:38.195Z",
   "node": "v22.22.0",
   "platform": "linux",
-  "passed": 36,
+  "passed": 47,
   "failed": 0,
   "statement": "Passing these tests establishes software behaviour only. It establishes nothing about measurement accuracy or clinical meaning.",
   "tests": [
+    {
+      "id": "M01",
+      "name": "density table: every entry complete; exact lookups for listed models; class fallback otherwise",
+      "ok": true,
+      "kind": "node"
+    },
+    {
+      "id": "M03",
+      "name": "iris distance: synthetic landmarks recover distance within 5 %; missing face gives null; calibration solves the focal length",
+      "ok": true,
+      "kind": "node"
+    },
+    {
+      "id": "M05",
+      "name": "drift rule: more than 15 % change flags drift; summaries are medians with SD",
+      "ok": true,
+      "kind": "node"
+    },
+    {
+      "id": "M06",
+      "name": "stimulus self-check: the grating maths yields the nominal cycles per degree and tilt at three phone densities",
+      "ok": true,
+      "kind": "node"
+    },
+    {
+      "id": "M07",
+      "name": "questionnaire: twelve items validated and stored in context; scoring and integrity ignore it",
+      "ok": true,
+      "kind": "node"
+    },
+    {
+      "id": "M08",
+      "name": "report: context section after section 7 only for runs with a context block; \"What you told us\" only when answered; result labels still absent",
+      "ok": true,
+      "kind": "node"
+    },
     {
       "id": "T05",
       "name": "state machine: submitAnswer is a no-op outside ARMED; ARMED only entered by nextTrial; random sequences never duplicate n",
@@ -232,6 +275,36 @@
     {
       "id": "T24b",
       "name": "results view: heading, no forbidden labels, PDF download works",
+      "ok": true,
+      "kind": "browser"
+    },
+    {
+      "id": "M02",
+      "name": "swipe recognition: −45/0/+45 and ±14° map to left/up/up/right; 20 px swipe ignored; two swipes in the blank record one trial",
+      "ok": true,
+      "kind": "browser"
+    },
+    {
+      "id": "M04",
+      "name": "camera refused: typed distance path, distanceSource typed, section 2 says entered",
+      "ok": true,
+      "kind": "browser"
+    },
+    {
+      "id": "M12",
+      "name": "trial screen has no white element; patch is 5° at the recorded distance within 2 %",
+      "ok": true,
+      "kind": "browser"
+    },
+    {
+      "id": "M13",
+      "name": "a complete swiped quick run: questionnaire stored outside the hash, integrity recomputes, PDF and JSON export, record saved",
+      "ok": true,
+      "kind": "browser"
+    },
+    {
+      "id": "M09",
+      "name": "manifest valid and service worker registers and caches the shell",
       "ok": true,
       "kind": "browser"
     }

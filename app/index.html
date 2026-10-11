@@ -167,17 +167,17 @@
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script>window.MV_BUILD_TARGET="live";window.MV_VALIDATION={"software":{"status":"passed","suite":"phase0-T01-T28","version":"v0.7.0","runAt":"2026-10-09","passed":36,"total":36,"sourceHash":"b13bf1e353f1692980427ee8842d636c88f1bd00d9413f7a7155589b82fbe007","gitCommit":"2f0ef98ccf49c03e42e31f87e38a45fa6ecf66e3"}};window.MV_BUILD={"sourceHash":"b13bf1e353f1692980427ee8842d636c88f1bd00d9413f7a7155589b82fbe007","gitCommit":"e66b538fb320b21ccae43ed68ace95a0c8b1cbe0","gitDirty":false,"builtAt":"2026-10-09T00:22:23.961Z","verificationReason":null};</script>
+<script>window.MV_BUILD_TARGET="live";window.MV_VALIDATION={"software":{"status":"passed","suite":"phase0-T01-T28+phase1-M01-M13","version":"v0.8.0","runAt":"2026-10-11","passed":47,"total":47,"sourceHash":"39fbc40aa6acf8f5d13a1edbacc8ec59b4833c1529751b349dc39129d53efbb3","gitCommit":"daa67d372827c84844f42013248143c7fdd14269"}};window.MV_BUILD={"sourceHash":"39fbc40aa6acf8f5d13a1edbacc8ec59b4833c1529751b349dc39129d53efbb3","gitCommit":"daa67d372827c84844f42013248143c7fdd14269","gitDirty":true,"builtAt":"2026-10-11T00:30:38.252Z","verificationReason":null};</script>
 <script>
 'use strict';
-/* MouldVision / VCS Screen — Phase 0 (v0.7.0)
+/* MouldVision / VCS Screen — Phase 0 engine (v0.7.0) with Phase 1 additive extensions (v0.8.0): geometry sources, context module, front-end hooks
  * Spec: MouldVision Phase 0 Specification rev 2 (9 Oct 2026).
  * Unchanged from v0.6.0: drawGrating(), FREQS, SENS, CONTRAST, TILT, buildSequence(), calibration arithmetic,
  * the v1 scoring rule (highest sensitivity of any correct presented trial).
  */
 
 // ---------- Versions and build ----------
-const SOFTWARE_VERSION = 'v0.7.0';
+const SOFTWARE_VERSION = 'v0.8.0';
 const RECORD_SCHEMA = 1;
 const SCORING_VERSION = 'score-v1-maxcorrect';
 const STIMULUS_VERSION = 'gauss-0.42R-sRGB-dither-v1';
@@ -233,6 +233,7 @@ const REFS = [
 // ---------- State ----------
 const S = {
   pxPerCm: 40/8.56, distCm: 50, ppd: 0, mode: 'full',
+  pxPerCmSource: 'card', distanceSource: 'typed', distanceStdCm: null, deviceModel: null,   // Phase 1: mobile front end sets these
   eye: 'right', col: 0, row: 0, orient: 'up',
   seq: [], seqIdx: 0, columnMisses: 0,
   run: null,
@@ -303,25 +304,34 @@ function deviceSnapshot(){
   const os = /Mac OS X/.test(ua) ? 'macOS' : /Windows/.test(ua) ? 'Windows' : /iPhone|iPad/.test(ua) ? 'iOS' : /Android/.test(ua) ? 'Android' : /Linux/.test(ua) ? 'Linux' : 'unknown';
   return { devicePixelRatio: w.devicePixelRatio||1, innerWidth: w.innerWidth||0, innerHeight: w.innerHeight||0, colorDepth: (w.screen&&w.screen.colorDepth)||null, userAgentFamily: fam+' / '+os, touch: !!(nav.maxTouchPoints), zoomChangedDuringRun: false };
 }
+/** Canvas pixels per CSS pixel actually drawn by drawGrating (its DPR cap of 2 is part of the unchanged stimulus renderer). */
+function renderScale(){ return Math.min((typeof window!=='undefined' && window.devicePixelRatio)||1, 2); }
 function geometry(){
-  const ppd = S.ppd; return { pxPerCm:+S.pxPerCm.toFixed(2), distanceCm:S.distCm, ppd:+ppd.toFixed(2), patchDeg:5.0, cardWidthMm:85.6, pxPerCycleAt18cpd:+(ppd/18).toFixed(2) };
+  const ppd = S.ppd, rs = renderScale();
+  return { pxPerCm:+S.pxPerCm.toFixed(2), pxPerCmSource:S.pxPerCmSource||'card', deviceModel:S.deviceModel||null,
+    distanceCm:S.distCm, distanceSource:S.distanceSource||'typed', distanceStdCm:S.distanceStdCm==null?null:+S.distanceStdCm.toFixed(1),
+    ppd:+ppd.toFixed(2), patchDeg:5.0, cardWidthMm:85.6,
+    pxPerCycleAt18cpd:+(ppd/18).toFixed(2),                       // CSS pixels per cycle (Phase 0 field, kept)
+    renderScale:rs, pxPerCycleAt18cpdRendered:+(ppd*rs/18).toFixed(2) };   // canvas pixels per cycle, the sampling that is actually drawn
 }
 function samplingBand(pxPerCycle){ return pxPerCycle < 2 ? 'not_representable' : pxPerCycle < 4 ? 'coarse' : 'adequate'; }
+/** Sampling at 18 cpd as drawn: rendered canvas pixels per cycle when the record has it, else the CSS value (older records). */
+function renderedPpc(g){ return g.pxPerCycleAt18cpdRendered!=null ? g.pxPerCycleAt18cpdRendered : g.pxPerCycleAt18cpd; }
 function updateCal(){
   if(HAS_DOM && $('pxcm')){ S.pxPerCm = parseFloat($('pxcm').value); S.distCm = Math.max(20, parseFloat($('dist').value)||50); }
   S.ppd = S.pxPerCm * S.distCm * Math.tan(Math.PI/180);
   if(!HAS_DOM) return;
   const sz=$('sizer'); if(sz) sz.style.transform = `scale(${S.pxPerCm/ (96/2.54)})`;
   if($('pxcmOut')) $('pxcmOut').textContent = `${S.pxPerCm.toFixed(1)} px/cm  ·  ${(S.pxPerCm*2.54).toFixed(0)} px/inch`;
-  const ppc = S.ppd/18;
-  if($('calOut')) $('calOut').textContent = `pixels per degree: ${S.ppd.toFixed(1)}   ·   patch: 5.0° ≈ ${(S.ppd*5).toFixed(0)} px   ·   18 cpd sampled at ${ppc.toFixed(2)} px per cycle`;
+  const rs = renderScale(), ppc = S.ppd*rs/18;
+  if($('calOut')) $('calOut').textContent = `pixels per degree: ${S.ppd.toFixed(1)}   ·   patch: 5.0° ≈ ${(S.ppd*5).toFixed(0)} px   ·   18 cpd sampled at ${ppc.toFixed(2)} canvas px per cycle (render scale ${rs})`;
   const w = $('calWarn');
   if(w){
     const band = samplingBand(ppc);
     if(band==='adequate'){ w.hidden=true; }
     else { w.hidden=false; w.textContent = band==='not_representable'
       ? `At ${S.distCm} cm the 18 cpd bars would be drawn at ${ppc.toFixed(2)} pixels per cycle, which cannot represent a grating at all. Column E will be reported as not drawn. Move back or use a higher-resolution screen.`
-      : `At ${S.distCm} cm the 18 cpd bars are drawn at ${ppc.toFixed(2)} pixels per cycle: coarsely sampled, so column E's effective contrast is uncertain. More than 4 px per cycle (about ${Math.ceil(72/(S.pxPerCm*Math.tan(Math.PI/180)))} cm on this screen) is better.`; }
+      : `At ${S.distCm} cm the 18 cpd bars are drawn at ${ppc.toFixed(2)} pixels per cycle: coarsely sampled, so column E's effective contrast is uncertain. More than 4 px per cycle (about ${Math.ceil(72/(S.pxPerCm*rs*Math.tan(Math.PI/180)))} cm on this screen) is better.`; }
   }
   try{ localStorage.setItem('vcs-cal', JSON.stringify({pxPerCm:S.pxPerCm, distCm:S.distCm})); }catch(e){}
 }
@@ -357,7 +367,7 @@ function buildValidation(){
   return {
     software: sw && sw.status==='passed' && sw.sourceHash && sw.sourceHash===BUILD_INFO.sourceHash ? { status:'passed', suite:sw.suite, version:sw.version, runAt:sw.runAt, passed:sw.passed, total:sw.total, sourceHash:sw.sourceHash, gitCommit:sw.gitCommit }
             : sw && sw.status==='failed' ? { status:'failed', suite:sw.suite, version:sw.version, runAt:sw.runAt, passed:sw.passed, total:sw.total, sourceHash:sw.sourceHash, gitCommit:sw.gitCommit }
-            : { status:'not_run', suite:'phase0-T01-T28', version:SOFTWARE_VERSION, runAt:null, sourceHash:BUILD_INFO.sourceHash, reason: sw && sw.status==='passed' ? 'test results are for a different source hash' : (BUILD_INFO.verificationReason||'no test results for this build') },
+            : { status:'not_run', suite:'phase0-T01-T28+phase1-M01-M13', version:SOFTWARE_VERSION, runAt:null, sourceHash:BUILD_INFO.sourceHash, reason: sw && sw.status==='passed' ? 'test results are for a different source hash' : (BUILD_INFO.verificationReason||'no test results for this build') },
     measurement: { status:'not_performed', method:null, displayRef:null, note:'display luminance and contrast not measured (N3 pending)' },
     clinical: { status:'not_performed', claim:'none', note:'no diagnostic or exposure claim' }
   };
@@ -409,6 +419,8 @@ function submitAnswer(source, value, pointerId){
     shownAt:+S.trial.shownAt.toFixed(1), answeredAt:+answeredAt.toFixed(1), latencyMs: Math.round(answeredAt - S.trial.shownAt),
     sizePx:S.trial.sizePx, dpr:(typeof window!=='undefined'&&window.devicePixelRatio)||1, ppd:+S.ppd.toFixed(2)
   };
+  // Phase 1 hook: a front end may add measurement fields (viewing distance, swipe angle) to the trial before it is recorded and hashed.
+  if(typeof globalThis!=='undefined' && typeof globalThis.MV_TRIAL_DECORATE==='function'){ try{ globalThis.MV_TRIAL_DECORATE(trial, S.run); }catch(e){} }
   S.run.trials.push(trial);
   S.columnMisses = correct ? 0 : S.columnMisses+1;
   S.seqIdx++;
@@ -506,6 +518,47 @@ function scoreRun(run){
   return { version:SCORING_VERSION, right:R, left:L, interocularLog10:inter, presented:R.presented+L.presented, correct:R.correct+L.correct, scheduled:R.scheduled+L.scheduled };
 }
 
+// ---------- Toxin-context module (Phase 1 §5): context and data, never a result; never read by scoring ----------
+const CONTEXT_VERSION = 'context-v1-draft';   // "draft" until the adviser signs off the paragraph and items
+const CONTEXT_PARAGRAPH = 'Why environmental toxin exposure matters to this test. Contrast sensitivity, the ability to see faint patterns, is one of the visual functions reported to change with exposure to a range of toxic agents. Published work has linked reduced contrast sensitivity at the middle spatial frequencies to living or working in water-damaged buildings [7, 8, 12], to exposure to toxins from cyanobacteria and dinoflagellates [4, 5, 6], and to solvents and other volatile organic compounds; contrast sensitivity at the finer bar widths is also affected by tobacco, alcohol, blood lead and age [11]. The same function changes with cataract, refractive error, glaucoma, macular disease, diabetes and medication [10, 11], which is why a result on its own cannot identify a cause [13, 14, 15]. MouldVision records your contrast function and, if you choose, the exposures and conditions you tell us about, so that changes over time can be read alongside what is happening in your environment. Testing the building itself (air and surface sampling) is the way to find out whether mould is present.';
+const CONTEXT_ITEMS = [
+  { id:'mouldSmell',   q:'Visible mould or a musty smell at home or work in the last 12 months', type:'choice', options:['none','some','substantial'] },
+  { id:'waterDamage',  q:'Water damage, flooding or persistent damp in the last 12 months', type:'choice', options:['no','yes'] },
+  { id:'sampling',     q:'Building sampling done', type:'choice', options:['none','BHS kit','professional assessment'], extra:'BHS job or kit number (optional)' },
+  { id:'symptoms',     q:'Symptoms you associate with being in the building', type:'choice', options:['none','some','many'], extra:'Describe (optional)' },
+  { id:'smoking',      q:'Currently smoking or vaping', type:'choice', options:['no','yes'] },
+  { id:'alcohol24h',   q:'Alcohol in the last 24 hours', type:'choice', options:['no','yes'] },
+  { id:'solvents',     q:'Regular exposure to solvents, paints, fuels or pesticides', type:'choice', options:['no','yes'] },
+  { id:'eyeConditions',q:'Known eye conditions', type:'multi', options:['none','cataract','glaucoma','macular disease','other'] },
+  { id:'correction',   q:'Wearing your usual glasses or contacts now', type:'choice', options:['yes','no','none needed'] },
+  { id:'medication',   q:'Medications that affect vision (as told by a doctor)', type:'choice', options:['no','yes'] },
+  { id:'treatment',    q:'Under treatment for mould- or biotoxin-related illness', type:'choice', options:['no','yes'] },
+  { id:'ageBand',      q:'Age band', type:'choice', options:['18–29','30–39','40–49','50–59','60–69','70+'] }
+];
+/** Validates answers against CONTEXT_ITEMS; returns { ok, answers, errors }. Unknown ids and values are rejected, free text is capped. */
+function validateContext(answers){
+  const out={}, errors=[]; const a = answers && typeof answers==='object' ? answers : {};
+  CONTEXT_ITEMS.forEach(it=>{
+    const v = a[it.id]; if(v==null || v==='') return;
+    if(it.type==='choice'){ if(it.options.includes(v)) out[it.id]=v; else errors.push(it.id+': not an option'); }
+    else if(it.type==='multi'){ const arr = Array.isArray(v)?v:[v]; if(arr.every(x=>it.options.includes(x))) out[it.id]=arr; else errors.push(it.id+': not an option'); }
+    if(it.extra && a[it.id+'Text']!=null){ const t=String(a[it.id+'Text']).slice(0,200); if(t) out[it.id+'Text']=t; }
+  });
+  Object.keys(a).forEach(k=>{ if(!CONTEXT_ITEMS.some(it=>it.id===k || it.id+'Text'===k)) errors.push(k+': unknown item'); });
+  return { ok:errors.length===0, answers:out, errors };
+}
+/** Attaches the context block to a run (and to its stored copy). Outside INTEGRITY_SCOPE by design: it is context, not test data, and scoring never reads it. */
+function setRunContext(run, answers, meta){
+  const v = validateContext(answers||{});
+  run.context = { version:CONTEXT_VERSION, shownParagraph:true, answered:Object.keys(v.answers).length>0, answers:v.answers, answeredAt: Object.keys(v.answers).length?nowIso():null, ...(meta||{}) };
+  try{ const arr=storedRuns(); const i=arr.findIndex(r=>r.id===run.id); if(i>=0){ arr[i].context=run.context; safeStore.set(STORE_KEY, JSON.stringify(arr)); } }catch(e){}
+  return run.context;
+}
+function contextToldLines(run){
+  const c = run.context; if(!c || !c.answered) return [];
+  return CONTEXT_ITEMS.filter(it=> c.answers[it.id]!=null).map(it=>{ const v=c.answers[it.id]; const t=c.answers[it.id+'Text']; return `${it.q}: ${Array.isArray(v)?v.join(', '):v}${t?` (${t})`:''}`; });
+}
+
 // ---------- Report text (section 5 wording; counts always from the record) ----------
 const FORBIDDEN_LABELS = ['positive','negative','pass','fail','clear','flagged','abnormal','biotoxin','mould','mycotoxin','cirs'];
 function fmtSens(v){ return v==null ? '–' : v>=100 ? v.toFixed(0) : v.toFixed(1); }
@@ -513,17 +566,30 @@ function fmtPct(c){ return (100*c).toFixed(c<0.01?2:1)+' %'; }
 function reportText(run){
   const sc = run.scoring, g = run.geometry, d = run.device, R=sc.right, L=sc.left;
   const quick = run.versions.protocol.startsWith('quick');
-  const ppc = g.pxPerCycleAt18cpd, band = samplingBand(ppc);
+  const ppc = renderedPpc(g), band = samplingBand(ppc);
+  const rsNote = g.renderScale!=null ? ` (${g.pxPerCycleAt18cpd.toFixed(2)} CSS pixels at a render scale of ${g.renderScale}${d.devicePixelRatio>2?`; the display's own scale is ${d.devicePixelRatio}, so the browser enlarged the drawn patch by ${(d.devicePixelRatio/g.renderScale).toFixed(2)}×, which can soften the finest bars`:''})` : '';
   const sampling = band==='not_representable'
-    ? `The finest bars (18 cycles per degree) would have needed ${ppc.toFixed(2)} pixels per cycle on this screen, which cannot represent a grating at all, so column E is reported as not drawn.`
+    ? `The finest bars (18 cycles per degree) would have needed ${ppc.toFixed(2)} pixels per cycle on this screen${rsNote}, which cannot represent a grating at all, so column E is reported as not drawn.`
     : band==='coarse'
-    ? `The finest bars (18 cycles per degree) were drawn at ${ppc.toFixed(2)} pixels per cycle. A sampled grating needs more than two pixels per cycle to be represented at all, and several more before its rendered contrast and shape approach the nominal values; at ${ppc.toFixed(2)} pixels per cycle the column E patches were coarsely sampled and their effective contrast is uncertain.`
-    : `The finest bars (18 cycles per degree) were drawn at ${ppc.toFixed(2)} pixels per cycle, adequately sampled for this purpose; their rendered contrast was still not measured.`;
+    ? `The finest bars (18 cycles per degree) were drawn at ${ppc.toFixed(2)} pixels per cycle${rsNote}. A sampled grating needs more than two pixels per cycle to be represented at all, and several more before its rendered contrast and shape approach the nominal values; at ${ppc.toFixed(2)} pixels per cycle the column E patches were coarsely sampled and their effective contrast is uncertain.`
+    : `The finest bars (18 cycles per degree) were drawn at ${ppc.toFixed(2)} pixels per cycle${rsNote}, adequately sampled for this purpose; their rendered contrast was still not measured.`;
+  const srcPx = g.pxPerCmSource||'card', srcD = g.distanceSource||'typed';
+  const sizeSentence = srcPx==='card' ? `Screen size was set from a bank card (${g.pxPerCm.toFixed(1)} px/cm)`
+    : srcPx==='table-exact' ? `Screen pixel density was taken from a device table (${g.deviceModel||'model matched'}: ${g.pxPerCm.toFixed(1)} px/cm)`
+    : srcPx==='table-class' ? `Screen pixel density was estimated from the device's density class (${g.pxPerCm.toFixed(1)} px/cm, about ±10 %)`
+    : `Screen pixel density was set as ${g.pxPerCm.toFixed(1)} px/cm (${srcPx})`;
+  const disp = run.mobile && run.mobile.display ? run.mobile.display : null;
+  const displayNote = disp ? `; you ${disp.brightnessMaxConfirmed?'confirmed':'did not confirm'} that brightness was at maximum and ${disp.nightShiftOffConfirmed?'confirmed':'did not confirm'} that colour filters were off${disp.lighting?`, and reported ${disp.lighting==='daylight'?'indoor daylight':disp.lighting==='artificial'?'artificial light':'dim light'}`:''}` : '';
+  const sd = g.distanceStdCm!=null ? `, varying by ±${g.distanceStdCm} cm (one standard deviation) over the test` : '';
+  const distSentence = srcD==='typed' ? `viewing distance entered as ${g.distanceCm} cm`
+    : srcD==='camera-iris-assumedFov' ? `viewing distance was estimated by the front camera from the apparent size of the iris, using an assumed camera focal length (about ±20 %), averaging ${g.distanceCm} cm${sd}`
+    : srcD==='camera-iris-calibrated' ? `viewing distance was estimated by the front camera from the apparent size of the iris, with the camera's focal length set by a one-time distance check, averaging ${g.distanceCm} cm${sd}`
+    : `viewing distance ${g.distanceCm} cm (${srcD})`;
   const scheduledEye = 45;
   const s1 = quick
     ? `This test showed you up to ${scheduledEye} circular patches of faint parallel bars for each eye, at five bar widths (1.5, 3, 6, 12 and 18 cycles per degree) and nine contrast levels from 28.6 % down to 0.5 %. The quick protocol stops a column after two consecutive misses, so ${R.notPresented} right-eye and ${L.notPresented} left-eye patches were not presented; ${R.presented} and ${L.presented} were. For each patch you chose whether the bars tilted left, stood upright or tilted right. The charts and tables record exactly what you were shown and what you answered. They describe how faint a pattern you identified; they do not identify a cause.`
     : `This test showed you ${R.presented} circular patches of faint parallel bars for the right eye and ${L.presented} for the left, at five bar widths (1.5, 3, 6, 12 and 18 cycles per degree) and nine contrast levels from 28.6 % down to 0.5 %. For each patch you chose whether the bars tilted left, stood upright or tilted right. The charts and tables record exactly what you were shown and what you answered. They describe how faint a pattern you identified; they do not identify a cause.`;
-  const s2 = `Screen size was set from a bank card (${g.pxPerCm.toFixed(1)} px/cm) and viewing distance entered as ${g.distanceCm} cm, giving ${g.ppd.toFixed(1)} pixels per degree. Brightness, colour settings and room lighting were not measured. ${sampling} The three faintest contrast levels have, under the assumed rendering model (sRGB transfer function, 8-bit display, mid-grey background), computed amplitudes below one display step; what contrast those patches actually produced on this screen was not measured, and they are marked exploratory. Protocol: ${quick?'quick (stop after two consecutive misses)':'full (every patch presented)'}. ${d.zoomChangedDuringRun ? 'Browser zoom or display scaling changed during the test; results may not be comparable.' : 'No change in browser zoom was detected during the test.'}`;
+  const s2 = `${sizeSentence} and ${distSentence}, giving ${g.ppd.toFixed(1)} pixels per degree. Brightness, colour settings and room lighting were not measured${displayNote}. ${sampling} The three faintest contrast levels have, under the assumed rendering model (sRGB transfer function, 8-bit display, mid-grey background), computed amplitudes below one display step; what contrast those patches actually produced on this screen was not measured, and they are marked exploratory. Protocol: ${quick?'quick (stop after two consecutive misses)':'full (every patch presented)'}. ${d.zoomChangedDuringRun ? 'Browser zoom or display scaling changed during the test; results may not be comparable.' : 'No change in browser zoom was detected during the test.'}`;
   const s4 = `At each bar width the lowest contrast identified by the right eye and the left eye differed by ${sc.interocularLog10.map(v=>v==null?'–':v.toFixed(2)).join(' / ')} log units (a value above zero means the right eye identified a fainter patch). Differences of this size between a person's eyes can arise from the test's own variability; whether they are meaningful has not been established for this test.`;
   const s5 = `This is a self-administered screen on an uncalibrated consumer display. Results depend on the screen, its settings, the room, attention and guessing (one in three answers would be right by chance). Each contrast level was shown once per eye, so a single lucky or unlucky answer moves the result. The test has not been validated against clinical contrast sensitivity instruments, and no normal range has been established for it. Reduced contrast sensitivity, where present, has many possible causes, including uncorrected refractive error, cataract, glaucoma, macular disease, diabetes, medication, alcohol and fatigue.`;
   const s6 = `This test does not tell you whether your vision needs attention; an eye examination does. See an optometrist or your doctor if you have persistent difficulty seeing in dim light, fog, rain or glare, difficulty reading or recognising faces, any visual symptoms such as blur, haloes, distortion or a shadow in your vision, or any sudden change in your sight, which needs same-day attention. A consistent change across repeat tests taken under the same conditions is also worth discussing. Take this report with you; the numbers and charts are meant to be read alongside a clinical examination, not instead of one.`;
@@ -533,11 +599,14 @@ function reportText(run){
   const swLine = v.software.status==='passed' ? `Software verification: passed, suite ${v.software.suite}, ${v.software.version}, ${v.software.runAt}${v.software.total?` (${v.software.passed}/${v.software.total} tests)`:''}, bound to source ${String(v.software.sourceHash).slice(0,12)}.`
                : v.software.status==='failed' ? `Software verification: FAILED for this build (${v.software.suite}).`
                : `Software verification: not verified for this build (${v.software.reason||'no test results'}).`;
-  const ident = `Run ${run.id} · ${run.completedAt||run.startedAt} · Software ${run.versions.software} (${run.versions.buildTarget}) · Protocol ${run.versions.protocol} · Scoring ${run.versions.scoring} · Stimulus ${run.versions.stimulus} · Integrity SHA-256 ${run.integrity&&run.integrity.hash ? run.integrity.hash.slice(0,12) : 'unavailable'} over test definition and responses (local integrity check, not proof of origin) · Geometry ${g.pxPerCm.toFixed(1)} px/cm, ${g.distanceCm} cm, ${g.ppd.toFixed(1)} px/°, ${ppc.toFixed(2)} px/cycle at 18 cpd, DPR ${d.devicePixelRatio}${src}`;
+  const ident = `Run ${run.id} · ${run.completedAt||run.startedAt} · Software ${run.versions.software} (${run.versions.buildTarget}) · Protocol ${run.versions.protocol} · Scoring ${run.versions.scoring} · Stimulus ${run.versions.stimulus} · Integrity SHA-256 ${run.integrity&&run.integrity.hash ? run.integrity.hash.slice(0,12) : 'unavailable'} over test definition and responses (local integrity check, not proof of origin) · Geometry ${g.pxPerCm.toFixed(1)} px/cm (${srcPx}), ${g.distanceCm} cm (${srcD}), ${g.ppd.toFixed(1)} px/°, ${ppc.toFixed(2)} px/cycle at 18 cpd, DPR ${d.devicePixelRatio}${g.renderScale!=null?`, render scale ${g.renderScale}`:''}${run.context?` · Context ${run.context.version}`:''}${src}`;
+  // Phase 1 §5: context section only when the run carries a context block (mobile front end); desktop runs are unchanged
+  const s8 = run.context ? CONTEXT_PARAGRAPH : null;
+  const told = contextToldLines(run);
   const valid = `${swLine} Physical measurement validation: not performed. Clinical validation: not performed; no diagnostic or exposure claim.`;
   const banner = `Right eye ${R.correct} of ${R.presented} patches identified · Left eye ${L.correct} of ${L.presented} · Clinical significance not established`;
   const under = e => `${e.correct} of ${e.presented} presented patches identified; ${e.cantSee} answered can't see; ${e.notPresented} not presented; ${e.isolated.filter(Boolean).length} isolated correct responses.`;
-  return { heading:'Visual contrast test results', banner, s1, s2, s4, s5, s6, s7, ident, valid, underRight:under(R), underLeft:under(L),
+  return { heading:'Visual contrast test results', banner, s1, s2, s4, s5, s6, s7, s8, told, toldHeading:'What you told us', s8Heading:'8. Environmental context', ident, valid, underRight:under(R), underLeft:under(L),
     storage:'Records are kept in this browser only. They are not permanent, not encrypted and not a clinical record. Export any record you want to keep.',
     chartCaption:'Lowest contrast correctly identified (descriptive; one presentation per level)',
     bandCaption:'Exploratory: computed sub-step amplitude under the assumed rendering model; displayed contrast not measured' };
@@ -620,6 +689,7 @@ function renderResults(){
     <div class="card stack"><h3>5. Limitations</h3><p class="small">${esc(T.s5)}</p></div>
     <div class="card stack"><h3>6. When to consult someone</h3><p class="small">${esc(T.s6)}</p></div>
     <div class="card stack"><h3>7. What this test does not show</h3><p class="small">${esc(T.s7)}</p></div>
+    ${T.s8 ? `<div class="card stack"><h3>${esc(T.s8Heading)}</h3><p class="small">${esc(T.s8)}</p>${T.told.length ? `<h3>${esc(T.toldHeading)}</h3><ul class="small">${T.told.map(l=>`<li>${esc(l)}</li>`).join('')}</ul><p class="small muted">Recorded as context beside the test record. It is not used in any calculation.</p>` : ''}</div>` : ''}
     <div class="card stack"><h3>Identification</h3><p class="mono small" style="white-space:pre-wrap">${esc(T.ident)}\n${esc(T.valid)}</p>
       <div class="row"><button class="primary" id="btnPdf">Download PDF report</button><button id="btnExport">Export JSON record</button><button id="btnAgain">Run again</button><button class="ghost" data-go="home">Home</button></div></div>`;
   $('btnPdf').addEventListener('click', downloadPdf);
@@ -657,6 +727,7 @@ function deleteExportedConfirmed(){
 
 // ---------- Export / download ----------
 async function deliverFile(name, data){
+  if(typeof globalThis!=='undefined' && typeof globalThis.MV_DELIVER==='function') return globalThis.MV_DELIVER(name, data);   // Phase 1: mobile share sheet
   const dl = (typeof claude!=='undefined' && claude && claude.use) ? await claude.use('downloads').catch(()=>null) : null;
   if(dl){ await dl.save({filename:name, data}); return 'saved'; }
   if(!HAS_DOM) return 'no-dom';
@@ -744,7 +815,7 @@ function buildPdf(run){
   if(run.versions.buildTarget==='staging'){ doc.setFontSize(8); doc.setTextColor(184,114,10); doc.text('STAGING BUILD', W-M, 20.5, {align:'right'}); }
   doc.setFontSize(8.5); doc.setFont('helvetica','normal'); doc.setTextColor(20);
   let y=34;
-  const meta=[['Run:', run.id, 'Completed:', run.completedAt||'—'],['Protocol:', run.versions.protocol+(run.versions.protocol.startsWith('quick')?' (stop after two consecutive misses)':' (every patch presented)'), 'Name:', '______________________'],['Geometry:', `${run.geometry.distanceCm} cm · ${run.geometry.pxPerCm} px/cm · ${run.geometry.ppd} px/deg · ${run.geometry.pxPerCycleAt18cpd} px/cycle at 18 cpd`, 'Status:', run.status]];
+  const meta=[['Run:', run.id, 'Completed:', run.completedAt||'—'],['Protocol:', run.versions.protocol+(run.versions.protocol.startsWith('quick')?' (stop after two consecutive misses)':' (every patch presented)'), 'Name:', '______________________'],['Geometry:', `${run.geometry.distanceCm} cm (${run.geometry.distanceSource||'typed'}) · ${run.geometry.pxPerCm} px/cm (${run.geometry.pxPerCmSource||'card'}) · ${run.geometry.ppd} px/deg · ${renderedPpc(run.geometry)} px/cycle at 18 cpd`, 'Status:', run.status]];
   meta.forEach(r=>{ doc.setFont('helvetica','bold'); doc.text(r[0], M, y); doc.setFont('helvetica','normal'); doc.text(r[1], M+20, y); doc.setFont('helvetica','bold'); doc.text(r[2], 134, y); doc.setFont('helvetica','normal'); doc.text(r[3], 152, y); y+=4.5; });
   doc.setDrawColor(11,110,142); doc.setLineWidth(0.5); doc.line(M, y, W-M, y); y+=3;
   doc.setFillColor(226,241,246); doc.rect(M, y, W-2*M, 8, 'F');
@@ -775,6 +846,7 @@ function buildPdf(run){
   heading('5. Limitations'); para(T.s5);
   heading('6. When to consult someone'); para(T.s6);
   heading('7. What this test does not show'); para(T.s7, 8.2, 20, 4);
+  if(T.s8){ heading(T.s8Heading); para(T.s8, 8.2, 20, 2.5); if(T.told.length){ heading(T.toldHeading, 8.5); T.told.forEach(l=> para('• '+l, 7.8, 20, 1)); para('Recorded as context beside the test record. It is not used in any calculation.', 7.2, 90, 4); } }
   heading('Identification', 9); para(T.ident, 7.4, 40, 1.5); para(T.valid, 7.4, 40, 4);
   heading('Evidence status', 9.5);
   para('Visual contrast sensitivity measures how faint a pattern can be discriminated across spatial frequencies. It depends on both optical factors (refractive error, clarity of the cornea and lens, pupil size, light scatter) and neural factors (retina, optic nerve and visual cortex), so reduced sensitivity can arise from ocular disease such as cataract, glaucoma or macular disease, from uncorrected refractive error, and from neurological conditions, medication, alcohol and fatigue. Shoemaker popularised it as a bedside marker of biotoxin-related illness after exposure to water-damaged buildings. The evidence is mixed and the test is not validated as a diagnostic tool for mould-related illness.', 7.6, 40, 1.8);
@@ -853,6 +925,8 @@ if(HAS_DOM){ if(document.readyState==='loading') document.addEventListener('DOMC
 
 // ---------- Exposed for tests ----------
 globalThis.MV = { SOFTWARE_VERSION, BLANK_MS, BUILD_TARGET, STORE_KEY, DRAFT_KEY, EXPORTED_KEY, LEGACY_KEY, STORAGE_WARN, STORAGE_MAX, SCORING_VERSION, STIMULUS_VERSION, PROTOCOLS, FREQS, COLS, SENS, CONTRAST, LADDER, HEALTHY, SHOW_REFERENCE_CURVE, FORBIDDEN_LABELS, REFS, INTEGRITY_SCOPE,
-  S, startRun, startEye, nextTrial, submitAnswer, finaliseRun, scoreEye, scoreRun, canonical, integrityPayload, computeIntegrity, reportText, chartSVG, buildPdf, exportJson, exportFilename, storedRuns, storageCheck, samplingBand, codeAmplitude, updateCal, loadDraft, renderResults, renderHistory, deliverFile, buildValidation };
+  S, startRun, startEye, nextTrial, submitAnswer, finaliseRun, scoreEye, scoreRun, canonical, integrityPayload, computeIntegrity, reportText, chartSVG, buildPdf, exportJson, exportFilename, storedRuns, storageCheck, samplingBand, codeAmplitude, updateCal, loadDraft, renderResults, renderHistory, deliverFile, buildValidation,
+  // Phase 1
+  CONTEXT_VERSION, CONTEXT_PARAGRAPH, CONTEXT_ITEMS, validateContext, setRunContext, contextToldLines, renderScale, renderedPpc, geometry, deviceSnapshot, drawGrating, show, toast, exportRun, exportAll, deleteExportedConfirmed, downloadPdf, saveDraft };
 
 </script>

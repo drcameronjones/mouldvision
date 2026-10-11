@@ -202,7 +202,7 @@ test(tag('T23', 'sampling sentence bands; never "accurate"'), async () => {
   const MV = perfect();
   const run = await runTest(MV, { mode: 'full', answerFn: ({ orient }) => orient, pxPerCm: 38 });
   for (const [ppc, re] of [[1.8, /cannot represent a grating/], [2.2, /coarsely sampled/], [4.5, /adequately sampled/]]) {
-    const r = JSON.parse(JSON.stringify(run)); r.geometry.pxPerCycleAt18cpd = ppc;
+    const r = JSON.parse(JSON.stringify(run)); r.geometry.pxPerCycleAt18cpd = ppc; r.geometry.pxPerCycleAt18cpdRendered = ppc;   // Phase 1: the band reads the rendered value
     const s2 = MV.reportText(r).s2; assert.match(s2, re); assert.ok(!/accurate/i.test(s2));
   }
   assert.equal(MV.samplingBand(1.99), 'not_representable'); assert.equal(MV.samplingBand(3.99), 'coarse'); assert.equal(MV.samplingBand(4.0), 'adequate');
@@ -214,7 +214,7 @@ test(tag('T24', 'identification block: heading, versions, build target, integrit
   const T = MV.reportText(run);
   assert.match(T.ident, /Source testhash0000 · Commit deadbeef/); assert.match(T.valid, /bound to source testhash0000/);
   assert.equal(T.heading, 'Visual contrast test results');
-  assert.match(T.ident, /Software v0\.7\.0 \(live\)/); assert.match(T.ident, /Protocol full-5x9-v1/); assert.match(T.ident, /Scoring score-v1-maxcorrect/); assert.match(T.ident, /Stimulus gauss/);
+  assert.match(T.ident, new RegExp("Software " + MV.SOFTWARE_VERSION.replace(/\./g, "\\.") + " \\(live\\)")); assert.match(T.ident, /Protocol full-5x9-v1/); assert.match(T.ident, /Scoring score-v1-maxcorrect/); assert.match(T.ident, /Stimulus gauss/);
   assert.match(T.ident, /Integrity SHA-256 [0-9a-f]{12} over test definition and responses \(local integrity check, not proof of origin\)/);
   assert.match(T.ident, /px\/cycle at 18 cpd/);
   assert.match(T.valid, /Software verification: passed, suite phase0-T01-T28/); assert.match(T.valid, /Physical measurement validation: not performed/); assert.match(T.valid, /Clinical validation: not performed/);
