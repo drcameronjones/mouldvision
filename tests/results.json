@@ -1,5 +1,5 @@
 {
-  "sourceHash": "b7f0005a68d3d19f7c72e645a9b3da2ad7a1aed685d90cc4d934b60041a42edc",
+  "sourceHash": "af9ac598a03fe75a5e978465929f7d6d959dd8f8355667cd7a75934518ddbc84",
   "sourceFiles": [
     "src/app.js",
     "src/index.html",
@@ -15,18 +15,20 @@
     "src/site/faq.html",
     "src/site/evidence.html",
     "src/site/site.css",
+    "src/site/terms.html",
+    "src/site/privacy.html",
     "src/mobile/vendor/VENDOR.md"
   ],
-  "gitCommit": "53d2963a4b9a0baddfc8b9db576f936ae5255bd9",
+  "gitCommit": "d3c940359c0879f7895a4e494e90be5119439480",
   "gitDirty": false,
   "sourceChangedDuringRun": false,
-  "suite": "phase0-T01-T28+phase1-M01-M14+guidance-G01-G06+site-W01-W03",
+  "suite": "phase0-T01-T28+phase1-M01-M15+guidance-G01-G06+site-W01-W04",
   "version": "v0.8.0",
   "runAt": "2026-10-11",
-  "runAtFull": "2026-10-11T06:49:57.603Z",
+  "runAtFull": "2026-10-11T08:10:30.810Z",
   "node": "v22.22.0",
   "platform": "linux",
-  "passed": 57,
+  "passed": 59,
   "failed": 0,
   "statement": "Passing these tests establishes software behaviour only. It establishes nothing about measurement accuracy or clinical meaning.",
   "tests": [
@@ -117,6 +119,12 @@
     {
       "id": "W03",
       "name": "phone edition and pages load nothing from third-party origins; vendored files match VENDOR.md checksums",
+      "ok": true,
+      "kind": "node"
+    },
+    {
+      "id": "W04",
+      "name": "terms and privacy: draft status, versions, urgent-care advice, adults only, ACL not excluded, camera and health information explained",
       "ok": true,
       "kind": "node"
     },
@@ -363,6 +371,12 @@
     {
       "id": "M09",
       "name": "manifest valid and service worker registers and caches the shell",
+      "ok": true,
+      "kind": "browser"
+    },
+    {
+      "id": "M15",
+      "name": "first test asks for the three acknowledgements; continue is disabled until all are ticked; the acceptance is recorded on the run",
       "ok": true,
       "kind": "browser"
     },
