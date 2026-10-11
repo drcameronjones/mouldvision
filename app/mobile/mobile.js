@@ -7,7 +7,7 @@
   const $ = id => document.getElementById(id);
   const S = MV.S;
   const SCREENS = ['m-start', 'm-hold', 'm-cover', 'v-test', 'v-switch', 'v-results'];
-  const M = { mode: 'full', density: null, sensor: null, distanceMode: 'camera', typedCm: 40, sizedForCm: null, trialReadings: [], driftEvents: 0, hintShown: false, display: { brightnessMaxConfirmed: false, nightShiftOffConfirmed: false, lighting: null }, buttonsMode: false, deferredInstall: null, resultsShown: false };
+  const M = { mode: 'full', density: null, sensor: null, distanceMode: 'camera', typedCm: 40, sizedForCm: null, trialReadings: [], driftEvents: 0, hintShown: false, display: { brightnessMaxConfirmed: false, nightShiftOffConfirmed: false, lighting: null }, buttonsMode: true, deferredInstall: null, resultsShown: false };
 
   function mscreen(name) {
     SCREENS.forEach(s => { const el = $(s); if (el) el.hidden = s !== name; });
@@ -120,6 +120,7 @@
     $('answerButtons').hidden = !M.buttonsMode;
     M.trialReadings = [];
     MV.startEye(eye);
+    showHint('Tap a button, or swipe the patch the way the bars lean', 4000);
     if (document.documentElement.requestFullscreen && !document.fullscreenElement && /Android/.test(navigator.userAgent)) { document.documentElement.requestFullscreen().catch(() => {}); }
     try { if (screen.orientation && screen.orientation.lock) screen.orientation.lock('portrait').catch(() => {}); } catch (e) {}
   }
@@ -150,7 +151,7 @@
     if (!M.hintShown && trial && trial.col === 'A' && trial.row <= 2 && trial.correct === false) { M.hintShown = true; showHint('Swipe the way the bars lean: up-left, straight up, or up-right'); }
     MV.saveDraft();
   }
-  function showHint(text) { const h = $('swipeHint'); h.textContent = text; h.hidden = false; setTimeout(() => { h.hidden = true; }, 2600); }
+  function showHint(text, ms) { const h = $('swipeHint'); h.textContent = text; h.hidden = false; clearTimeout(M.hintTimer); M.hintTimer = setTimeout(() => { h.hidden = true; }, ms || 2600); }
 
   function answer(value, source, extra) {
     pendingAnswer = extra || null;
@@ -190,7 +191,7 @@
     field.addEventListener('touchend', e => { if (e.touches.length === 0 && touches >= 2) { touches = 0; answer('none', 'two-finger', { angle: null }); } }, { passive: true });
     document.querySelectorAll('#v-test [data-ans]').forEach(b => { b.addEventListener('pointerup', e => { answer(b.dataset.ans, e.pointerType === 'touch' ? 'tap' : 'pointer', { angle: null }); }); b.addEventListener('click', e => e.preventDefault()); });
     document.addEventListener('keydown', e => { if ($('v-test').hidden) return; if (e.repeat) { S.trial.discarded++; return; } const k = { ArrowLeft: 'left', ArrowUp: 'up', ArrowRight: 'right', ArrowDown: 'none' }[e.key]; if (k) { e.preventDefault(); answer(k, 'keyboard', { angle: null }); } });
-    $('btnToggleButtons').addEventListener('click', () => { M.buttonsMode = !M.buttonsMode; $('answerButtons').hidden = !M.buttonsMode; $('btnToggleButtons').textContent = M.buttonsMode ? 'Use swipes' : 'Use buttons'; });
+    $('btnToggleButtons').addEventListener('click', () => { M.buttonsMode = !M.buttonsMode; $('answerButtons').hidden = !M.buttonsMode; $('btnToggleButtons').textContent = M.buttonsMode ? 'Hide buttons' : 'Show buttons'; });
   }
 
   // ---------- Context questionnaire ----------

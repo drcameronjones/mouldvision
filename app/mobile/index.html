@@ -96,7 +96,7 @@
     <svg class="eyes" viewBox="0 0 200 80" aria-hidden="true"><g id="eyeL"><ellipse cx="55" cy="40" rx="30" ry="18" fill="none" stroke="currentColor" stroke-width="3"/><circle cx="55" cy="40" r="8" fill="currentColor"/></g><g id="eyeR"><ellipse cx="145" cy="40" rx="30" ry="18" fill="none" stroke="currentColor" stroke-width="3"/><circle cx="145" cy="40" r="8" fill="currentColor"/></g><rect id="handL" x="18" y="12" width="74" height="56" rx="14" fill="var(--accent)" opacity=".9"/><rect id="handR" x="108" y="12" width="74" height="56" rx="14" fill="var(--accent)" opacity=".9" hidden/></svg>
     <p id="coverText">Use your palm, without pressing on the eye. Keep wearing your usual glasses or contacts. The <strong>right eye</strong> is tested first.</p>
     <ul class="small" style="text-align:left">
-      <li>Swipe <strong>up-left</strong> if the bars lean left, <strong>straight up</strong> if upright, <strong>up-right</strong> if they lean right.</li>
+      <li>Tap <strong>Left</strong>, <strong>Upright</strong> or <strong>Right</strong>, or swipe the patch the way the bars lean (up-left, straight up, up-right).</li>
       <li>Guess if unsure. Tap <strong>Can't see</strong> only when there is no pattern at all.</li>
       <li>The first two patches are easy and count as practice if you get them wrong.</li>
     </ul>
@@ -115,12 +115,12 @@
   <div class="stage">
     <div class="field" id="field"><canvas id="stim" width="512" height="512"></canvas><div class="fix" id="fix" hidden>+</div><div class="swipehint" id="swipeHint" hidden></div></div>
   </div>
-  <div class="answers" id="answerButtons" hidden>
-    <button data-ans="left">Left</button><button data-ans="up">Up</button><button data-ans="right">Right</button>
+  <div class="answers" id="answerButtons">
+    <button data-ans="left"><svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="24" y1="6" x2="16" y2="34"/><line x1="15" y1="6" x2="7" y2="34"/><line x1="33" y1="6" x2="25" y2="34"/></svg>Left</button><button data-ans="up"><svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="20" y1="6" x2="20" y2="34"/><line x1="11" y1="6" x2="11" y2="34"/><line x1="29" y1="6" x2="29" y2="34"/></svg>Upright</button><button data-ans="right"><svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="16" y1="6" x2="24" y2="34"/><line x1="7" y1="6" x2="15" y2="34"/><line x1="25" y1="6" x2="33" y2="34"/></svg>Right</button>
   </div>
   <div class="testfoot">
     <button class="ghost" data-ans="none" id="btnNone">Can't see a pattern</button>
-    <button class="ghost small" id="btnToggleButtons">Use buttons</button>
+    <button class="ghost small" id="btnToggleButtons">Hide buttons</button>
   </div>
   <div class="small muted mono" id="trialLabel"></div>
   <div class="small muted mono" id="liveDist"></div>

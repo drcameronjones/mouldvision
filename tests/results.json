@@ -1,5 +1,5 @@
 {
-  "sourceHash": "043d380dee5e405a76a896c87788be8e149c8b5f808a09439735816fc11a9e74",
+  "sourceHash": "dc43fce10eb9dbbdee6fb5c82bcde55ce423d8e6a0d927a69d34a7b47af0fa50",
   "sourceFiles": [
     "src/app.js",
     "src/index.html",
@@ -13,13 +13,13 @@
     "src/mobile/sw.js",
     "src/mobile/manifest.webmanifest"
   ],
-  "gitCommit": "c5b6dce4521baeeaad45096e5281a6e3c36754ef",
-  "gitDirty": false,
+  "gitCommit": "3d8c4a56298c3bc7359a269ff1247a3d78f8b1ba",
+  "gitDirty": true,
   "sourceChangedDuringRun": false,
   "suite": "phase0-T01-T28+phase1-M01-M13",
   "version": "v0.8.0",
   "runAt": "2026-10-11",
-  "runAtFull": "2026-10-11T00:58:13.766Z",
+  "runAtFull": "2026-10-11T01:03:45.657Z",
   "node": "v22.22.0",
   "platform": "linux",
   "passed": 47,

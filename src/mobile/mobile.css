@@ -38,7 +38,8 @@ button.big{padding:16px;font-size:1.1rem;width:100%}
 .screen.test button{background:#9a9a9a;color:#111;border-color:#777}
 .screen.test button.ghost{background:transparent;color:#222}
 .screen.test .answers{max-width:100%}
-.screen.test .answers button{padding:14px 6px}
+.screen.test .answers button{padding:12px 6px;display:flex;flex-direction:column;align-items:center;gap:4px;font-size:1rem}
+.screen.test .answers svg{width:34px;height:34px}
 /* results: stacked cards, narrower tables */
 .results .charts{grid-template-columns:1fr}
 .results table{font-size:.8rem}
