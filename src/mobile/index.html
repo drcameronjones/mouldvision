@@ -32,6 +32,7 @@
     <p>You will see circular patches of faint bars that lean <strong>left</strong>, stand <strong>upright</strong> or lean <strong>right</strong>. Tap the matching button, or swipe the way they lean. Patches get fainter and finer; one eye at a time; about three minutes per eye.</p>
     <div class="key" id="startKey"></div>
     <details class="ctx"><summary>Why environmental toxin exposure matters to this test</summary><p class="small" id="ctxParagraph"></p><p class="small muted">References are numbered as in the report.</p></details>
+    <div class="notice small" id="safetyLine">A personal tracking tool, not a medical test. If your vision changes suddenly (blurring, flashes, a shadow or loss of vision), seek same-day care.</div>
     <div class="row">
       <label class="seg"><input type="radio" name="mode" value="full" checked><span>Full test</span></label>
       <label class="seg"><input type="radio" name="mode" value="quick"><span>Quick test</span></label>
@@ -51,7 +52,7 @@
     <div class="row"><button id="btnExportAll" hidden>Export all records</button><button class="ghost" id="btnDeleteExported" hidden>Delete exported records…</button></div>
     <div class="notice crit" id="confirmDelete" hidden>Delete the records you have already exported from this phone? This cannot be undone. <button id="btnDeleteYes">Delete them</button> <button class="ghost" id="btnDeleteNo">Keep them</button></div>
   </div>
-  <nav class="sitelinks"><a href="faq.html">Questions</a><a href="evidence.html">Evidence</a><a href="MouldVision-Method.pdf">How it works (PDF)</a></nav>
+  <nav class="sitelinks"><a href="faq.html">Questions</a><a href="evidence.html">Evidence</a><a href="MouldVision-Method.pdf">How it works (PDF)</a><a href="terms.html">Terms</a><a href="privacy.html">Privacy</a></nav>
   <footer class="small muted">Concept: Dr Cameron Jones, PhD · Biological Health Services · <a href="https://www.biologicalhealthservices.com.au" target="_blank" rel="noopener">biologicalhealthservices.com.au</a> · <a href="https://www.drcameronjones.com" target="_blank" rel="noopener">drcameronjones.com</a><br>Screening only; this app does not diagnose anything. Results stay on this phone unless you export them. <span id="buildLine" class="mono"></span></footer>
 </section>
 
@@ -142,6 +143,19 @@
 <section id="v-results" class="screen stack results" hidden></section>
 
 <!-- QUESTIONNAIRE OVERLAY -->
+<section id="m-ack" class="overlay" hidden>
+  <div class="card stack">
+    <span class="eyebrow">Before your first test</span>
+    <h2>Please confirm</h2>
+    <label class="chk"><input type="checkbox" class="ackbox" id="ack1"> I understand MouldVision is a personal tracking tool, not a medical test. It does not diagnose eye disease, mould illness or any other condition, and does not detect mould or any exposure.</label>
+    <label class="chk"><input type="checkbox" class="ackbox" id="ack2"> I am 18 or older.</label>
+    <label class="chk"><input type="checkbox" class="ackbox" id="ack3"> I will see an optometrist or doctor about any concern with my eyes or health, and seek same-day care if my vision changes suddenly.</label>
+    <p class="small">By continuing you agree to the <a href="terms.html" target="_blank">Terms of Use</a> and have read the <a href="privacy.html" target="_blank">Privacy notice</a>. Your results stay on this phone.</p>
+    <div class="row"><button class="primary" id="btnAckAgree" disabled>I agree, continue</button><button class="ghost" id="btnAckCancel">Not now</button></div>
+    <p class="small muted" id="ackVersion"></p>
+  </div>
+</section>
+
 <section id="m-context" class="overlay" hidden>
   <div class="card stack">
     <span class="eyebrow">Optional · 1 minute</span>

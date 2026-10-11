@@ -1,9 +1,9 @@
 // MouldVision phone edition — service worker. Caches the app shell so the test runs with no network after first load.
 // The cache name carries the build's source hash (injected at build), so a new verified build replaces the old one.
-const BUILD = 'b7f0005a68d3d19f-staging';
+const BUILD = 'af9ac598a03fe75a-staging';
 const SHELL = 'mv-shell-' + BUILD;
 const RUNTIME = 'mv-runtime-v1';
-const APP_FILES = ['./', 'index.html', 'styles.css', 'mobile.css', 'build-info.js', 'app.js', 'devices.js', 'distance.js', 'mobile.js', 'manifest.webmanifest', 'bhs-logo.png', 'icons/icon-192.png', 'icons/icon-512.png', 'faq.html', 'evidence.html', 'site.css', 'vendor/jspdf.umd.min.js', 'vendor/fonts/fonts.css', 'vendor/fonts/sora-latin-500-normal.woff2', 'vendor/fonts/sora-latin-600-normal.woff2', 'vendor/fonts/sora-latin-700-normal.woff2', 'vendor/fonts/manrope-latin-400-normal.woff2', 'vendor/fonts/manrope-latin-500-normal.woff2', 'vendor/fonts/manrope-latin-600-normal.woff2', 'vendor/fonts/manrope-latin-700-normal.woff2'];
+const APP_FILES = ['./', 'index.html', 'styles.css', 'mobile.css', 'build-info.js', 'app.js', 'devices.js', 'distance.js', 'mobile.js', 'manifest.webmanifest', 'bhs-logo.png', 'icons/icon-192.png', 'icons/icon-512.png', 'faq.html', 'evidence.html', 'terms.html', 'privacy.html', 'site.css', 'vendor/jspdf.umd.min.js', 'vendor/fonts/fonts.css', 'vendor/fonts/sora-latin-500-normal.woff2', 'vendor/fonts/sora-latin-600-normal.woff2', 'vendor/fonts/sora-latin-700-normal.woff2', 'vendor/fonts/manrope-latin-400-normal.woff2', 'vendor/fonts/manrope-latin-500-normal.woff2', 'vendor/fonts/manrope-latin-600-normal.woff2', 'vendor/fonts/manrope-latin-700-normal.woff2'];
 const EXTERNAL = [];   // everything is served from this origin
 self.addEventListener('install', e => {
   e.waitUntil((async () => {

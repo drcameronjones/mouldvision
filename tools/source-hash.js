@@ -2,7 +2,7 @@
 // Used by the test runner (recorded in tests/results.json) and by the build (must match, or the build is marked not verified).
 const fs = require('fs'); const path = require('path'); const crypto = require('crypto'); const { execSync } = require('child_process');
 const root = path.join(__dirname, '..');
-const FILES = ['src/app.js', 'src/index.html', 'src/styles.css', 'tools/build.js', 'src/mobile/index.html', 'src/mobile/mobile.js', 'src/mobile/mobile.css', 'src/mobile/devices.js', 'src/mobile/distance.js', 'src/mobile/sw.js', 'src/mobile/manifest.webmanifest', 'src/site/faq.html', 'src/site/evidence.html', 'src/site/site.css', 'src/mobile/vendor/VENDOR.md'];
+const FILES = ['src/app.js', 'src/index.html', 'src/styles.css', 'tools/build.js', 'src/mobile/index.html', 'src/mobile/mobile.js', 'src/mobile/mobile.css', 'src/mobile/devices.js', 'src/mobile/distance.js', 'src/mobile/sw.js', 'src/mobile/manifest.webmanifest', 'src/site/faq.html', 'src/site/evidence.html', 'src/site/site.css', 'src/site/terms.html', 'src/site/privacy.html', 'src/mobile/vendor/VENDOR.md'];
 function sourceHash() {
   const h = crypto.createHash('sha256');
   for (const f of FILES) { h.update(f + '\0'); h.update(fs.readFileSync(path.join(root, f))); h.update('\0'); }

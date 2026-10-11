@@ -14,7 +14,7 @@ function serve() { return new Promise(res => { const srv = http.createServer((re
   const srv = await serve(); const port = srv.address().port; const base = `http://127.0.0.1:${port}/`;
   const browser = await chromium.launch();
   const jspdfUmd = fs.readFileSync(require.resolve('jspdf/dist/jspdf.umd.min.js'));
-  const newCtx = async (opts = {}) => { const ctx = await browser.newContext({ ...devices['iPhone 13'], acceptDownloads: true, ...opts }); await ctx.addInitScript(() => { window.MV_BLANK_MS = 5; window.MV_NO_SW = true; try { Object.defineProperty(navigator, 'canShare', { value: undefined }); } catch (e) {} }); /* headless has no share sheet; the download path is exercised */ await ctx.route('**/jspdf.umd.min.js', r => r.fulfill({ status: 200, contentType: 'application/javascript', body: jspdfUmd })); await ctx.route(/fonts\.googleapis|cdn\.jsdelivr|storage\.googleapis/, r => r.abort()); return ctx; };
+  const newCtx = async (opts = {}) => { const ctx = await browser.newContext({ ...devices['iPhone 13'], acceptDownloads: true, ...opts }); await ctx.addInitScript(() => { window.MV_BLANK_MS = 5; window.MV_NO_SW = true; if (!/noack/.test(location.search)) try { localStorage.setItem('mv-ack-v1', JSON.stringify({ version: 'ack-v1-draft', acceptedAt: 'test' })); } catch (e) {} try { Object.defineProperty(navigator, 'canShare', { value: undefined }); } catch (e) {} }); /* headless has no share sheet; the download path is exercised */ await ctx.route('**/jspdf.umd.min.js', r => r.fulfill({ status: 200, contentType: 'application/javascript', body: jspdfUmd })); await ctx.route(/fonts\.googleapis|cdn\.jsdelivr|storage\.googleapis/, r => r.abort()); return ctx; };
   const ctx = await newCtx(); const page = await ctx.newPage();
   const errors = []; page.on('pageerror', e => errors.push(e.message));
   const toTrial = async (mode = 'full') => {
@@ -108,9 +108,26 @@ function serve() { return new Promise(res => { const srv = http.createServer((re
     assert.ok(reg.keys.some(k => k.startsWith('mv-shell-'))); ['index.html', 'app.js', 'mobile.js', 'styles.css', 'mobile.css', 'manifest.webmanifest', 'icons/icon-192.png'].forEach(f => assert.ok(reg.cached.includes(f), 'cached ' + f));
   });
 
+  await t('M15', 'first test asks for the three acknowledgements; continue is disabled until all are ticked; the acceptance is recorded on the run', async () => {
+    await page.goto(base + '?noack=1'); await page.evaluate(() => localStorage.removeItem('mv-ack-v1'));
+    await page.goto(base + '?noack=2');
+    await page.click('#btnStart');
+    assert.equal(await page.isVisible('#m-ack'), true); assert.equal(await page.isVisible('#m-hold'), false);
+    assert.equal(await page.isDisabled('#btnAckAgree'), true);
+    await page.check('#ack1'); await page.check('#ack2'); assert.equal(await page.isDisabled('#btnAckAgree'), true);
+    await page.check('#ack3'); assert.equal(await page.isDisabled('#btnAckAgree'), false);
+    await page.click('#btnAckAgree');
+    await page.waitForFunction(() => !document.getElementById('m-hold').hidden);
+    const rec = await page.evaluate(() => JSON.parse(localStorage.getItem('mv-ack-v1'))); assert.equal(rec.version, 'ack-v1-draft'); assert.equal(rec.terms, 'terms-v1-draft');
+    await page.waitForFunction(() => !document.getElementById('btnHoldNext').disabled, null, { timeout: 15000 });
+    await page.click('#btnHoldNext');
+    const ack = await page.evaluate(() => window.MV.S.run.mobile.acknowledgement); assert.equal(ack.version, 'ack-v1-draft');
+    await page.goto(base + '?noack=3'); await page.click('#btnStart'); assert.equal(await page.isVisible('#m-ack'), false, 'asked only once per version');
+  });
+
   await t('M14', 'face model loads from our own origin with a camera present; the page makes no third-party requests', async () => {
     const b2 = await chromium.launch({ args: ['--use-fake-device-for-media-stream', '--use-fake-ui-for-media-stream'] });
-    const c2 = await b2.newContext({ ...devices['iPhone 13'], permissions: ['camera'] }); await c2.addInitScript(() => { window.MV_NO_SW = true; });
+    const c2 = await b2.newContext({ ...devices['iPhone 13'], permissions: ['camera'] }); await c2.addInitScript(() => { window.MV_NO_SW = true; try { localStorage.setItem('mv-ack-v1', JSON.stringify({ version: 'ack-v1-draft', acceptedAt: 'test' })); } catch (e) {} });
     const p2 = await c2.newPage(); const ext = [];
     p2.on('request', r => { const u = r.url(); if (!u.startsWith(base) && !/^(data|blob):/.test(u)) ext.push(u); });
     await p2.goto(base); await p2.click('#btnStart');

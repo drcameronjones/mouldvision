@@ -58,5 +58,8 @@ button.big{padding:16px;font-size:1.1rem;width:100%}
 .qitem input[type=text]{font:inherit;width:100%;margin-top:6px;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--fg)}
 footer a{color:var(--accent)}
 
+.overlay#m-ack .chk{font-size:.95rem;line-height:1.45}
+.overlay#m-ack .chk input{margin-top:3px}
+#safetyLine{margin:0}
 .sitelinks{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:4px 0 2px}
 .sitelinks a{font-size:.85rem;padding:6px 12px;border-radius:999px;border:1px solid var(--line);color:var(--accent);text-decoration:none;background:var(--surface)}

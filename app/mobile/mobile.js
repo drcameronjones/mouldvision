@@ -7,6 +7,9 @@
   const $ = id => document.getElementById(id);
   const S = MV.S;
   const SCREENS = ['m-start', 'm-hold', 'm-cover', 'v-test', 'v-switch', 'v-results'];
+  // One-time acknowledgement (ack-v1-draft). Recorded on every run; asked again whenever the version changes.
+  const ACK_VERSION = 'ack-v1-draft', ACK_KEY = 'mv-ack-v1', TERMS_VERSION = 'terms-v1-draft', PRIVACY_VERSION = 'privacy-v1-draft';
+  const ackRecord = () => { try { const a = JSON.parse(localStorage.getItem(ACK_KEY) || 'null'); return a && a.version === ACK_VERSION ? a : null; } catch (e) { return null; } };
   const M = { mode: 'full', density: null, sensor: null, distanceMode: 'camera', typedCm: 40, sizedForCm: null, trialReadings: [], driftEvents: 0, hintShown: false, display: { brightnessMaxConfirmed: false, nightShiftOffConfirmed: false, lighting: null }, buttonsMode: true, deferredInstall: null, resultsShown: false };
 
   function mscreen(name) {
@@ -103,7 +106,7 @@
     run.mobile = {
       frontEnd: 'phone-pwa-v1', density: { source: M.density.source, label: M.density.label, pxPerCm: M.density.pxPerCm, uncertainty: M.density.uncertainty, cssW: M.density.cssW, cssH: M.density.cssH, dpr: M.density.dpr },
       distance: { mode: M.distanceMode, source: S.distanceSource, focalSource: M.sensor ? M.sensor.focalSource : null, assumedFovDeg: M.sensor && M.sensor.focalSource !== 'calibrated' ? DS.ASSUMED_FOV_DEG : null, driftFraction: DS.DRIFT_FRACTION, driftEvents: 0 },
-      display: M.display, input: 'swipe', standalone: !!(window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) || !!navigator.standalone
+      display: M.display, input: 'swipe', acknowledgement: ackRecord() || M.ackSession || null, standalone: !!(window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) || !!navigator.standalone
     };
     M.sizedForCm = S.distCm; M.trialReadings = []; M.driftEvents = 0; M.carried = 0; M.hintShown = false; M.resultsShown = false;
     showCover('right');
@@ -266,7 +269,11 @@
     const st = $('stagingBanner'); if (st) st.hidden = MV.BUILD_TARGET !== 'staging';
     $('ctxParagraph').textContent = MV.CONTEXT_PARAGRAPH;
     document.querySelectorAll('[name="mode"]').forEach(r => r.addEventListener('change', () => { M.mode = r.value; }));
-    $('btnStart').addEventListener('click', startHold);
+    $('btnStart').addEventListener('click', () => { if (ackRecord()) startHold(); else { $('m-ack').hidden = false; window.scrollTo({ top: 0 }); } });
+    $('ackVersion').textContent = `${ACK_VERSION} · ${TERMS_VERSION} · ${PRIVACY_VERSION}`;
+    document.querySelectorAll('.ackbox').forEach(b => b.addEventListener('change', () => { $('btnAckAgree').disabled = ![...document.querySelectorAll('.ackbox')].every(x => x.checked); }));
+    $('btnAckAgree').addEventListener('click', () => { const rec = { version: ACK_VERSION, terms: TERMS_VERSION, privacy: PRIVACY_VERSION, acceptedAt: new Date().toISOString(), statements: ['not-a-medical-test', 'adult-18-plus', 'see-a-professional'] }; try { localStorage.setItem(ACK_KEY, JSON.stringify(rec)); } catch (e) { M.ackSession = rec; } $('m-ack').hidden = true; startHold(); });
+    $('btnAckCancel').addEventListener('click', () => { $('m-ack').hidden = true; });
     document.querySelectorAll('[data-mgo]').forEach(b => b.addEventListener('click', () => { if (M.sensor) M.sensor.stop(); mscreen(b.dataset.mgo === 'start' ? 'm-start' : b.dataset.mgo); }));
     $('btnUseTyped').addEventListener('click', useTyped);
     $('btnCalib').addEventListener('click', calibrate);

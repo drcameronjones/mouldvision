@@ -20,7 +20,7 @@ const brPass = browserTests.filter(t => t.ok).length, brFail = browserTests.leng
 const hashAfter = sourceHash(); const sourceChangedDuringRun = hashBefore !== hashAfter; const git = gitCommit();
 const results = {
   sourceHash: hashAfter, sourceFiles: FILES, gitCommit: git.commit, gitDirty: git.dirty, sourceChangedDuringRun,
-  suite: 'phase0-T01-T28+phase1-M01-M14+guidance-G01-G06+site-W01-W03', version, runAt: new Date().toISOString().slice(0, 10), runAtFull: new Date().toISOString(),
+  suite: 'phase0-T01-T28+phase1-M01-M15+guidance-G01-G06+site-W01-W04', version, runAt: new Date().toISOString().slice(0, 10), runAtFull: new Date().toISOString(),
   node: process.version, platform: process.platform,
   passed: unitPass + brPass, failed: unitFail + brFail + (sourceChangedDuringRun ? 1 : 0),
   statement: 'Passing these tests establishes software behaviour only. It establishes nothing about measurement accuracy or clinical meaning.',
