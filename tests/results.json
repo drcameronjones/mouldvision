@@ -1,5 +1,5 @@
 {
-  "sourceHash": "77ae8cf276b82298a3de46d2f50ab95965eadd1f2f3161084510682704186f8e",
+  "sourceHash": "b7f0005a68d3d19f7c72e645a9b3da2ad7a1aed685d90cc4d934b60041a42edc",
   "sourceFiles": [
     "src/app.js",
     "src/index.html",
@@ -14,18 +14,19 @@
     "src/mobile/manifest.webmanifest",
     "src/site/faq.html",
     "src/site/evidence.html",
-    "src/site/site.css"
+    "src/site/site.css",
+    "src/mobile/vendor/VENDOR.md"
   ],
-  "gitCommit": "19a1d0ded4757533254c15631eb116284cfc9c99",
+  "gitCommit": "53d2963a4b9a0baddfc8b9db576f936ae5255bd9",
   "gitDirty": false,
   "sourceChangedDuringRun": false,
-  "suite": "phase0-T01-T28+phase1-M01-M13+guidance-G01-G06+site-W01-W02",
+  "suite": "phase0-T01-T28+phase1-M01-M14+guidance-G01-G06+site-W01-W03",
   "version": "v0.8.0",
   "runAt": "2026-10-11",
-  "runAtFull": "2026-10-11T06:29:03.198Z",
+  "runAtFull": "2026-10-11T06:49:57.603Z",
   "node": "v22.22.0",
   "platform": "linux",
-  "passed": 55,
+  "passed": 57,
   "failed": 0,
   "statement": "Passing these tests establishes software behaviour only. It establishes nothing about measurement accuracy or clinical meaning.",
   "tests": [
@@ -110,6 +111,12 @@
     {
       "id": "W02",
       "name": "pages: internal links resolve to built files; scope statement present; no result labels used as claims",
+      "ok": true,
+      "kind": "node"
+    },
+    {
+      "id": "W03",
+      "name": "phone edition and pages load nothing from third-party origins; vendored files match VENDOR.md checksums",
       "ok": true,
       "kind": "node"
     },
@@ -356,6 +363,12 @@
     {
       "id": "M09",
       "name": "manifest valid and service worker registers and caches the shell",
+      "ok": true,
+      "kind": "browser"
+    },
+    {
+      "id": "M14",
+      "name": "face model loads from our own origin with a camera present; the page makes no third-party requests",
       "ok": true,
       "kind": "browser"
     }

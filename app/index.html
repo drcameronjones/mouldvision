@@ -167,7 +167,7 @@
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script>window.MV_BUILD_TARGET="live";window.MV_VALIDATION={"software":{"status":"passed","suite":"phase0-T01-T28+phase1-M01-M13+guidance-G01-G06+site-W01-W02","version":"v0.8.0","runAt":"2026-10-11","passed":55,"total":55,"sourceHash":"77ae8cf276b82298a3de46d2f50ab95965eadd1f2f3161084510682704186f8e","gitCommit":"19a1d0ded4757533254c15631eb116284cfc9c99"}};window.MV_BUILD={"sourceHash":"77ae8cf276b82298a3de46d2f50ab95965eadd1f2f3161084510682704186f8e","gitCommit":"19a1d0ded4757533254c15631eb116284cfc9c99","gitDirty":false,"builtAt":"2026-10-11T06:29:09.589Z","verificationReason":null};</script>
+<script>window.MV_BUILD_TARGET="live";window.MV_VALIDATION={"software":{"status":"passed","suite":"phase0-T01-T28+phase1-M01-M14+guidance-G01-G06+site-W01-W03","version":"v0.8.0","runAt":"2026-10-11","passed":57,"total":57,"sourceHash":"b7f0005a68d3d19f7c72e645a9b3da2ad7a1aed685d90cc4d934b60041a42edc","gitCommit":"53d2963a4b9a0baddfc8b9db576f936ae5255bd9"}};window.MV_BUILD={"sourceHash":"b7f0005a68d3d19f7c72e645a9b3da2ad7a1aed685d90cc4d934b60041a42edc","gitCommit":"53d2963a4b9a0baddfc8b9db576f936ae5255bd9","gitDirty":false,"builtAt":"2026-10-11T06:50:03.594Z","verificationReason":null};</script>
 <script>
 'use strict';
 /* MouldVision / VCS Screen — Phase 0 engine (v0.7.0) with Phase 1 additive extensions (v0.8.0): geometry sources, context module, front-end hooks
@@ -369,7 +369,7 @@ function buildValidation(){
   return {
     software: sw && sw.status==='passed' && sw.sourceHash && sw.sourceHash===BUILD_INFO.sourceHash ? { status:'passed', suite:sw.suite, version:sw.version, runAt:sw.runAt, passed:sw.passed, total:sw.total, sourceHash:sw.sourceHash, gitCommit:sw.gitCommit }
             : sw && sw.status==='failed' ? { status:'failed', suite:sw.suite, version:sw.version, runAt:sw.runAt, passed:sw.passed, total:sw.total, sourceHash:sw.sourceHash, gitCommit:sw.gitCommit }
-            : { status:'not_run', suite:'phase0-T01-T28+phase1-M01-M13+guidance-G01-G06+site-W01-W02', version:SOFTWARE_VERSION, runAt:null, sourceHash:BUILD_INFO.sourceHash, reason: sw && sw.status==='passed' ? 'test results are for a different source hash' : (BUILD_INFO.verificationReason||'no test results for this build') },
+            : { status:'not_run', suite:'phase0-T01-T28+phase1-M01-M14+guidance-G01-G06+site-W01-W03', version:SOFTWARE_VERSION, runAt:null, sourceHash:BUILD_INFO.sourceHash, reason: sw && sw.status==='passed' ? 'test results are for a different source hash' : (BUILD_INFO.verificationReason||'no test results for this build') },
     measurement: { status:'not_performed', method:null, displayRef:null, note:'display luminance and contrast not measured (N3 pending)' },
     clinical: { status:'not_performed', claim:'none', note:'no diagnostic or exposure claim' }
   };
