@@ -10,9 +10,9 @@
     "protocol": "quick-2miss-v1",
     "scoring": "score-v1-maxcorrect",
     "stimulus": "gauss-0.42R-sRGB-dither-v1",
-    "sourceHash": "043d380dee5e405a76a896c87788be8e149c8b5f808a09439735816fc11a9e74",
-    "gitCommit": "c5b6dce4521baeeaad45096e5281a6e3c36754ef",
-    "builtAt": "2026-10-11T00:58:13.921Z"
+    "sourceHash": "dc43fce10eb9dbbdee6fb5c82bcde55ce423d8e6a0d927a69d34a7b47af0fa50",
+    "gitCommit": "f645a7770bfeea201324c849e8db8d555b3d04eb",
+    "builtAt": "2026-10-11T01:04:42.069Z"
   },
   "geometry": {
     "pxPerCm": 44.5,
@@ -1997,8 +1997,8 @@
       "runAt": "2026-10-11",
       "passed": 47,
       "total": 47,
-      "sourceHash": "043d380dee5e405a76a896c87788be8e149c8b5f808a09439735816fc11a9e74",
-      "gitCommit": "c5b6dce4521baeeaad45096e5281a6e3c36754ef"
+      "sourceHash": "dc43fce10eb9dbbdee6fb5c82bcde55ce423d8e6a0d927a69d34a7b47af0fa50",
+      "gitCommit": "f645a7770bfeea201324c849e8db8d555b3d04eb"
     },
     "measurement": {
       "status": "not_performed",
