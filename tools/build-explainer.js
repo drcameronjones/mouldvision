@@ -4,6 +4,8 @@ const { chromium } = require('playwright');
 const root = path.join(__dirname, '..'), S = path.join(root, 'samples'), shots = path.join(root, 'docs/explainer-shots');
 const img = f => 'data:image/png;base64,' + fs.readFileSync(path.join(shots, f)).toString('base64');
 const logo = 'data:image/png;base64,' + fs.readFileSync(path.join(root, 'assets/bhs-logo.png')).toString('base64');
+const pimg = f => 'data:image/png;base64,' + fs.readFileSync(path.join(shots, 'patches', f)).toString('base64');
+const patchRow = (items) => `<div class="prow">${items.map(([f, top, bot]) => `<figure><img src="${pimg(f)}" alt=""><figcaption><b>${top}</b><span>${bot}</span></figcaption></figure>`).join('')}</div>`;
 const charts = JSON.parse(fs.readFileSync(path.join(shots, 'charts.json'), 'utf8'));
 const svgFix = s => s.replace(/var\(--line\)/g, '#d6dde3').replace(/var\(--muted\)/g, '#5b6b78').replace(/var\(--fg\)/g, '#13202b').replace(/var\(--bad\)/g, '#c43c2f').replace(/var\(--good\)/g, '#1f8a4c').replace(/var\(--warn\)/g, '#b8720a').replace(/var\(--surface\)/g, '#ffffff');
 const REFS = [
@@ -28,6 +30,8 @@ const REFS = [
   'Klepeis NE, Nelson WC, Ott WR, et al. The National Human Activity Pattern Survey (NHAPS): a resource for assessing exposure to environmental pollutants. <i>J Expo Anal Environ Epidemiol</i>. 2001;11(3):231–252.',
   'Mendell MJ, Mirer AG, Cheung K, Tong M, Douwes J. Respiratory and allergic health effects of dampness, mold, and dampness-related agents: a review of the epidemiologic evidence. <i>Environ Health Perspect</i>. 2011;119(6):748–756.',
   'Fisk WJ, Lei-Gomez Q, Mendell MJ. Meta-analyses of the associations of respiratory health effects with dampness and mold in homes. <i>Indoor Air</i>. 2007;17(4):284–296.',
+  'Neumeister-Kemp HG, Jones CL, Salthammer T, Burton L, Morawska L. Australian Mould Guideline (AMG) 2026: best practice guideline, a hygiene and risk-based framework for the assessment, interpretation, and management of indoor mould. In: <i>International Conference on Indoor Air Quality and Climate (Indoor Air 2026)</i>; 14–18 June 2026; Singapore. eprints.qut.edu.au/266288',
+  'Jones CL. Hiding in plain sight: the indoor exposome of mould, air and the health risk in the rooms we live in [keynote]. <i>11th Annual NIIM Symposium: Future-Proofing Health: Integrative Solutions for Modern Medicine</i>; 10–11 September 2026; Richmond, VIC.',
 ];
 const html = `<!doctype html><html lang="en"><head><meta charset="utf-8"><title>MouldVision — the method</title>
 <style>
@@ -56,6 +60,13 @@ p{margin:0 0 7pt}
 .phone{border-radius:9pt;border:1px solid var(--line);display:block;width:100%;height:82mm;object-fit:cover;object-position:top}
 .shot{text-align:center}
 .shot .n{display:inline-block;width:16pt;height:16pt;border-radius:50%;background:var(--teal);color:#fff;font-weight:700;font-size:9pt;line-height:16pt;margin-bottom:4pt}
+.prow{display:flex;gap:5pt}
+.prow figure{margin:0;flex:1;text-align:center;background:#808080;border-radius:6pt;padding:5pt 4pt 5pt;box-shadow:inset 0 0 0 1px rgba(0,0,0,.12)}
+.prow img{width:100%;max-width:23mm;margin:0 auto;display:block;border-radius:50%;box-shadow:0 0 0 1.2pt rgba(255,255,255,.55)}
+.prow figcaption{color:#fff;font-size:7.8pt;line-height:1.2;margin-top:5pt;white-space:nowrap}
+.figlabel{font-size:8pt;letter-spacing:.1em;text-transform:uppercase;color:var(--teal);font-weight:600;margin:9pt 0 4pt}
+.prow figcaption b{display:block;font-size:9pt}
+.prow figcaption span{opacity:.9}
 ul{margin:0 0 7pt;padding-left:14pt}li{margin:0 0 3pt}
 .refs{font-size:7.9pt;line-height:1.35;columns:2;column-gap:7mm}
 .refs ol{margin:0;padding-left:12pt}.refs li{margin-bottom:3pt;break-inside:avoid}
@@ -102,11 +113,11 @@ th{font-size:7.6pt;letter-spacing:.08em;text-transform:uppercase;color:var(--mut
 <section class="page">
   <div class="eyebrow">1 · Why measure vision in an environmental health practice</div>
   <h2>The exposome needs functional measures, not just lists of exposures</h2>
-  <p class="lead">Genes account for a fraction of long-term health. The rest is the exposome: everything a person meets from conception onward, including the air inside the buildings where Australians spend close to ninety per cent of their lives [17, 19]. Measuring that load is the central difficulty of environmental medicine. Air and surface sampling describe the building; blood and urine describe one moment in a body; a functional test describes what the nervous system is doing right now.</p>
+  <p class="lead">Genes account for a fraction of long-term health. The rest is the exposome: everything a person meets from conception onward, including the air inside the buildings where Australians spend close to ninety per cent of their lives [17, 19, 23]. Measuring that load is the central difficulty of environmental medicine. Air and surface sampling describe the building; blood and urine describe one moment in a body; a functional test describes what the nervous system is doing right now.</p>
   <div class="cols">
     <div>
       <h3>Dampness and mould are common and consequential</h3>
-      <p>The World Health Organization's indoor-air guideline treats dampness and mould as a preventable risk to respiratory health, and meta-analyses place the increase in respiratory symptoms among occupants of damp or mouldy homes at roughly 30–50 per cent [18, 20, 21]. Beyond the airways, occupants report fatigue, cognitive and visual complaints that are harder to measure, and it is here that an objective, quick, repeatable test has value.</p>
+      <p>The World Health Organization's indoor-air guideline treats dampness and mould as a preventable risk to respiratory health, and meta-analyses place the increase in respiratory symptoms among occupants of damp or mouldy homes at roughly 30–50 per cent [18, 20, 21]. In Australia, the Australian Mould Guideline 2026 sets out a hygiene- and risk-based framework for assessing, interpreting and managing indoor mould, which is the building side of the picture this test complements [22]. Beyond the airways, occupants report fatigue, cognitive and visual complaints that are harder to measure, and it is here that an objective, quick, repeatable test has value.</p>
       <h3>Contrast sensitivity sits where optics meets the brain</h3>
       <p>Contrast sensitivity is the ability to see faint differences in shade. It depends on the clarity of the eye's optics and on neural processing in the retina, optic nerve and visual cortex [10, 11]. Because it draws on both, it changes with ageing, cataract, glaucoma and macular disease, and also with agents that act on the nervous system: alcohol, tobacco, lead, solvents and, in a body of work going back to the 1990s, biotoxins from water-damaged buildings and harmful algal blooms [4–8].</p>
     </div>
@@ -124,7 +135,7 @@ th{font-size:7.6pt;letter-spacing:.08em;text-transform:uppercase;color:var(--mut
       </div>
     </div>
   </div>
-  <div class="foot"><span>MouldVision · Biological Health Services · Concept: Dr Cameron Jones, PhD</span><span>Page 2</span></div>
+  <div class="foot"><span>MouldVision · Biological Health Services · Concept: Dr Cameron Jones, PhD · drcameronjones.com</span><span>Page 2</span></div>
 </section>
 
 <!-- 2 WHAT CS IS -->
@@ -133,25 +144,32 @@ th{font-size:7.6pt;letter-spacing:.08em;text-transform:uppercase;color:var(--mut
   <h2>Five bar widths, nine contrast steps, three tilts</h2>
   <div class="cols">
     <div>
-      <p>Each patch is a circle of soft, parallel bars on a mid-grey background. The bars are a sine-wave grating faded at the edges by a Gaussian window, the stimulus of record in vision science [2, 10]. Two things vary:</p>
+      <p>Each patch is a circle of soft, parallel bars on a mid-grey background. The bars are a sine-wave grating faded at the edges by a Gaussian window, the stimulus of record in vision science [2, 10]. Three things vary from patch to patch.</p>
       <p><b>Bar width (spatial frequency).</b> Five columns, A to E, at 1.5, 3, 6, 12 and 18 cycles per degree of visual angle. Column A is coarse; column E is close to the limit of normal acuity. Human sensitivity peaks in the middle, at 3–6 cycles per degree, which is also where the water-damaged-building literature reports deficits [5–8].</p>
-      <p><b>Contrast.</b> Nine rows from 28.6 % down to 0.5 % Michelson contrast, spaced evenly on a logarithmic scale, so each step is the same proportional change. Contrast sensitivity is simply the reciprocal: identifying a 2 % patch means a sensitivity of 50.</p>
-      <p><b>Tilt.</b> Every patch leans left, stands upright or leans right, by 15°. The person reports the tilt. With three choices, guessing is right one time in three, so the record keeps every answer rather than reducing a column to one number.</p>
-      <div class="box">
-        <h4>Why "cycles per degree" and not pixels</h4>
-        <p style="margin:0">A bar width only means something at a known viewing distance. MouldVision converts pixels to degrees of visual angle from the phone's known pixel density and the measured eye-to-screen distance, so a 6 cpd patch is a 6 cpd patch on any phone.</p>
-      </div>
     </div>
     <div>
-      <img src="${img('columns.png')}" style="width:100%;border-radius:6pt" alt="">
-      <div class="cap">The five columns at one contrast: 1.5, 3, 6, 12 and 18 cycles per degree. Finer bars need more contrast to be seen.</div>
-      <img src="${img('ladder.png')}" style="width:100%;border-radius:6pt;margin-top:10pt" alt="">
-      <div class="cap">Column C (6 cpd) down the first six rows of the contrast ladder: 28.6, 17.2, 10.4, 6.3, 3.8 and 2.3 %. Rows seven to nine are fainter still and are marked exploratory in every report, because an ordinary 8-bit screen cannot be assumed to render them faithfully.</div>
-      <img src="${img('key.png')}" style="width:100%;border-radius:6pt;margin-top:10pt;background:#fff" alt="">
-      <div class="cap">The three answers: left, upright, right.</div>
+      <p><b>Contrast.</b> Nine rows from 28.6 % down to 0.5 % Michelson contrast, spaced evenly on a logarithmic scale, so each step is the same proportional change. Contrast sensitivity is the reciprocal: identifying a 2 % patch means a sensitivity of 50.</p>
+      <p><b>Tilt.</b> Every patch leans left, stands upright or leans right, by 15°. The person reports the tilt. With three choices, guessing is right one time in three, so the record keeps every answer rather than reducing a column to one number.</p>
     </div>
   </div>
-  <div class="foot"><span>MouldVision · Biological Health Services · Concept: Dr Cameron Jones, PhD</span><span>Page 3</span></div>
+  <div class="figlabel">Bar width · the five columns, each shown once at the same contrast</div>
+  ${patchRow([['col-0.png','A','1.5 cpd'],['col-1.png','B','3 cpd'],['col-2.png','C','6 cpd'],['col-3.png','D','12 cpd'],['col-4.png','E','18 cpd']])}
+  <div class="cap">Bars get finer from A to E; finer bars need more contrast to be seen, so a healthy curve rises to a peak at B–C and falls again towards E. Printed patches here are drawn with bars four times wider than on the phone so they survive printing; the ratios between columns are exact.</div>
+  <div class="figlabel">Contrast · one column down the first six rows of the ladder</div>
+  ${patchRow([['row-0.png','Row 1','28.6 %'],['row-1.png','Row 2','17.2 %'],['row-2.png','Row 3','10.4 %'],['row-3.png','Row 4','6.3 %'],['row-4.png','Row 5','3.8 %'],['row-5.png','Row 6','2.3 %']])}
+  <div class="cap">Each row is about 40 % fainter than the one before; rows 5 and 6 may be hard to see in print, as they are meant to be. Rows 7 to 9 (1.4, 0.8 and 0.5 %) are fainter still; they are shown in the test but marked exploratory in every report, because an ordinary 8-bit screen cannot be assumed to render them faithfully.</div>
+  <div class="cols" style="margin-top:4pt;align-items:start">
+    <div>
+      <div class="figlabel" style="margin-top:0">Tilt · the three possible answers</div>
+      ${patchRow([['key-left.png','Left','leans left 15°'],['key-up.png','Upright','vertical'],['key-right.png','Right','leans right 15°']])}
+      <div class="cap">Every patch is one of these three, chosen at random.</div>
+    </div>
+    <div class="box" style="margin-top:9pt">
+      <h4>Why "cycles per degree" and not pixels</h4>
+      <p style="margin:0;font-size:9.4pt">Bar width only has meaning at a known distance. MouldVision converts pixels to degrees of visual angle from the phone's pixel density and the measured eye-to-screen distance, so 6 cpd is 6 cpd on any phone.</p>
+    </div>
+  </div>
+  <div class="foot"><span>MouldVision · Biological Health Services · Concept: Dr Cameron Jones, PhD · drcameronjones.com</span><span>Page 3</span></div>
 </section>
 
 <!-- 3 THE PHONE METHOD -->
@@ -168,7 +186,7 @@ th{font-size:7.6pt;letter-spacing:.08em;text-transform:uppercase;color:var(--mut
     <div class="shot"><span class="n">5</span><img class="phone" src="${img('s5-context.png')}" alt=""><div class="cap"><b>Context (optional).</b> Twelve one-tap questions about the building, exposures, eye history and age band. Stored beside the result and shown back in the report; never used in any calculation.</div></div>
     <div class="shot"><span class="n">6</span><img class="phone" src="${img('s6-results.png')}" alt=""><div class="cap"><b>Results.</b> A seven-section report with both eyes' charts, saved on the phone, shareable as PDF or as the full machine-readable record.</div></div>
   </div>
-  <div class="foot"><span>MouldVision · Biological Health Services · Concept: Dr Cameron Jones, PhD</span><span>Page 4</span></div>
+  <div class="foot"><span>MouldVision · Biological Health Services · Concept: Dr Cameron Jones, PhD · drcameronjones.com</span><span>Page 4</span></div>
 </section>
 
 <!-- 4 READING THE REPORT -->
@@ -204,7 +222,7 @@ th{font-size:7.6pt;letter-spacing:.08em;text-transform:uppercase;color:var(--mut
       </table>
     </div>
   </div>
-  <div class="foot"><span>MouldVision · Biological Health Services · Concept: Dr Cameron Jones, PhD</span><span>Page 5</span></div>
+  <div class="foot"><span>MouldVision · Biological Health Services · Concept: Dr Cameron Jones, PhD · drcameronjones.com</span><span>Page 5</span></div>
 </section>
 
 <!-- 5 WHAT MAKES IT DEFENSIBLE -->
@@ -231,7 +249,7 @@ th{font-size:7.6pt;letter-spacing:.08em;text-transform:uppercase;color:var(--mut
       </div>
     </div>
   </div>
-  <div class="foot"><span>MouldVision · Biological Health Services · Concept: Dr Cameron Jones, PhD</span><span>Page 6</span></div>
+  <div class="foot"><span>MouldVision · Biological Health Services · Concept: Dr Cameron Jones, PhD · drcameronjones.com</span><span>Page 6</span></div>
 </section>
 
 <!-- 6 RESEARCH PROGRAMME -->
@@ -269,7 +287,7 @@ th{font-size:7.6pt;letter-spacing:.08em;text-transform:uppercase;color:var(--mut
       <p>visualcontrastsensitivity.com, installable from the browser on iPhone and Android, working offline after the first visit. The source is version-controlled and every build is tied to the test results that verified it.</p>
     </div>
   </div>
-  <div class="foot"><span>MouldVision · Biological Health Services · Concept: Dr Cameron Jones, PhD</span><span>Page 7</span></div>
+  <div class="foot"><span>MouldVision · Biological Health Services · Concept: Dr Cameron Jones, PhD · drcameronjones.com</span><span>Page 7</span></div>
 </section>
 
 <!-- 7 REFERENCES -->
@@ -280,14 +298,14 @@ th{font-size:7.6pt;letter-spacing:.08em;text-transform:uppercase;color:var(--mut
   <div class="cols" style="margin-top:9mm;align-items:end">
     <div>
       <img src="${logo}" style="height:34pt;display:block;margin-bottom:6pt" alt="">
-      <p class="small" style="margin:0"><b>Biological Health Services</b><br>Head office: Level 1, 459 Toorak Road, Toorak VIC 3142<br>Laboratory: 7/4 Weddel Court, Laverton North VIC 3026<br>www.biologicalhealthservices.com.au · mould.net.au<br>ISO 9001:2015 · ISO/IEC 17025:2017</p>
+      <p class="small" style="margin:0"><b>Biological Health Services</b><br>Head office: Level 1, 459 Toorak Road, Toorak VIC 3142<br>Laboratory: 7/4 Weddel Court, Laverton North VIC 3026<br>www.biologicalhealthservices.com.au · mould.net.au · drcameronjones.com<br>ISO 9001:2015 · ISO/IEC 17025:2017</p>
     </div>
     <div class="small">
-      <p><b>Concept and scientific lead:</b> Dr Cameron Jones, PhD, Principal Environmental Microbiologist.</p>
+      <p><b>Concept and scientific lead:</b> Dr Cameron Jones, PhD, Principal Environmental Microbiologist; co-author of the Australian Mould Guideline 2026 [22]. Publications and talks: drcameronjones.com.</p>
       <p>MouldVision is a screening and research instrument. It does not diagnose any condition, does not detect mould or mycotoxins in a person, and is not a substitute for an eye examination or medical advice. Questions about a building are answered by environmental assessment; questions about health by a medical practitioner. Software verification status, measurement validation status and clinical validation status are printed on every report. This document describes the method as built in October 2026 (v0.8.0) and will be revised as the validation work reports.</p>
     </div>
   </div>
-  <div class="foot"><span>MouldVision · Biological Health Services · Concept: Dr Cameron Jones, PhD</span><span>Page 8</span></div>
+  <div class="foot"><span>MouldVision · Biological Health Services · Concept: Dr Cameron Jones, PhD · drcameronjones.com</span><span>Page 8</span></div>
 </section>
 </body></html>`;
 fs.writeFileSync(path.join(S, 'explainer.html'), html);
