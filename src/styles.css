@@ -109,3 +109,12 @@ footer{margin-top:28px;font-size:.8rem;color:var(--muted)}
 .notice.warnbar{margin-bottom:16px}
 .notice button{margin-left:6px}
 button.small{padding:4px 8px;font-size:.8rem}
+
+/* guidance card (guidance-v1-provisional) */
+.guide{border-radius:12px;padding:14px 16px;border-left:6px solid var(--accent);background:var(--accent-soft)}
+.guide .glabel{font-family:var(--display);font-weight:700;font-size:1.15rem;margin-bottom:6px}
+.guide ul{margin:6px 0}
+.guide.tier-none{border-left-color:var(--accent)}
+.guide.tier-repeat{border-left-color:var(--warn);background:var(--warn-soft)}
+.guide.tier-eyecheck{border-left-color:#7a3e7a;background:color-mix(in srgb,#7a3e7a 10%,var(--surface))}
+.guide.tier-repeat .glabel{color:var(--warn)} .guide.tier-eyecheck .glabel{color:#7a3e7a} .guide.tier-none .glabel{color:var(--accent)}

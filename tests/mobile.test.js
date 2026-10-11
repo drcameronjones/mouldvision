@@ -99,7 +99,7 @@ test(tag('M07', 'questionnaire: twelve items validated and stored in context; sc
   assert.equal(v.ok, false); assert.deepEqual(j(v.errors).sort(), ['bogus: unknown item', 'smoking: not an option']);
   assert.deepEqual(j(v.answers), { mouldSmell: 'some', eyeConditions: ['cataract', 'other'], ageBand: '40–49', sampling: 'BHS kit', samplingText: 'kit 1234' });
   const ctx = MV.setRunContext(run, { mouldSmell: 'substantial', treatment: 'yes', ageBand: '60–69' });
-  assert.equal(ctx.version, 'context-v1-draft'); assert.equal(ctx.answered, true);
+  assert.equal(ctx.version, 'context-v1'); assert.equal(ctx.answered, true);
   assert.ok(!MV.INTEGRITY_SCOPE.includes('context'), 'context is outside the integrity scope by design');
   // mutation test: changing answers leaves the scoring and the integrity hash identical
   for (const ans of [{}, { mouldSmell: 'none' }, { eyeConditions: ['glaucoma'], smoking: 'yes', alcohol24h: 'yes' }]) {
@@ -126,7 +126,7 @@ test(tag('M08', 'report: context section after section 7 only for runs with a co
   const words = ['POSITIVE', 'NEGATIVE', 'PASS', 'FAIL', 'CLEAR', 'FLAGGED', 'ABNORMAL', 'BIOTOXIN', 'MOULD', 'MYCOTOXIN', 'CIRS'];
   const body = [T.heading, T.banner, T.s1, T.s2, T.s4, T.s5, T.s6, T.ident, T.valid, ...T.told].join('\n');
   words.forEach(w => assert.ok(!new RegExp('\\b' + w + '\\b', 'i').test(body), 'found ' + w));
-  assert.match(T.ident, /Context context-v1-draft/);
+  assert.match(T.ident, /Context context-v1 /);
   // PDF builds with the section
   const blob = MV.buildPdf(run); assert.ok(blob.size > 20000);
   // phone geometry wording
