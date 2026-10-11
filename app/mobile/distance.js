@@ -47,8 +47,10 @@
   function summarise(readings) { const v = readings.filter(x => x != null && isFinite(x)); return { medianCm: v.length ? +median(v).toFixed(1) : null, stdCm: v.length > 1 ? +stddev(v).toFixed(1) : null, n: v.length }; }
 
   // ---------- Browser sensor (camera + FaceLandmarker) ----------
-  const TASKS_VISION = 'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14';
-  const MODEL_URL = 'https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/1/face_landmarker.task';
+  // Served from our own origin (src/mobile/vendor, see VENDOR.md): no third-party requests, works offline once cached.
+  const here = p => (typeof location !== 'undefined' ? new URL(p, location.href).href : p);
+  const TASKS_VISION = here('vendor/mediapipe');
+  const MODEL_URL = here('vendor/mediapipe/face_landmarker.task');
   class DistanceSensor {
     constructor(opts = {}) {
       this.video = opts.video || null; this.intervalMs = opts.intervalMs || 300; this.onReading = opts.onReading || (() => {});

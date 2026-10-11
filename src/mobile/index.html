@@ -12,7 +12,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icons/icon-192.png">
 <link rel="icon" href="icons/icon-192.png">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="vendor/fonts/fonts.css">
 <link rel="stylesheet" href="styles.css">
 <link rel="stylesheet" href="mobile.css">
 </head>
@@ -29,7 +29,7 @@
   <div class="card stack">
     <span class="eyebrow">What this measures</span>
     <h2>How faint a striped patch can you still see?</h2>
-    <p>You will see circular patches of faint bars that lean <strong>left</strong>, stand <strong>upright</strong> or lean <strong>right</strong>. Swipe in the direction they lean. Patches get fainter and finer; one eye at a time; about three minutes per eye.</p>
+    <p>You will see circular patches of faint bars that lean <strong>left</strong>, stand <strong>upright</strong> or lean <strong>right</strong>. Tap the matching button, or swipe the way they lean. Patches get fainter and finer; one eye at a time; about three minutes per eye.</p>
     <div class="key" id="startKey"></div>
     <details class="ctx"><summary>Why environmental toxin exposure matters to this test</summary><p class="small" id="ctxParagraph"></p><p class="small muted">References are numbered as in the report.</p></details>
     <div class="row">
@@ -154,7 +154,7 @@
 
 <div id="camKeep" style="position:fixed;left:-4px;top:-4px;width:2px;height:2px;opacity:.01;overflow:hidden;pointer-events:none"></div>
 <img id="bhsLogo" src="bhs-logo.png" alt="" hidden>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="vendor/jspdf.umd.min.js"></script>
 <script src="build-info.js"></script>
 <script src="app.js"></script>
 <script src="devices.js"></script>

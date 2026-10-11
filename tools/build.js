@@ -43,7 +43,8 @@ function buildMobile(target) {
   const copy = (from, to) => fs.copyFileSync(path.join(root, from), path.join(outDir, to || path.basename(from)));
   ['src/mobile/index.html', 'src/mobile/mobile.css', 'src/mobile/mobile.js', 'src/mobile/devices.js', 'src/mobile/distance.js', 'src/mobile/manifest.webmanifest', 'src/styles.css', 'src/app.js', 'assets/bhs-logo.png'].forEach(f => copy(f));
   ['icon-192.png', 'icon-512.png'].forEach(f => copy('src/mobile/icons/' + f, 'icons/' + f));
-  ['src/site/faq.html', 'src/site/evidence.html', 'src/site/site.css'].forEach(f => copy(f));   // information pages served beside the app
+  ['src/site/faq.html', 'src/site/evidence.html', 'src/site/site.css'].forEach(f => copy(f));
+  fs.cpSync(path.join(root, 'src/mobile/vendor'), path.join(outDir, 'vendor'), { recursive: true });   // self-hosted third-party files (VENDOR.md)   // information pages served beside the app
   if (fs.existsSync(path.join(root, 'samples/MouldVision-Method-Explainer.pdf'))) copy('samples/MouldVision-Method-Explainer.pdf', 'MouldVision-Method.pdf');
   fs.writeFileSync(path.join(outDir, 'build-info.js'), `window.MV_BUILD_TARGET=${JSON.stringify(target)};window.MV_VALIDATION=${JSON.stringify(validation)};window.MV_BUILD=${JSON.stringify(buildInfo)};\n`);
   fs.writeFileSync(path.join(outDir, 'sw.js'), read('src/mobile/sw.js').replace('__MV_BUILD_ID__', currentHash.slice(0, 16) + '-' + target));

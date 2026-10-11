@@ -20,7 +20,7 @@ test('W02 pages: internal links resolve to built files; scope statement present;
     for (const m of html.matchAll(/href="([^"#:]+)(#[^"]*)?"/g)) {
       const target = m[1];
       if (target === './') continue;
-      const ok = ['faq.html', 'evidence.html', 'styles.css', 'site.css', 'MouldVision-Method.pdf'].includes(target) || target.startsWith('icons/');
+      const ok = ['faq.html', 'evidence.html', 'styles.css', 'site.css', 'MouldVision-Method.pdf', 'vendor/fonts/fonts.css'].includes(target) || target.startsWith('icons/');
       assert.ok(ok, f + ' links to unknown ' + target);
     }
     assert.match(html, /does not diagnose any condition/);
@@ -31,4 +31,19 @@ test('W02 pages: internal links resolve to built files; scope statement present;
   for (const f of ['faq.html', 'evidence.html', 'site.css']) assert.ok(build.includes('src/site/' + f), 'build copies ' + f);
   const sw = fs.readFileSync(path.join(__dirname, '..', 'src/mobile/sw.js'), 'utf8');
   for (const f of ['faq.html', 'evidence.html', 'site.css']) assert.ok(sw.includes("'" + f + "'"), 'service worker caches ' + f);
+});
+
+test('W03 phone edition and pages load nothing from third-party origins; vendored files match VENDOR.md checksums', () => {
+  const crypto = require('crypto');
+  const root = path.join(__dirname, '..');
+  for (const f of ['src/mobile/index.html', 'src/site/faq.html', 'src/site/evidence.html']) {
+    const html = fs.readFileSync(path.join(root, f), 'utf8');
+    for (const m of html.matchAll(/<(?:script|link)[^>]+(?:src|href)="(https?:[^"]+)"/g)) assert.fail(f + ' loads ' + m[1]);
+  }
+  const dist = fs.readFileSync(path.join(root, 'src/mobile/distance.js'), 'utf8');
+  assert.ok(!/https?:\/\//.test(dist.split('// ---------- Browser sensor')[1].split('class DistanceSensor')[0]), 'model and wasm URLs are same-origin');
+  const md = fs.readFileSync(path.join(root, 'src/mobile/vendor/VENDOR.md'), 'utf8');
+  const lines = [...md.matchAll(/^([0-9a-f]{64})  \.\/(.+)$/gm)];
+  assert.ok(lines.length >= 13);
+  for (const [, h, f] of lines) assert.equal(crypto.createHash('sha256').update(fs.readFileSync(path.join(root, 'src/mobile/vendor', f))).digest('hex'), h, f);
 });

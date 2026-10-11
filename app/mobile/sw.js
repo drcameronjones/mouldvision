@@ -1,10 +1,10 @@
 // MouldVision phone edition — service worker. Caches the app shell so the test runs with no network after first load.
 // The cache name carries the build's source hash (injected at build), so a new verified build replaces the old one.
-const BUILD = '77ae8cf276b82298-staging';
+const BUILD = 'b42dcc6e6e6da87f-staging';
 const SHELL = 'mv-shell-' + BUILD;
 const RUNTIME = 'mv-runtime-v1';
-const APP_FILES = ['./', 'index.html', 'styles.css', 'mobile.css', 'build-info.js', 'app.js', 'devices.js', 'distance.js', 'mobile.js', 'manifest.webmanifest', 'bhs-logo.png', 'icons/icon-192.png', 'icons/icon-512.png', 'faq.html', 'evidence.html', 'site.css'];
-const EXTERNAL = ['https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js'];
+const APP_FILES = ['./', 'index.html', 'styles.css', 'mobile.css', 'build-info.js', 'app.js', 'devices.js', 'distance.js', 'mobile.js', 'manifest.webmanifest', 'bhs-logo.png', 'icons/icon-192.png', 'icons/icon-512.png', 'faq.html', 'evidence.html', 'site.css', 'vendor/jspdf.umd.min.js', 'vendor/fonts/fonts.css', 'vendor/fonts/sora-latin-500-normal.woff2', 'vendor/fonts/sora-latin-600-normal.woff2', 'vendor/fonts/sora-latin-700-normal.woff2', 'vendor/fonts/manrope-latin-400-normal.woff2', 'vendor/fonts/manrope-latin-500-normal.woff2', 'vendor/fonts/manrope-latin-600-normal.woff2', 'vendor/fonts/manrope-latin-700-normal.woff2'];
+const EXTERNAL = [];   // everything is served from this origin
 self.addEventListener('install', e => {
   e.waitUntil((async () => {
     const c = await caches.open(SHELL);
@@ -19,9 +19,10 @@ self.addEventListener('activate', e => {
 self.addEventListener('fetch', e => {
   const req = e.request; if (req.method !== 'GET') return;
   const url = new URL(req.url);
-  // App shell and the PDF library: cache first. Face-landmark model and wasm: cache once fetched (large, versioned URLs).
-  const isShell = url.origin === self.location.origin || EXTERNAL.includes(req.url);
-  const isModel = /mediapipe|tasks-vision/.test(req.url);
+  // Same origin only. Face-landmark model and wasm (vendor/mediapipe, ~13 MB) go to a runtime cache on first use; the rest is the shell.
+  if (url.origin !== self.location.origin) return;
+  const isModel = /\/vendor\/mediapipe\//.test(url.pathname);
+  const isShell = !isModel;
   if (!isShell && !isModel) return;
   e.respondWith((async () => {
     const cache = await caches.open(isShell ? SHELL : RUNTIME);

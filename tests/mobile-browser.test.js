@@ -7,7 +7,7 @@ const root = path.join(__dirname, '..');
 const results = []; let failed = 0;
 async function t(id, name, fn) { try { await fn(); results.push({ id, name, ok: true }); console.log('ok -', id, name); } catch (e) { failed++; results.push({ id, name, ok: false, error: String(e && e.stack || e) }); console.log('not ok -', id, name, '\n   ', String(e && e.message || e)); } }
 const assert = require('node:assert/strict');
-const MIME = { html: 'text/html; charset=utf-8', js: 'application/javascript', css: 'text/css', png: 'image/png', webmanifest: 'application/manifest+json', json: 'application/json' };
+const MIME = { html: 'text/html; charset=utf-8', js: 'application/javascript', mjs: 'application/javascript', css: 'text/css', png: 'image/png', wasm: 'application/wasm', woff2: 'font/woff2', webmanifest: 'application/manifest+json', json: 'application/json' };
 function serve() { return new Promise(res => { const srv = http.createServer((req, u) => { let p = req.url.split('?')[0].replace(/^\//, ''); if (p === '' || p.endsWith('/')) p += 'index.html'; const f = path.join(root, 'app', 'mobile', p); fs.readFile(f, (e, d) => { if (e) { u.writeHead(404); return u.end(); } u.writeHead(200, { 'content-type': MIME[f.split('.').pop()] || 'application/octet-stream' }); u.end(d); }); }); srv.listen(0, () => res(srv)); }); }
 
 (async () => {
@@ -106,6 +106,20 @@ function serve() { return new Promise(res => { const srv = http.createServer((re
     await page.goto(base);
     const reg = await page.evaluate(async () => { const r = await navigator.serviceWorker.register('sw.js'); await navigator.serviceWorker.ready; await new Promise(res => setTimeout(res, 800)); const keys = await caches.keys(); const c = await caches.open(keys.find(k => k.startsWith('mv-shell-'))); const cached = await c.keys(); return { scope: r.scope, keys, cached: cached.map(x => x.url.replace(location.origin + '/', '')) }; });
     assert.ok(reg.keys.some(k => k.startsWith('mv-shell-'))); ['index.html', 'app.js', 'mobile.js', 'styles.css', 'mobile.css', 'manifest.webmanifest', 'icons/icon-192.png'].forEach(f => assert.ok(reg.cached.includes(f), 'cached ' + f));
+  });
+
+  await t('M14', 'face model loads from our own origin with a camera present; the page makes no third-party requests', async () => {
+    const b2 = await chromium.launch({ args: ['--use-fake-device-for-media-stream', '--use-fake-ui-for-media-stream'] });
+    const c2 = await b2.newContext({ ...devices['iPhone 13'], permissions: ['camera'] }); await c2.addInitScript(() => { window.MV_NO_SW = true; });
+    const p2 = await c2.newPage(); const ext = [];
+    p2.on('request', r => { const u = r.url(); if (!u.startsWith(base) && !/^(data|blob):/.test(u)) ext.push(u); });
+    await p2.goto(base); await p2.click('#btnStart');
+    await p2.waitForFunction(() => { const s = window.MVM.app.M.sensor; return s && (s.running || s.error); }, null, { timeout: 90000 });
+    await p2.waitForTimeout(1500);
+    const st = await p2.evaluate(() => { const s = window.MVM.app.M.sensor; return { running: s.running, error: s.error, landmarker: !!s.landmarker, frames: s.noFaceFrames + s.readings.length }; });
+    await b2.close();
+    assert.equal(st.error, null); assert.equal(st.running, true); assert.equal(st.landmarker, true); assert.ok(st.frames > 0, 'detector ran on camera frames');
+    assert.deepEqual(ext, []);
   });
 
   await browser.close(); srv.close();
