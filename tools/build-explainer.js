@@ -32,8 +32,16 @@ const REFS = [
   'Fisk WJ, Lei-Gomez Q, Mendell MJ. Meta-analyses of the associations of respiratory health effects with dampness and mold in homes. <i>Indoor Air</i>. 2007;17(4):284–296.',
   'Neumeister-Kemp HG, Jones CL, Salthammer T, Burton L, Morawska L. Australian Mould Guideline (AMG) 2026: best practice guideline, a hygiene and risk-based framework for the assessment, interpretation, and management of indoor mould. In: <i>International Conference on Indoor Air Quality and Climate (Indoor Air 2026)</i>; 14–18 June 2026; Singapore. eprints.qut.edu.au/266288',
   'Jones CL. Hiding in plain sight: the indoor exposome of mould, air and the health risk in the rooms we live in [keynote]. <i>11th Annual NIIM Symposium: Future-Proofing Health: Integrative Solutions for Modern Medicine</i>; 10–11 September 2026; Richmond, VIC.',
+  'Paulsen AJ, Schubert CR, Johnson LJ, et al. Association of cadmium and lead exposure with the incidence of contrast sensitivity impairment among middle-aged adults. <i>JAMA Ophthalmol</i>. 2018;136(12):1342–1350.',
+  'Flaharty K, Niziol LM, Woodward MA, et al. Association of contrast sensitivity with eye disease and vision-related quality of life. <i>Am J Ophthalmol</i>. 2024;261:176–186.',
+  'Xiong YZ, Kwon M, Bittner AK, et al. Relationship between acuity and contrast sensitivity: differences due to eye disease. <i>Invest Ophthalmol Vis Sci</i>. 2020;61(6):40.',
+  'Balcer LJ, Baier ML, Cohen JA, et al. Contrast letter acuity as a visual component for the Multiple Sclerosis Functional Composite. <i>Neurology</i>. 2003;61(10):1367–1373.',
+  'Lord SR, Dayhew J. Visual risk factors for falls in older people. <i>J Am Geriatr Soc</i>. 2001;49(5):508–515.',
+  'Jones PR, Ungewiss J, Eichinger P, et al. Contrast sensitivity and night driving in older people. <i>Front Hum Neurosci</i>. 2022;16:914459.',
+  'Desapriya E, Harjee R, Brubacher J, et al. Vision screening of older drivers for preventing road traffic injuries and fatalities. <i>Cochrane Database Syst Rev</i>. 2014;(2):CD006252.',
+  'Austroads, National Transport Commission. <i>Assessing Fitness to Drive for commercial and private vehicle drivers</i>. Sydney: Austroads; 2022.',
 ];
-const html = `<!doctype html><html lang="en"><head><meta charset="utf-8"><title>MouldVision — the method</title>
+let html = `<!doctype html><html lang="en"><head><meta charset="utf-8"><title>MouldVision — the method</title>
 <style>
 @page{size:A4;margin:0}
 :root{--ink:#13202b;--muted:#5b6b78;--line:#d6dde3;--teal:#0b6e8e;--teal-soft:#e2f1f6;--cream:#f6f3ee;--good:#1f8a4c;--bad:#c43c2f;--warn:#b8720a}
@@ -68,13 +76,19 @@ p{margin:0 0 7pt}
 .prow figcaption b{display:block;font-size:9pt}
 .prow figcaption span{opacity:.9}
 ul{margin:0 0 7pt;padding-left:14pt}li{margin:0 0 3pt}
-.refs{font-size:7.9pt;line-height:1.35;columns:2;column-gap:7mm}
+.refs{font-size:6.9pt;line-height:1.26;columns:2;column-gap:7mm}
 .refs ol{margin:0;padding-left:12pt}.refs li{margin-bottom:3pt;break-inside:avoid}
 table{border-collapse:collapse;width:100%;font-size:8.2pt}
 th,td{text-align:left;padding:3pt 5pt;border-bottom:1px solid var(--line);vertical-align:top}
 th{font-size:7.6pt;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
 .chart svg{width:100%;height:auto}
 .tag{display:inline-block;padding:1pt 6pt;border-radius:4pt;font-size:7.6pt;font-weight:600;background:var(--teal-soft);color:var(--teal);letter-spacing:.04em}
+.tiers3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:5mm;margin:8pt 0 4pt}
+.tcard{border-radius:6pt;padding:8pt 10pt;border-left:4pt solid #0b6e8e;background:#e2f1f6;font-size:9pt;line-height:1.4}
+.tcard b{display:block;font-family:Lora,Georgia,serif;font-size:11pt;margin-bottom:4pt;color:#0b6e8e}
+.tcard p{margin:0}
+.tcard.t-repeat{border-left-color:#b8720a;background:#fdf1dc}.tcard.t-repeat b{color:#8a5508}
+.tcard.t-eye{border-left-color:#7a3e7a;background:#f1e8f1}.tcard.t-eye b{color:#7a3e7a}
 .kpi{display:grid;grid-template-columns:repeat(3,1fr);gap:5mm;margin:8pt 0}
 .kpi div{border-top:2px solid var(--teal);padding-top:5pt}
 .kpi b{display:block;font-family:Lora,Georgia,serif;font-size:17pt;font-weight:600;line-height:1.1}
@@ -117,13 +131,13 @@ th{font-size:7.6pt;letter-spacing:.08em;text-transform:uppercase;color:var(--mut
   <div class="cols">
     <div>
       <h3>Dampness and mould are common and consequential</h3>
-      <p>The World Health Organization's indoor-air guideline treats dampness and mould as a preventable risk to respiratory health, and meta-analyses place the increase in respiratory symptoms among occupants of damp or mouldy homes at roughly 30–50 per cent [18, 20, 21]. In Australia, the Australian Mould Guideline 2026 sets out a hygiene- and risk-based framework for assessing, interpreting and managing indoor mould, which is the building side of the picture this test complements [22]. Beyond the airways, occupants report fatigue, cognitive and visual complaints that are harder to measure, and it is here that an objective, quick, repeatable test has value.</p>
+      <p>The World Health Organization's indoor-air guideline treats dampness and mould as a preventable risk to respiratory health, and meta-analyses place the increase in respiratory symptoms among occupants of damp or mouldy homes at roughly 30–50 per cent [18, 20, 21]. The Australian Mould Guideline 2026 sets out how indoor mould is assessed and managed: the building side of the picture this test complements [22]. Beyond the airways, occupants report fatigue, cognitive and visual complaints that are harder to measure, and it is here that an objective, quick, repeatable test has value.</p>
       <h3>Contrast sensitivity sits where optics meets the brain</h3>
-      <p>Contrast sensitivity is the ability to see faint differences in shade. It depends on the clarity of the eye's optics and on neural processing in the retina, optic nerve and visual cortex [10, 11]. Because it draws on both, it changes with ageing, cataract, glaucoma and macular disease, and also with agents that act on the nervous system: alcohol, tobacco, lead, solvents and, in a body of work going back to the 1990s, biotoxins from water-damaged buildings and harmful algal blooms [4–8].</p>
+      <p>Contrast sensitivity is the ability to see faint differences in shade. It depends on the clarity of the eye's optics and on neural processing in the retina, optic nerve and visual cortex [10, 11]. Because it draws on both, it changes with ageing, cataract, glaucoma and macular disease, with optic nerve conditions [27], and with neurotoxic exposures: cadmium, largely from tobacco smoke, predicted new loss over ten years in middle-aged adults [24], and work since the 1990s links deficits to biotoxins from water-damaged buildings and algal blooms [4–8].</p>
     </div>
     <div>
       <h3>The longevity case</h3>
-      <p>Healthspan is shaped by cumulative, low-grade environmental load that no single clinical visit captures. The tests that matter for longevity are the ones people will actually repeat: cheap, short, at home, and sensitive to change. Contrast sensitivity is already an established marker of visual ageing [3, 11]; measured on a phone, it becomes a quarterly data point rather than a once-a-decade clinic measurement.</p>
+      <p>Healthspan is shaped by cumulative, low-grade environmental load that no single clinical visit captures. The tests that matter for longevity are the ones people will actually repeat: cheap, short, at home, and sensitive to change. Contrast sensitivity is an established marker of visual ageing [3, 11], linked to falls [28], night-time hazard detection [29] and people's own rating of their vision [25]. Measured on a phone, it becomes a quarterly data point rather than a once-a-decade clinic measurement.</p>
       <div class="box teal">
         <h4>One marker, honestly framed</h4>
         <p style="margin:0">Reduced contrast sensitivity is non-specific. On its own it cannot tell a damp house from an early cataract. Its value comes from being tracked over time, in the same person, under recorded conditions, and read alongside what is known about the building and the person. MouldVision is built around that principle: every result carries its conditions, and no result carries a label.</p>
@@ -183,7 +197,7 @@ th{font-size:7.6pt;letter-spacing:.08em;text-transform:uppercase;color:var(--mut
   </div>
   <div class="cols3" style="margin-top:5mm">
     <div class="shot"><span class="n">4</span><img class="phone" src="${img('s4-trial.png')}" alt=""><div class="cap"><b>Answer.</b> Tap Left, Upright or Right, or swipe the way the bars lean. Patches get fainter down each column and finer across the columns. The screen is plain mid-grey throughout; distance is tracked between patches.</div></div>
-    <div class="shot"><span class="n">5</span><img class="phone" src="${img('s5-context.png')}" alt=""><div class="cap"><b>Context (optional).</b> Twelve one-tap questions about the building, exposures, eye history and age band. Stored beside the result and shown back in the report; never used in any calculation.</div></div>
+    <div class="shot"><span class="n">5</span><img class="phone" src="${img('s5-context.png')}" alt=""><div class="cap"><b>Context (optional).</b> Fourteen one-tap questions about the building, exposures, eye history, diabetes, night-time driving and age band. Stored beside the result and shown back in the report; never used in any calculation.</div></div>
     <div class="shot"><span class="n">6</span><img class="phone" src="${img('s6-results.png')}" alt=""><div class="cap"><b>Results.</b> A seven-section report with both eyes' charts, saved on the phone, shareable as PDF or as the full machine-readable record.</div></div>
   </div>
   <div class="foot"><span>MouldVision · Biological Health Services · Concept: Dr Cameron Jones, PhD · drcameronjones.com</span><span>Page 4</span></div>
@@ -225,9 +239,42 @@ th{font-size:7.6pt;letter-spacing:.08em;text-transform:uppercase;color:var(--mut
   <div class="foot"><span>MouldVision · Biological Health Services · Concept: Dr Cameron Jones, PhD · drcameronjones.com</span><span>Page 5</span></div>
 </section>
 
+<!-- 4b WHAT YOUR RESULT TELLS YOU -->
+<section class="page">
+  <div class="eyebrow">5 · What your result tells you</div>
+  <h2>One headline that says what to do next, never what is wrong</h2>
+  <p class="lead" style="font-size:11.4pt">People want to know whether their result is normal. Until a measured reference range exists, the honest answer is a decision, not a diagnosis: every report opens with one of three headlines and the specific patches or conditions behind it.</p>
+  <div class="tiers3">
+    <div class="tcard t-none"><b>Nothing in this result calls for action</b><p>Easier patches identified in every column with both eyes, steady conditions, and no change beyond what the test usually varies. Keep it as a baseline; repeat in about three months.</p></div>
+    <div class="tcard t-repeat"><b>Repeat to confirm</b><p>Something is uncertain: conditions changed, the two eyes differed for the first time, or the result moved two or more steps from the person's own baseline. Repeat within a week, same phone, same room.</p></div>
+    <div class="tcard t-eye"><b>Worth an eye check</b><p>One eye missed patches most adults with healthy, corrected eyes identify, or a difference between the eyes repeated. See an optometrist with the report.</p></div>
+  </div>
+  <div class="cols" style="margin-top:6pt">
+    <div>
+      <h3>The rules (guidance-v1-provisional)</h3>
+      <table>
+        <tr><th>Check</th><th>Rule</th></tr>
+        <tr><td>Easy patches</td><td>Rows 1–3 of columns A–C (28.6–10.4 % contrast). Two or more missed in one eye: eye check on a steady run, repeat otherwise.</td></tr>
+        <tr><td>Conditions</td><td>Face seen by the camera on fewer than 80 % of patches, more than three distance changes, zoom changed, or app left: repeat.</td></tr>
+        <tr><td>Between the eyes</td><td>Two or more contrast steps apart in two adjacent columns: repeat; again on the next run: eye check.</td></tr>
+        <tr><td>Own baseline</td><td>After two baseline runs, two or more steps lower in two columns: changed since your baseline, repeat to confirm.</td></tr>
+        <tr><td>Never counted</td><td>Rows 7–9 (exploratory), and anything in the questionnaire.</td></tr>
+      </table>
+    </div>
+    <div>
+      <h3>Why route to an eye check rather than name a cause</h3>
+      <p>Contrast sensitivity falls with cataract, glaucoma, macular disease, diabetic eye disease and optic nerve conditions, each in a different proportion to acuity [26, 27]. In a 2024 study of 1,159 adults it tracked people's own rating of their vision and the difference between their eyes, yet a contrast chart alone was not sensitive or specific enough to screen for eye disease [25]. A home test should therefore do one thing well: notice when a person's result deserves a professional examination, and say so plainly.</p>
+      <h3>Once the reference range exists</h3>
+      <p>Each eye will also be placed against its age band: <i>typical for your age group</i> (5th–95th percentile), <i>lower than most people your age</i> (1st–5th) or <i>well below most people your age</i> (below the 1st), with sample size and date.</p>
+      <div class="box teal"><h4>Other uses, same instrument</h4><p class="small" style="margin:0">Falls [28], night and glare driving [29] (no licensing cut-off; Australian standards assess acuity and fields [30, 31]), metals and tobacco [24], eye and neurological health [25–27]. See the Evidence page at visualcontrastsensitivity.com.</p></div>
+    </div>
+  </div>
+  <div class="foot"><span>MouldVision · Biological Health Services · Concept: Dr Cameron Jones, PhD · drcameronjones.com</span><span>Page 0</span></div>
+</section>
+
 <!-- 5 WHAT MAKES IT DEFENSIBLE -->
 <section class="page">
-  <div class="eyebrow">5 · What makes a phone test defensible</div>
+  <div class="eyebrow">6 · What makes a phone test defensible</div>
   <h2>The physics is fixed; the conditions are recorded; the claims are small</h2>
   <div class="cols">
     <div>
@@ -254,7 +301,7 @@ th{font-size:7.6pt;letter-spacing:.08em;text-transform:uppercase;color:var(--mut
 
 <!-- 6 RESEARCH PROGRAMME -->
 <section class="page">
-  <div class="eyebrow">6 · The research programme and how to take part</div>
+  <div class="eyebrow">7 · The research programme and how to take part</div>
   <h2>From a measurement to a reference range</h2>
   <p class="lead">"Normal" for MouldVision will be a measured distribution, not a formula borrowed from a chart printed in 1984. Until it exists, the only comparison the app makes is each person against their own earlier runs.</p>
   <div class="cols">
@@ -272,7 +319,7 @@ th{font-size:7.6pt;letter-spacing:.08em;text-transform:uppercase;color:var(--mut
         <ul style="margin:0">
           <li>A phone made in the last eight years, brightness at maximum, in a normally lit room.</li>
           <li>Three minutes per eye, twice, a week or two apart.</li>
-          <li>Optional: the twelve context questions, and consent to send the de-identified record.</li>
+          <li>Optional: the fourteen context questions, and consent to send the de-identified record.</li>
         </ul>
       </div>
       <div class="box">
@@ -284,7 +331,7 @@ th{font-size:7.6pt;letter-spacing:.08em;text-transform:uppercase;color:var(--mut
         </ul>
       </div>
       <h3>Where it lives</h3>
-      <p>visualcontrastsensitivity.com, installable from the browser on iPhone and Android, working offline after the first visit. The source is version-controlled and every build is tied to the test results that verified it.</p>
+      <p>visualcontrastsensitivity.com, installable from the browser on iPhone and Android, working offline after the first visit, with plain-language Questions and Evidence pages beside the test. The source is version-controlled and every build is tied to the test results that verified it.</p>
     </div>
   </div>
   <div class="foot"><span>MouldVision · Biological Health Services · Concept: Dr Cameron Jones, PhD · drcameronjones.com</span><span>Page 7</span></div>
@@ -295,10 +342,10 @@ th{font-size:7.6pt;letter-spacing:.08em;text-transform:uppercase;color:var(--mut
   <div class="eyebrow">References and contact</div>
   <h2 style="font-size:16pt">Sources</h2>
   <div class="refs"><ol>${REFS.map(r => `<li>${r}</li>`).join('')}</ol></div>
-  <div class="cols" style="margin-top:9mm;align-items:end">
+  <div class="cols" style="margin-top:4mm;align-items:end">
     <div>
       <img src="${logo}" style="height:34pt;display:block;margin-bottom:6pt" alt="">
-      <p class="small" style="margin:0"><b>Biological Health Services</b><br>Head office: Level 1, 459 Toorak Road, Toorak VIC 3142<br>Laboratory: 7/4 Weddel Court, Laverton North VIC 3026<br>www.biologicalhealthservices.com.au · mould.net.au · drcameronjones.com<br>ISO 9001:2015 · ISO/IEC 17025:2017</p>
+      <p class="small" style="margin:0"><b>Biological Health Services</b><br>Head office: Level 1, 459 Toorak Road, Toorak VIC 3142<br>Laboratory: 7/4 Weddel Court, Laverton North VIC 3026<br>visualcontrastsensitivity.com · www.biologicalhealthservices.com.au<br>mould.net.au · drcameronjones.com<br>ISO 9001:2015 · ISO/IEC 17025:2017</p>
     </div>
     <div class="small">
       <p><b>Concept and scientific lead:</b> Dr Cameron Jones, PhD, Principal Environmental Microbiologist; co-author of the Australian Mould Guideline 2026 [22]. Publications and talks: drcameronjones.com.</p>
@@ -308,6 +355,7 @@ th{font-size:7.6pt;letter-spacing:.08em;text-transform:uppercase;color:var(--mut
   <div class="foot"><span>MouldVision · Biological Health Services · Concept: Dr Cameron Jones, PhD · drcameronjones.com</span><span>Page 8</span></div>
 </section>
 </body></html>`;
+let pn = 1; html = html.replace(/<span>Page \d+<\/span>/g, () => `<span>Page ${++pn}</span>`);
 fs.writeFileSync(path.join(S, 'explainer.html'), html);
 (async () => {
   const browser = await chromium.launch(); const page = await browser.newPage();

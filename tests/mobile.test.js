@@ -90,8 +90,8 @@ test(tag('M06', 'stimulus self-check: the grating maths yields the nominal cycle
 
 test(tag('M07', 'questionnaire: twelve items validated and stored in context; scoring and integrity ignore it'), async () => {
   const MV = load();
-  assert.equal(MV.CONTEXT_ITEMS.length, 12);
-  const ids = MV.CONTEXT_ITEMS.map(i => i.id); assert.equal(new Set(ids).size, 12);
+  assert.equal(MV.CONTEXT_ITEMS.length, 14);
+  const ids = MV.CONTEXT_ITEMS.map(i => i.id); assert.equal(new Set(ids).size, 14);
   MV.CONTEXT_ITEMS.forEach(i => { assert.ok(['choice', 'multi'].includes(i.type)); assert.ok(i.options.length >= 2); assert.ok(i.q.length > 5); });
   const run = await runTest(MV, { mode: 'quick', answerFn: observer({ A: 7, B: 6, C: 5, D: 3, E: 2 }) });
   const before = j(run.scoring), hash = run.integrity.hash;
@@ -99,7 +99,7 @@ test(tag('M07', 'questionnaire: twelve items validated and stored in context; sc
   assert.equal(v.ok, false); assert.deepEqual(j(v.errors).sort(), ['bogus: unknown item', 'smoking: not an option']);
   assert.deepEqual(j(v.answers), { mouldSmell: 'some', eyeConditions: ['cataract', 'other'], ageBand: '40–49', sampling: 'BHS kit', samplingText: 'kit 1234' });
   const ctx = MV.setRunContext(run, { mouldSmell: 'substantial', treatment: 'yes', ageBand: '60–69' });
-  assert.equal(ctx.version, 'context-v1'); assert.equal(ctx.answered, true);
+  assert.equal(ctx.version, 'context-v2'); assert.equal(ctx.answered, true);
   assert.ok(!MV.INTEGRITY_SCOPE.includes('context'), 'context is outside the integrity scope by design');
   // mutation test: changing answers leaves the scoring and the integrity hash identical
   for (const ans of [{}, { mouldSmell: 'none' }, { eyeConditions: ['glaucoma'], smoking: 'yes', alcohol24h: 'yes' }]) {
@@ -126,7 +126,7 @@ test(tag('M08', 'report: context section after section 7 only for runs with a co
   const words = ['POSITIVE', 'NEGATIVE', 'PASS', 'FAIL', 'CLEAR', 'FLAGGED', 'ABNORMAL', 'BIOTOXIN', 'MOULD', 'MYCOTOXIN', 'CIRS'];
   const body = [T.heading, T.banner, T.s1, T.s2, T.s4, T.s5, T.s6, T.ident, T.valid, ...T.told].join('\n');
   words.forEach(w => assert.ok(!new RegExp('\\b' + w + '\\b', 'i').test(body), 'found ' + w));
-  assert.match(T.ident, /Context context-v1 /);
+  assert.match(T.ident, /Context context-v2 /);
   // PDF builds with the section
   const blob = MV.buildPdf(run); assert.ok(blob.size > 20000);
   // phone geometry wording

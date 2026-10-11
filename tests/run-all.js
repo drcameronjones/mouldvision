@@ -6,7 +6,7 @@ const root = path.join(__dirname, '..');
 const version = JSON.parse(fs.readFileSync(path.join(root, 'package.json'), 'utf8')).version;
 const { sourceHash, gitCommit, FILES } = require('../tools/source-hash');
 const hashBefore = sourceHash();
-const unit = spawnSync('node', ['--test', 'tests/unit.test.js', 'tests/mobile.test.js', 'tests/guidance.test.js'], { cwd: root, encoding: 'utf8' });   // Phase 0 T-tests + Phase 1 M-tests
+const unit = spawnSync('node', ['--test', 'tests/unit.test.js', 'tests/mobile.test.js', 'tests/guidance.test.js', 'tests/site.test.js'], { cwd: root, encoding: 'utf8' });   // Phase 0 T-tests + Phase 1 M-tests
 const unitOut = unit.stdout + unit.stderr;
 const unitPass = +(unitOut.match(/^# pass (\d+)/m) || [0, 0])[1], unitFail = +(unitOut.match(/^# fail (\d+)/m) || [0, 0])[1];
 const unitTests = [...unitOut.matchAll(/^(not ok|ok) \d+ - (\S+) (.*)$/gm)].map(m => ({ id: m[2], name: m[3], ok: m[1] === 'ok' }));
@@ -20,7 +20,7 @@ const brPass = browserTests.filter(t => t.ok).length, brFail = browserTests.leng
 const hashAfter = sourceHash(); const sourceChangedDuringRun = hashBefore !== hashAfter; const git = gitCommit();
 const results = {
   sourceHash: hashAfter, sourceFiles: FILES, gitCommit: git.commit, gitDirty: git.dirty, sourceChangedDuringRun,
-  suite: 'phase0-T01-T28+phase1-M01-M13+guidance-G01-G06', version, runAt: new Date().toISOString().slice(0, 10), runAtFull: new Date().toISOString(),
+  suite: 'phase0-T01-T28+phase1-M01-M13+guidance-G01-G06+site-W01-W02', version, runAt: new Date().toISOString().slice(0, 10), runAtFull: new Date().toISOString(),
   node: process.version, platform: process.platform,
   passed: unitPass + brPass, failed: unitFail + brFail + (sourceChangedDuringRun ? 1 : 0),
   statement: 'Passing these tests establishes software behaviour only. It establishes nothing about measurement accuracy or clinical meaning.',

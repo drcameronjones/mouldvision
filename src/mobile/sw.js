@@ -3,7 +3,7 @@
 const BUILD = '__MV_BUILD_ID__';
 const SHELL = 'mv-shell-' + BUILD;
 const RUNTIME = 'mv-runtime-v1';
-const APP_FILES = ['./', 'index.html', 'styles.css', 'mobile.css', 'build-info.js', 'app.js', 'devices.js', 'distance.js', 'mobile.js', 'manifest.webmanifest', 'bhs-logo.png', 'icons/icon-192.png', 'icons/icon-512.png'];
+const APP_FILES = ['./', 'index.html', 'styles.css', 'mobile.css', 'build-info.js', 'app.js', 'devices.js', 'distance.js', 'mobile.js', 'manifest.webmanifest', 'bhs-logo.png', 'icons/icon-192.png', 'icons/icon-512.png', 'faq.html', 'evidence.html', 'site.css'];
 const EXTERNAL = ['https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js'];
 self.addEventListener('install', e => {
   e.waitUntil((async () => {

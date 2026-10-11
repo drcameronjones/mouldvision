@@ -56,7 +56,9 @@ const REFS = [
   'Jimenez-Barbosa IA, Di Lizio S, Ahn SB, et al. Assessment of visual contrast sensitivity in biotoxin-exposed individuals using four testing methods. Ann Med. 2026;58(1):2646821. doi:10.1080/07853890.2026.2646821',
   'American College of Medical Toxicology. Position statement: medical toxicology considerations in the diagnosis and treatment of patients with concerns about mold-related inhalation exposures. 2025.',
   'Denning DW, Chakrabarti A. Pulmonary and sinus fungal diseases in non-immunocompromised patients. Lancet Infect Dis. 2017;17(11):e357-e366. doi:10.1016/S1473-3099(17)30309-2',
-  'Valtonen V. Clinical diagnosis of the dampness and mold hypersensitivity syndrome: review of the literature and suggested diagnostic criteria. Front Immunol. 2017;8:951. doi:10.3389/fimmu.2017.00951'
+  'Valtonen V. Clinical diagnosis of the dampness and mold hypersensitivity syndrome: review of the literature and suggested diagnostic criteria. Front Immunol. 2017;8:951. doi:10.3389/fimmu.2017.00951',
+  'Paulsen AJ, Schubert CR, Johnson LJ, et al. Association of cadmium and lead exposure with the incidence of contrast sensitivity impairment among middle-aged adults. JAMA Ophthalmol. 2018;136(12):1342-1350. doi:10.1001/jamaophthalmol.2018.3931',
+  'Xiong YZ, Kwon M, Bittner AK, Virgili G, Giacomelli G, Legge GE. Relationship between acuity and contrast sensitivity: differences due to eye disease. Invest Ophthalmol Vis Sci. 2020;61(6):40. doi:10.1167/iovs.61.6.40'
 ];
 
 // ---------- State ----------
@@ -196,7 +198,7 @@ function buildValidation(){
   return {
     software: sw && sw.status==='passed' && sw.sourceHash && sw.sourceHash===BUILD_INFO.sourceHash ? { status:'passed', suite:sw.suite, version:sw.version, runAt:sw.runAt, passed:sw.passed, total:sw.total, sourceHash:sw.sourceHash, gitCommit:sw.gitCommit }
             : sw && sw.status==='failed' ? { status:'failed', suite:sw.suite, version:sw.version, runAt:sw.runAt, passed:sw.passed, total:sw.total, sourceHash:sw.sourceHash, gitCommit:sw.gitCommit }
-            : { status:'not_run', suite:'phase0-T01-T28+phase1-M01-M13+guidance-G01-G06', version:SOFTWARE_VERSION, runAt:null, sourceHash:BUILD_INFO.sourceHash, reason: sw && sw.status==='passed' ? 'test results are for a different source hash' : (BUILD_INFO.verificationReason||'no test results for this build') },
+            : { status:'not_run', suite:'phase0-T01-T28+phase1-M01-M13+guidance-G01-G06+site-W01-W02', version:SOFTWARE_VERSION, runAt:null, sourceHash:BUILD_INFO.sourceHash, reason: sw && sw.status==='passed' ? 'test results are for a different source hash' : (BUILD_INFO.verificationReason||'no test results for this build') },
     measurement: { status:'not_performed', method:null, displayRef:null, note:'display luminance and contrast not measured (N3 pending)' },
     clinical: { status:'not_performed', claim:'none', note:'no diagnostic or exposure claim' }
   };
@@ -349,8 +351,8 @@ function scoreRun(run){
 }
 
 // ---------- Toxin-context module (Phase 1 §5): context and data, never a result; never read by scoring ----------
-const CONTEXT_VERSION = 'context-v1';   // approved by Dr Cameron Jones, 11 Oct 2026
-const CONTEXT_PARAGRAPH = 'Why environmental toxin exposure matters to this test. Contrast sensitivity, the ability to see faint patterns, is one of the visual functions reported to change with exposure to a range of toxic agents. Published work has linked reduced contrast sensitivity at the middle spatial frequencies to living or working in water-damaged buildings [7, 8, 12], to exposure to toxins from cyanobacteria and dinoflagellates [4, 5, 6], and to solvents and other volatile organic compounds; contrast sensitivity at the finer bar widths is also affected by tobacco, alcohol, blood lead and age [11]. The same function changes with cataract, refractive error, glaucoma, macular disease, diabetes and medication [10, 11], which is why a result on its own cannot identify a cause [13, 14, 15]. MouldVision records your contrast function and, if you choose, the exposures and conditions you tell us about, so that changes over time can be read alongside what is happening in your environment. Testing the building itself (air and surface sampling) is the way to find out whether mould is present.';
+const CONTEXT_VERSION = 'context-v2';   // v1 approved 11 Oct 2026; v2 adds night/glare driving and diabetes, and the cadmium evidence (approved same day)
+const CONTEXT_PARAGRAPH = 'Why environmental toxin exposure matters to this test. Contrast sensitivity, the ability to see faint patterns, is one of the visual functions reported to change with exposure to a range of toxic agents. Published work has linked reduced contrast sensitivity at the middle spatial frequencies to living or working in water-damaged buildings [7, 8, 12], to exposure to toxins from cyanobacteria and dinoflagellates [4, 5, 6], and to solvents and other volatile organic compounds. In a ten-year study of middle-aged adults, higher cadmium levels, largely from tobacco smoke, predicted new loss of contrast sensitivity [17]. The same function declines with age and alcohol, and changes with cataract, refractive error, glaucoma, macular disease, diabetes, medication and some neurological conditions [10, 11, 18], which is why a result on its own cannot identify a cause [13, 14, 15]. MouldVision records your contrast function and, if you choose, the exposures and conditions you tell us about, so that changes over time can be read alongside what is happening in your environment. Testing the building itself (air and surface sampling) is the way to find out whether mould is present.';
 const CONTEXT_ITEMS = [
   { id:'mouldSmell',   q:'Visible mould or a musty smell at home or work in the last 12 months', type:'choice', options:['none','some','substantial'] },
   { id:'waterDamage',  q:'Water damage, flooding or persistent damp in the last 12 months', type:'choice', options:['no','yes'] },
@@ -360,7 +362,9 @@ const CONTEXT_ITEMS = [
   { id:'alcohol24h',   q:'Alcohol in the last 24 hours', type:'choice', options:['no','yes'] },
   { id:'solvents',     q:'Regular exposure to solvents, paints, fuels or pesticides', type:'choice', options:['no','yes'] },
   { id:'eyeConditions',q:'Known eye conditions', type:'multi', options:['none','cataract','glaucoma','macular disease','other'] },
+  { id:'diabetes',     q:'Diabetes (diagnosed by a doctor)', type:'choice', options:['no','yes'] },
   { id:'correction',   q:'Wearing your usual glasses or contacts now', type:'choice', options:['yes','no','none needed'] },
+  { id:'nightDriving', q:'Difficulty seeing when driving at night or with glare', type:'choice', options:['no','some','a lot','do not drive'] },
   { id:'medication',   q:'Medications that affect vision (as told by a doctor)', type:'choice', options:['no','yes'] },
   { id:'treatment',    q:'Under treatment for mould- or biotoxin-related illness', type:'choice', options:['no','yes'] },
   { id:'ageBand',      q:'Age band', type:'choice', options:['18–29','30–39','40–49','50–59','60–69','70+'] }
