@@ -46,6 +46,7 @@ function buildMobile(target) {
   fs.writeFileSync(path.join(outDir, 'build-info.js'), `window.MV_BUILD_TARGET=${JSON.stringify(target)};window.MV_VALIDATION=${JSON.stringify(validation)};window.MV_BUILD=${JSON.stringify(buildInfo)};\n`);
   fs.writeFileSync(path.join(outDir, 'sw.js'), read('src/mobile/sw.js').replace('__MV_BUILD_ID__', currentHash.slice(0, 16) + '-' + target));
   fs.writeFileSync(path.join(outDir, '.nojekyll'), '');
+  fs.writeFileSync(path.join(outDir, 'CNAME'), 'visualcontrastsensitivity.com\n');   // GitHub Pages custom domain (DNS at GoDaddy: A → 185.199.108-111.153, www CNAME → drcameronjones.github.io)
   return 'app/mobile/ (' + target + ')';
 }
 const targets = process.argv.slice(2).length ? process.argv.slice(2) : ['staging'];
