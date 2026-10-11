@@ -12,6 +12,8 @@
   const ASSUMED_FOV_UNCERTAINTY = 0.20;
   const LEFT_IRIS = [468, 469, 470, 471, 472], RIGHT_IRIS = [473, 474, 475, 476, 477];   // MediaPipe face mesh with refined landmarks
   const DRIFT_FRACTION = 0.15;                  // Phase 1 §3: redraw at the next trial when distance drifts more than this
+  const MIN_CM = 20, MAX_CM = 90;               // readings outside this range are treated as detector noise (a partly seen face), not a distance
+  const MIN_SAMPLES_FOR_RESIZE = 4, MAX_STD_FRACTION_FOR_RESIZE = 0.10;
   const dist2 = (a, b, w, h) => Math.hypot((a.x - b.x) * w, (a.y - b.y) * h);
 
   /** Iris diameter in image pixels from 478 normalised landmarks; null if iris landmarks are missing. */
@@ -39,6 +41,8 @@
   const stddev = a => { if (a.length < 2) return 0; const m = a.reduce((s, v) => s + v, 0) / a.length; return Math.sqrt(a.reduce((s, v) => s + (v - m) * (v - m), 0) / (a.length - 1)); };
   /** Drift rule: true when the live distance differs from the distance the patch was sized for by more than DRIFT_FRACTION. */
   function drifted(sizedForCm, liveCm) { return sizedForCm > 0 && liveCm != null && Math.abs(liveCm - sizedForCm) / sizedForCm > DRIFT_FRACTION; }
+  /** A trial's distance summary is well supported when it rests on several agreeing frames; only then may it resize the patch. */
+  function wellSupported(sum) { return !!sum && sum.n >= MIN_SAMPLES_FOR_RESIZE && sum.medianCm != null && (sum.stdCm == null || sum.stdCm / sum.medianCm <= MAX_STD_FRACTION_FOR_RESIZE); }
   /** Summary of a sequence of readings per trial: median, SD and count. */
   function summarise(readings) { const v = readings.filter(x => x != null && isFinite(x)); return { medianCm: v.length ? +median(v).toFixed(1) : null, stdCm: v.length > 1 ? +stddev(v).toFixed(1) : null, n: v.length }; }
 
@@ -87,7 +91,7 @@
           const res = this.landmarker.detectForVideo(this.video, performance.now());
           const lm = res && res.faceLandmarks && res.faceLandmarks[0];
           const iris = irisDiameterPx(lm, w, h);
-          if (iris) { this.noFaceFrames = 0; this.lastRaw = iris; const cm = distanceCm(iris, this.focalPx); this._push(cm); this.onReading({ cm, irisPx: iris, faceFound: true }); }
+          if (iris) { const cm = distanceCm(iris, this.focalPx); if (cm >= MIN_CM && cm <= MAX_CM) { this.noFaceFrames = 0; this.lastRaw = iris; this._push(cm); this.onReading({ cm, irisPx: iris, faceFound: true }); } else { this.noFaceFrames++; this.onReading({ cm: null, irisPx: iris, faceFound: false, implausible: cm }); } }
           else { this.noFaceFrames++; this.onReading({ cm: null, irisPx: null, faceFound: false }); }
         }
       } catch (e) { this.error = String(e && e.message || e); }
@@ -105,5 +109,5 @@
     stop() { this.running = false; clearTimeout(this._timer); if (this.stream) { this.stream.getTracks().forEach(t => t.stop()); this.stream = null; } if (this.video) { try { this.video.srcObject = null; } catch (e) {} } }
   }
   root.MVM = root.MVM || {};
-  root.MVM.distance = { IRIS_MM, ASSUMED_FOV_DEG, ASSUMED_FOV_UNCERTAINTY, DRIFT_FRACTION, MODEL_URL, TASKS_VISION, irisDiameterPx, focalFromFov, distanceCm, focalFromKnownDistance, syntheticLandmarks, drifted, summarise, median, stddev, DistanceSensor };
+  root.MVM.distance = { IRIS_MM, ASSUMED_FOV_DEG, ASSUMED_FOV_UNCERTAINTY, DRIFT_FRACTION, MIN_CM, MAX_CM, MIN_SAMPLES_FOR_RESIZE, MAX_STD_FRACTION_FOR_RESIZE, wellSupported, MODEL_URL, TASKS_VISION, irisDiameterPx, focalFromFov, distanceCm, focalFromKnownDistance, syntheticLandmarks, drifted, summarise, median, stddev, DistanceSensor };
 })(typeof globalThis !== 'undefined' ? globalThis : this);

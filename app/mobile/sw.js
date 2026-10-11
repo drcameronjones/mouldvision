@@ -1,6 +1,6 @@
 // MouldVision phone edition — service worker. Caches the app shell so the test runs with no network after first load.
 // The cache name carries the build's source hash (injected at build), so a new verified build replaces the old one.
-const BUILD = '39fbc40aa6acf8f5-staging';
+const BUILD = '043d380dee5e405a-staging';
 const SHELL = 'mv-shell-' + BUILD;
 const RUNTIME = 'mv-runtime-v1';
 const APP_FILES = ['./', 'index.html', 'styles.css', 'mobile.css', 'build-info.js', 'app.js', 'devices.js', 'distance.js', 'mobile.js', 'manifest.webmanifest', 'bhs-logo.png', 'icons/icon-192.png', 'icons/icon-512.png'];

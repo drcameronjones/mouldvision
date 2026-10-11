@@ -74,11 +74,14 @@
     const cur = M.sensor.current(5);
     updateDistLine(cur);
     const ring = $('ring');
-    if (!r.faceFound) { ring.className = 'ring bad'; $('ringText').textContent = 'face not found'; $('btnHoldNext').disabled = true; return; }
-    if (M.sensor.stable(6, 2) && cur.cm) { ring.className = 'ring ok'; $('ringText').textContent = `${cur.cm} cm — hold`; applyGeometry(cur.cm, M.sensor.source, cur.stdCm); geomWarn(); $('btnHoldNext').disabled = false; }
-    else { ring.className = 'ring'; $('ringText').textContent = cur.cm ? `${cur.cm} cm — hold still` : 'hold still'; $('btnHoldNext').disabled = true; }
+    if (!r.faceFound) { if (!$('m-hold').hidden) { ring.className = 'ring bad'; $('ringText').textContent = 'face not found'; $('btnHoldNext').disabled = true; } if ($('v-test') && !$('v-test').hidden) $('liveDist').textContent = 'camera: face not seen'; return; }
+    const onHold = !$('m-hold').hidden;
+    if (onHold) {   // geometry is set only here; during the test the drift rule in MV_TRIAL_DECORATE is the only thing that may change it
+      if (M.sensor.stable(6, 2) && cur.cm) { ring.className = 'ring ok'; $('ringText').textContent = `${cur.cm} cm — hold`; applyGeometry(cur.cm, M.sensor.source, cur.stdCm); geomWarn(); $('btnHoldNext').disabled = false; }
+      else { ring.className = 'ring'; $('ringText').textContent = cur.cm ? `${cur.cm} cm — hold still` : 'hold still'; $('btnHoldNext').disabled = true; }
+    }
     if ($('v-switch') && !$('v-switch').hidden) $('switchDist').textContent = cur.cm ? `Current distance ${cur.cm} cm (test was sized for ${M.sizedForCm} cm)` : '';
-    if ($('v-test') && !$('v-test').hidden) { if (r.cm != null) M.trialReadings.push(r.cm); $('liveDist').textContent = cur.cm ? `${cur.cm} cm` : ''; }
+    if ($('v-test') && !$('v-test').hidden) { if (r.cm != null && r.cm >= DS.MIN_CM && r.cm <= DS.MAX_CM) M.trialReadings.push(r.cm); $('liveDist').textContent = cur.cm ? `${cur.cm} cm` : ''; }
   }
   // The camera keeps running during the test; moving the <video> between containers keeps the stream alive on iOS, hiding it would not.
   function parkCamera(park) { const v = $('cam'); if (!v) return; if (park) $('camKeep').appendChild(v); else $('camwrap').insertBefore(v, $('ring')); }
@@ -102,7 +105,7 @@
       distance: { mode: M.distanceMode, source: S.distanceSource, focalSource: M.sensor ? M.sensor.focalSource : null, assumedFovDeg: M.sensor && M.sensor.focalSource !== 'calibrated' ? DS.ASSUMED_FOV_DEG : null, driftFraction: DS.DRIFT_FRACTION, driftEvents: 0 },
       display: M.display, input: 'swipe', standalone: !!(window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) || !!navigator.standalone
     };
-    M.sizedForCm = S.distCm; M.trialReadings = []; M.driftEvents = 0; M.hintShown = false; M.resultsShown = false;
+    M.sizedForCm = S.distCm; M.trialReadings = []; M.driftEvents = 0; M.carried = 0; M.hintShown = false; M.resultsShown = false;
     showCover('right');
   }
   function showCover(eye) {
@@ -127,13 +130,15 @@
   let pendingAnswer = null;
   window.MV_TRIAL_DECORATE = function (t, run) {
     const sum = DS.summarise(M.trialReadings); M.trialReadings = [];
-    const cam = M.distanceMode === 'camera' && sum.medianCm != null;
+    const camMode = M.distanceMode === 'camera', cam = camMode && sum.medianCm != null;
     t.distanceCm = cam ? sum.medianCm : S.distCm;
-    t.distanceSource = cam ? S.distanceSource : 'typed';
+    t.distanceSource = cam ? S.distanceSource : camMode ? S.distanceSource : 'typed';
+    if (camMode && !cam) { t.distanceCarried = true; M.carried++; }   // face not seen during this trial: the last applied distance stands
     t.distanceStd = sum.stdCm; t.distanceSamples = sum.n; t.sizedForCm = M.sizedForCm;
     if (pendingAnswer && pendingAnswer.angle != null) t.swipeAngle = pendingAnswer.angle;
-    if (cam && DS.drifted(M.sizedForCm, sum.medianCm)) { t.distanceDrift = true; M.pendingResize = Math.round(sum.medianCm); }
-    if (cam) { const all = run.trials.filter(x => x.presented && x.distanceSource !== 'typed').map(x => x.distanceCm).concat([t.distanceCm]); const s = DS.summarise(all); run.geometry.distanceCm = Math.round(s.medianCm); run.geometry.distanceStdCm = s.stdCm; }
+    // drift resize only on a well-supported reading (Phase 1 §3 rule, tightened after the first phone run: single frames can be wild)
+    if (cam && DS.wellSupported(sum) && DS.drifted(M.sizedForCm, sum.medianCm)) { t.distanceDrift = true; M.pendingResize = Math.round(sum.medianCm); }
+    if (cam) { const all = run.trials.filter(x => x.presented && x.distanceSamples >= 3).map(x => x.distanceCm).concat(sum.n >= 3 ? [t.distanceCm] : []); const s = DS.summarise(all); if (s.medianCm != null) { run.geometry.distanceCm = Math.round(s.medianCm); run.geometry.distanceStdCm = s.stdCm; } }
     run.geometry.driftEvents = M.driftEvents + (t.distanceDrift ? 1 : 0);
   };
   function afterAnswer(trial) {
@@ -161,6 +166,7 @@
   }
   function afterFinalise() {
     if (M.sensor) M.sensor.stop();
+    if (M.carried) { S.run.mobile.distance.trialsWithoutFace = M.carried; }
     if (document.fullscreenElement && document.exitFullscreen) document.exitFullscreen().catch(() => {});
     showContextForm();
   }
@@ -218,6 +224,7 @@
     const again = $('btnAgain'); if (again) again.addEventListener('click', () => { S.run = null; S.finalisePromise = null; mscreen('m-start'); }, { once: true });
     document.querySelectorAll('#v-results [data-go]').forEach(b => b.addEventListener('click', () => mscreen('m-start')));
     const pdf = $('btnPdf'); if (pdf) pdf.textContent = 'Share / save PDF report';
+    const ident = $('v-results').querySelector('.card:last-child'); if (ident && S.run.status === 'COMPLETE') { const n = document.createElement('div'); n.className = 'notice'; n.textContent = 'This run is saved on this phone. If you leave after sharing one file, the other can be shared any time from Past results on the start screen.'; ident.insertBefore(n, ident.firstChild); }
     const ex = $('btnExport'); if (ex) ex.textContent = 'Share / save JSON record';
   }
 

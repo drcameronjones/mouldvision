@@ -45,6 +45,11 @@ test(tag('M05', 'drift rule: more than 15 % change flags drift; summaries are me
   assert.equal(DS.drifted(40, 45), false); assert.equal(DS.drifted(40, 46.1), true); assert.equal(DS.drifted(40, 33.9), true); assert.equal(DS.drifted(40, null), false);
   const s = DS.summarise([40, 41, 39, 200, 40]); assert.equal(s.medianCm, 40); assert.equal(s.n, 5); assert.ok(s.stdCm > 50);
   assert.deepEqual(j(DS.summarise([])), { medianCm: null, stdCm: null, n: 0 });
+  // resize guard (added after the first phone run, where single wild frames at 71, 117 and 131 cm resized the patch)
+  assert.equal(DS.wellSupported(DS.summarise([71.1, 72])), false, 'two frames are not enough');
+  assert.equal(DS.wellSupported(DS.summarise([40, 41, 39, 40, 95])), false, 'a wild frame inflates the SD');
+  assert.equal(DS.wellSupported(DS.summarise([38.4, 38.6, 38.1, 38.9, 38.5])), true);
+  assert.ok(DS.MIN_CM <= 25 && DS.MAX_CM >= 80);
 });
 
 test(tag('M06', 'stimulus self-check: the grating maths yields the nominal cycles per degree and tilt at three phone densities'), () => {
