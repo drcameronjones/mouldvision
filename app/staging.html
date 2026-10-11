@@ -167,7 +167,7 @@
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script>window.MV_BUILD_TARGET="staging";window.MV_VALIDATION={"software":{"status":"passed","suite":"phase0-T01-T28","version":"v0.8.0","runAt":"2026-01-01","passed":36,"total":36,"sourceHash":"54246018cabaf4ec6e0327e2429e06017fa8df339f8eb00ec4e469f1f7a8fc9f"}};window.MV_BUILD={"sourceHash":"54246018cabaf4ec6e0327e2429e06017fa8df339f8eb00ec4e469f1f7a8fc9f","gitCommit":"958e5c9e4f888e2afd829411e1dec552b82b0ce1","gitDirty":true,"builtAt":"2026-10-11T06:18:28.314Z","verificationReason":null};</script>
+<script>window.MV_BUILD_TARGET="staging";window.MV_VALIDATION={"software":{"status":"passed","suite":"phase0-T01-T28+phase1-M01-M13+guidance-G01-G06","version":"v0.8.0","runAt":"2026-10-11","passed":53,"total":53,"sourceHash":"c75633bdf4851e40c504fea69357d243366a705d04494399f64daf255ce049c0","gitCommit":"f09b15066c9d9cf4d8f90e4d1004306330bb46ad"}};window.MV_BUILD={"sourceHash":"c75633bdf4851e40c504fea69357d243366a705d04494399f64daf255ce049c0","gitCommit":"f09b15066c9d9cf4d8f90e4d1004306330bb46ad","gitDirty":false,"builtAt":"2026-10-11T06:20:25.340Z","verificationReason":null};</script>
 <script>
 'use strict';
 /* MouldVision / VCS Screen — Phase 0 engine (v0.7.0) with Phase 1 additive extensions (v0.8.0): geometry sources, context module, front-end hooks
@@ -367,7 +367,7 @@ function buildValidation(){
   return {
     software: sw && sw.status==='passed' && sw.sourceHash && sw.sourceHash===BUILD_INFO.sourceHash ? { status:'passed', suite:sw.suite, version:sw.version, runAt:sw.runAt, passed:sw.passed, total:sw.total, sourceHash:sw.sourceHash, gitCommit:sw.gitCommit }
             : sw && sw.status==='failed' ? { status:'failed', suite:sw.suite, version:sw.version, runAt:sw.runAt, passed:sw.passed, total:sw.total, sourceHash:sw.sourceHash, gitCommit:sw.gitCommit }
-            : { status:'not_run', suite:'phase0-T01-T28+phase1-M01-M13', version:SOFTWARE_VERSION, runAt:null, sourceHash:BUILD_INFO.sourceHash, reason: sw && sw.status==='passed' ? 'test results are for a different source hash' : (BUILD_INFO.verificationReason||'no test results for this build') },
+            : { status:'not_run', suite:'phase0-T01-T28+phase1-M01-M13+guidance-G01-G06', version:SOFTWARE_VERSION, runAt:null, sourceHash:BUILD_INFO.sourceHash, reason: sw && sw.status==='passed' ? 'test results are for a different source hash' : (BUILD_INFO.verificationReason||'no test results for this build') },
     measurement: { status:'not_performed', method:null, displayRef:null, note:'display luminance and contrast not measured (N3 pending)' },
     clinical: { status:'not_performed', claim:'none', note:'no diagnostic or exposure claim' }
   };
@@ -573,7 +573,7 @@ const TIER_TEXT = {
   repeat:   { label:'Repeat to confirm', text:'Something in this run is uncertain. Repeat the test within a week, same phone, same room, same distance, before reading anything into it.' },
   eyecheck: { label:'Worth an eye check', text:'This is a reason to see an optometrist, whatever the cause. Take this report with you. It does not say what the cause is; an eye examination does.' }
 };
-function lowestRow(eyeScore, i){ const v = eyeScore.lowestContrastCorrectRows1to6[i]; return v==null ? 0 : (SENS.findIndex(s=>Math.abs(s-v)<1e-6)+1); }   // 0 = nothing identified in rows 1–6
+function lowestRow(eyeScore, i){ const v = eyeScore.lowestContrastCorrectRows1to6[i]; if(v==null) return 0; let k=0; SENS.forEach((s,j)=>{ if(Math.abs(Math.log10(s/v)) < Math.abs(Math.log10(SENS[k]/v))) k=j; }); return k+1; }   // nearest ladder row (record stores rounded sensitivities)   // 0 = nothing identified in rows 1–6
 function adjacentRun(flags){ let best=0, cur=0; flags.forEach(f=>{ cur = f ? cur+1 : 0; best=Math.max(best,cur); }); return best; }
 function eyeDiffColumns(sc){ return COLS.map((_,i)=>{ const r=lowestRow(sc.right,i), l=lowestRow(sc.left,i); return { d:r-l, big: Math.abs(r-l) >= GUIDANCE_RULES.eyeDiffSteps }; }); }
 /** history: earlier COMPLETE runs of the same person/device, oldest first (the app passes its local store). */

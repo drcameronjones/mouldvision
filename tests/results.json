@@ -1,5 +1,5 @@
 {
-  "sourceHash": "dc43fce10eb9dbbdee6fb5c82bcde55ce423d8e6a0d927a69d34a7b47af0fa50",
+  "sourceHash": "c75633bdf4851e40c504fea69357d243366a705d04494399f64daf255ce049c0",
   "sourceFiles": [
     "src/app.js",
     "src/index.html",
@@ -13,19 +13,55 @@
     "src/mobile/sw.js",
     "src/mobile/manifest.webmanifest"
   ],
-  "gitCommit": "f645a7770bfeea201324c849e8db8d555b3d04eb",
+  "gitCommit": "f09b15066c9d9cf4d8f90e4d1004306330bb46ad",
   "gitDirty": false,
   "sourceChangedDuringRun": false,
-  "suite": "phase0-T01-T28+phase1-M01-M13",
+  "suite": "phase0-T01-T28+phase1-M01-M13+guidance-G01-G06",
   "version": "v0.8.0",
   "runAt": "2026-10-11",
-  "runAtFull": "2026-10-11T01:04:41.884Z",
+  "runAtFull": "2026-10-11T06:20:17.828Z",
   "node": "v22.22.0",
   "platform": "linux",
-  "passed": 47,
+  "passed": 53,
   "failed": 0,
   "statement": "Passing these tests establishes software behaviour only. It establishes nothing about measurement accuracy or clinical meaning.",
   "tests": [
+    {
+      "id": "G01",
+      "name": "healthy-pattern run: tier none, computed at finalise, outside the integrity scope",
+      "ok": true,
+      "kind": "node"
+    },
+    {
+      "id": "G02",
+      "name": "easy-patch rule: two or more misses in rows 1–3 of A–C in one eye → worth an eye check; names the patches",
+      "ok": true,
+      "kind": "node"
+    },
+    {
+      "id": "G03",
+      "name": "unreliable conditions downgrade an eye-check to repeat, and say why",
+      "ok": true,
+      "kind": "node"
+    },
+    {
+      "id": "G04",
+      "name": "between the eyes: first time → repeat; reproduced in the previous run → eye check",
+      "ok": true,
+      "kind": "node"
+    },
+    {
+      "id": "G05",
+      "name": "against own baseline: a two-step drop in two columns after two baseline runs → changed since your baseline",
+      "ok": true,
+      "kind": "node"
+    },
+    {
+      "id": "G06",
+      "name": "context never changes the tier; exploratory rows never count; wording carries no result labels",
+      "ok": true,
+      "kind": "node"
+    },
     {
       "id": "M01",
       "name": "density table: every entry complete; exact lookups for listed models; class fallback otherwise",

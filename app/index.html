@@ -167,7 +167,7 @@
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script>window.MV_BUILD_TARGET="live";window.MV_VALIDATION={"software":{"status":"passed","suite":"phase0-T01-T28+phase1-M01-M13","version":"v0.8.0","runAt":"2026-10-11","passed":47,"total":47,"sourceHash":"dc43fce10eb9dbbdee6fb5c82bcde55ce423d8e6a0d927a69d34a7b47af0fa50","gitCommit":"f645a7770bfeea201324c849e8db8d555b3d04eb"}};window.MV_BUILD={"sourceHash":"dc43fce10eb9dbbdee6fb5c82bcde55ce423d8e6a0d927a69d34a7b47af0fa50","gitCommit":"f645a7770bfeea201324c849e8db8d555b3d04eb","gitDirty":false,"builtAt":"2026-10-11T01:04:41.941Z","verificationReason":null};</script>
+<script>window.MV_BUILD_TARGET="live";window.MV_VALIDATION={"software":{"status":"passed","suite":"phase0-T01-T28+phase1-M01-M13+guidance-G01-G06","version":"v0.8.0","runAt":"2026-10-11","passed":53,"total":53,"sourceHash":"c75633bdf4851e40c504fea69357d243366a705d04494399f64daf255ce049c0","gitCommit":"f09b15066c9d9cf4d8f90e4d1004306330bb46ad"}};window.MV_BUILD={"sourceHash":"c75633bdf4851e40c504fea69357d243366a705d04494399f64daf255ce049c0","gitCommit":"f09b15066c9d9cf4d8f90e4d1004306330bb46ad","gitDirty":false,"builtAt":"2026-10-11T06:20:25.340Z","verificationReason":null};</script>
 <script>
 'use strict';
 /* MouldVision / VCS Screen — Phase 0 engine (v0.7.0) with Phase 1 additive extensions (v0.8.0): geometry sources, context module, front-end hooks
@@ -367,7 +367,7 @@ function buildValidation(){
   return {
     software: sw && sw.status==='passed' && sw.sourceHash && sw.sourceHash===BUILD_INFO.sourceHash ? { status:'passed', suite:sw.suite, version:sw.version, runAt:sw.runAt, passed:sw.passed, total:sw.total, sourceHash:sw.sourceHash, gitCommit:sw.gitCommit }
             : sw && sw.status==='failed' ? { status:'failed', suite:sw.suite, version:sw.version, runAt:sw.runAt, passed:sw.passed, total:sw.total, sourceHash:sw.sourceHash, gitCommit:sw.gitCommit }
-            : { status:'not_run', suite:'phase0-T01-T28+phase1-M01-M13', version:SOFTWARE_VERSION, runAt:null, sourceHash:BUILD_INFO.sourceHash, reason: sw && sw.status==='passed' ? 'test results are for a different source hash' : (BUILD_INFO.verificationReason||'no test results for this build') },
+            : { status:'not_run', suite:'phase0-T01-T28+phase1-M01-M13+guidance-G01-G06', version:SOFTWARE_VERSION, runAt:null, sourceHash:BUILD_INFO.sourceHash, reason: sw && sw.status==='passed' ? 'test results are for a different source hash' : (BUILD_INFO.verificationReason||'no test results for this build') },
     measurement: { status:'not_performed', method:null, displayRef:null, note:'display luminance and contrast not measured (N3 pending)' },
     clinical: { status:'not_performed', claim:'none', note:'no diagnostic or exposure claim' }
   };
@@ -479,6 +479,7 @@ function finaliseRun(){
     const run = S.run;
     run.completedAt = nowIso();
     run.scoring = scoreRun(run);
+    try{ run.guidance = guidanceForRun(run, guidanceHistory(run)); }catch(e){ run.guidance = null; }   // outside INTEGRITY_SCOPE: derived, versioned, recomputable
     run.integrity = await computeIntegrity(run);
     const sc = storageCheck();
     if(sc.full){ run.status='COMPLETE_UNSAVED'; run.unsavedReason='storage_limit'; }
@@ -519,7 +520,7 @@ function scoreRun(run){
 }
 
 // ---------- Toxin-context module (Phase 1 §5): context and data, never a result; never read by scoring ----------
-const CONTEXT_VERSION = 'context-v1-draft';   // "draft" until the adviser signs off the paragraph and items
+const CONTEXT_VERSION = 'context-v1';   // approved by Dr Cameron Jones, 11 Oct 2026
 const CONTEXT_PARAGRAPH = 'Why environmental toxin exposure matters to this test. Contrast sensitivity, the ability to see faint patterns, is one of the visual functions reported to change with exposure to a range of toxic agents. Published work has linked reduced contrast sensitivity at the middle spatial frequencies to living or working in water-damaged buildings [7, 8, 12], to exposure to toxins from cyanobacteria and dinoflagellates [4, 5, 6], and to solvents and other volatile organic compounds; contrast sensitivity at the finer bar widths is also affected by tobacco, alcohol, blood lead and age [11]. The same function changes with cataract, refractive error, glaucoma, macular disease, diabetes and medication [10, 11], which is why a result on its own cannot identify a cause [13, 14, 15]. MouldVision records your contrast function and, if you choose, the exposures and conditions you tell us about, so that changes over time can be read alongside what is happening in your environment. Testing the building itself (air and surface sampling) is the way to find out whether mould is present.';
 const CONTEXT_ITEMS = [
   { id:'mouldSmell',   q:'Visible mould or a musty smell at home or work in the last 12 months', type:'choice', options:['none','some','substantial'] },
@@ -558,6 +559,71 @@ function contextToldLines(run){
   const c = run.context; if(!c || !c.answered) return [];
   return CONTEXT_ITEMS.filter(it=> c.answers[it.id]!=null).map(it=>{ const v=c.answers[it.id]; const t=c.answers[it.id+'Text']; return `${it.q}: ${Array.isArray(v)?v.join(', '):v}${t?` (${t})`:''}`; });
 }
+
+// ---------- Guidance (guidance-v1-provisional; approved by Dr Cameron Jones, 11 Oct 2026) ----------
+// Action-based summary of a result: what to do next, never a statement about the person's condition or its cause.
+// Reads only the scored trials, the recorded test conditions and the person's own earlier runs. Never reads run.context.
+// Rows 7–9 (exploratory) never contribute. Thresholds are provisional until the Phase B normative sample reports.
+const GUIDANCE_VERSION = 'guidance-v1-provisional';
+const LADDER_STEP_LOG = Math.log10(200/3.5)/8;            // one contrast row ≈ 0.22 log10 units
+const GUIDANCE_RULES = { easyCols:['A','B','C'], easyMaxRow:3, easyMissesForCheck:2, faceSeenMin:0.8, driftMax:3, eyeDiffSteps:2, eyeDiffMinAdjacent:2, baselineDropSteps:2, baselineDropMinCols:2, baselineRuns:2 };
+const TIER_ORDER = { none:0, repeat:1, eyecheck:2 };
+const TIER_TEXT = {
+  none:     { label:'Nothing in this result calls for action', text:'You identified the easier patches in every column with both eyes, the test conditions were steady, and nothing changed beyond what this test usually varies. Keep this as a baseline and repeat it in about three months under the same conditions.' },
+  repeat:   { label:'Repeat to confirm', text:'Something in this run is uncertain. Repeat the test within a week, same phone, same room, same distance, before reading anything into it.' },
+  eyecheck: { label:'Worth an eye check', text:'This is a reason to see an optometrist, whatever the cause. Take this report with you. It does not say what the cause is; an eye examination does.' }
+};
+function lowestRow(eyeScore, i){ const v = eyeScore.lowestContrastCorrectRows1to6[i]; if(v==null) return 0; let k=0; SENS.forEach((s,j)=>{ if(Math.abs(Math.log10(s/v)) < Math.abs(Math.log10(SENS[k]/v))) k=j; }); return k+1; }   // nearest ladder row (record stores rounded sensitivities)   // 0 = nothing identified in rows 1–6
+function adjacentRun(flags){ let best=0, cur=0; flags.forEach(f=>{ cur = f ? cur+1 : 0; best=Math.max(best,cur); }); return best; }
+function eyeDiffColumns(sc){ return COLS.map((_,i)=>{ const r=lowestRow(sc.right,i), l=lowestRow(sc.left,i); return { d:r-l, big: Math.abs(r-l) >= GUIDANCE_RULES.eyeDiffSteps }; }); }
+/** history: earlier COMPLETE runs of the same person/device, oldest first (the app passes its local store). */
+function guidanceForRun(run, history){
+  const sc = run.scoring; if(!sc) return null;
+  const R = GUIDANCE_RULES, out = { version:GUIDANCE_VERSION, tier:'none', reasons:[], why:[] };
+  const raise = (tier, code, why) => { out.reasons.push(code); out.why.push(why); if(TIER_ORDER[tier] > TIER_ORDER[out.tier]) out.tier = tier; };
+  // a. run quality (conditions only; never accuracy)
+  const q = [];
+  const pres = run.trials.filter(t=>t.presented);
+  const cam = pres.filter(t=>t.distanceSource && t.distanceSource!=='typed');
+  if(cam.length){ const seen = cam.filter(t=>(t.distanceSamples||0)>0).length/cam.length; if(seen < R.faceSeenMin) q.push(`the camera could not see your face for ${Math.round(100*(1-seen))} % of the patches`); }
+  const drift = (run.geometry && run.geometry.driftEvents) || 0; if(drift > R.driftMax) q.push(`your distance from the screen changed ${drift} times during the test`);
+  if(run.device && run.device.zoomChangedDuringRun) q.push('the screen zoom changed during the test');
+  if((run.notes||[]).includes('app_backgrounded_during_test')) q.push('the app was left during the test');
+  const reliable = q.length===0;
+  if(!reliable) raise('repeat', 'conditions', 'Test conditions: ' + q.join('; ') + '.');
+  // b. easy-patch check: rows 1–3 of columns A–C, seen by almost any adult with healthy, corrected eyes, on any phone
+  ['right','left'].forEach(eye=>{
+    const easy = run.trials.filter(t=>t.eye===eye && R.easyCols.includes(t.col) && t.row<=R.easyMaxRow);
+    const missed = easy.filter(t=>t.presented ? t.correct!==true : true);
+    if(missed.length >= R.easyMissesForCheck){
+      const where = missed.map(t=>t.col+t.row).join(', ');
+      raise(reliable ? 'eyecheck' : 'repeat', 'easy_'+eye, `${eye==='right'?'Right':'Left'} eye missed ${missed.length} of the ${easy.length} easiest patches (${where}), which most adults with healthy, corrected eyes identify.`);
+    }
+  });
+  // c. between the eyes: ≥2 contrast steps apart in ≥2 adjacent columns (rows 1–6 only)
+  const dif = eyeDiffColumns(sc);
+  if(adjacentRun(dif.map(x=>x.big)) >= R.eyeDiffMinAdjacent){
+    const cols = COLS.filter((_,i)=>dif[i].big).join(', ');
+    const prev = (history||[]).filter(h=>h.scoring).slice(-1)[0];
+    const repeated = prev && (()=>{ const pd = eyeDiffColumns(prev.scoring); return adjacentRun(dif.map((x,i)=>x.big && pd[i].big && Math.sign(pd[i].d)===Math.sign(x.d))) >= R.eyeDiffMinAdjacent; })();
+    raise(repeated && reliable ? 'eyecheck' : 'repeat', repeated ? 'eyes_differ_repeated' : 'eyes_differ', `Your two eyes differed by two or more contrast steps in columns ${cols}${repeated ? ', as they did in your previous test' : ''}.`);
+  }
+  // d. against the person's own baseline (first two earlier runs)
+  const base = (history||[]).filter(h=>h.scoring).slice(0, R.baselineRuns);
+  out.baseline = base.length >= R.baselineRuns ? base.map(b=>b.id) : null;
+  if(out.baseline){
+    ['right','left'].forEach(eye=>{
+      const drops = COLS.map((c,i)=>{ const now = lowestRow(sc[eye], i); const b = base.map(h=>lowestRow(h.scoring[eye], i)); const bmean = b.reduce((a,v)=>a+v,0)/b.length; return { c, drop: bmean - now }; }).filter(x=>x.drop >= R.baselineDropSteps);
+      if(drops.length >= R.baselineDropMinCols) raise('repeat', 'baseline_'+eye, `${eye==='right'?'Right':'Left'} eye: changed since your baseline, two or more contrast steps lower in columns ${drops.map(x=>x.c).join(', ')}.`);
+    });
+  }
+  if(out.reasons.some(r=>r.startsWith('baseline_')) && out.tier==='repeat') out.label = 'Changed since your baseline: repeat to confirm';
+  out.label = out.label || TIER_TEXT[out.tier].label; out.text = TIER_TEXT[out.tier].text;
+  if(out.tier==='none') out.why.push(out.baseline ? 'Both eyes are within two contrast steps of your baseline in every column.' : 'This is one of your first runs; a second run in 2–14 days sets your personal baseline.');
+  out.computedAt = nowIso();
+  return out;
+}
+function guidanceHistory(run){ return storedRuns().filter(r=>r.id!==run.id && r.status==='COMPLETE' && r.scoring && (r.completedAt||'') < (run.completedAt||'~')).sort((a,b)=>(a.completedAt||'').localeCompare(b.completedAt||'')); }
 
 // ---------- Report text (section 5 wording; counts always from the record) ----------
 const FORBIDDEN_LABELS = ['positive','negative','pass','fail','clear','flagged','abnormal','biotoxin','mould','mycotoxin','cirs'];
@@ -599,14 +665,14 @@ function reportText(run){
   const swLine = v.software.status==='passed' ? `Software verification: passed, suite ${v.software.suite}, ${v.software.version}, ${v.software.runAt}${v.software.total?` (${v.software.passed}/${v.software.total} tests)`:''}, bound to source ${String(v.software.sourceHash).slice(0,12)}.`
                : v.software.status==='failed' ? `Software verification: FAILED for this build (${v.software.suite}).`
                : `Software verification: not verified for this build (${v.software.reason||'no test results'}).`;
-  const ident = `Run ${run.id} · ${run.completedAt||run.startedAt} · Software ${run.versions.software} (${run.versions.buildTarget}) · Protocol ${run.versions.protocol} · Scoring ${run.versions.scoring} · Stimulus ${run.versions.stimulus} · Integrity SHA-256 ${run.integrity&&run.integrity.hash ? run.integrity.hash.slice(0,12) : 'unavailable'} over test definition and responses (local integrity check, not proof of origin) · Geometry ${g.pxPerCm.toFixed(1)} px/cm (${srcPx}), ${g.distanceCm} cm (${srcD}), ${g.ppd.toFixed(1)} px/°, ${ppc.toFixed(2)} px/cycle at 18 cpd, DPR ${d.devicePixelRatio}${g.renderScale!=null?`, render scale ${g.renderScale}`:''}${run.context?` · Context ${run.context.version}`:''}${src}`;
+  const ident = `Run ${run.id} · ${run.completedAt||run.startedAt} · Software ${run.versions.software} (${run.versions.buildTarget}) · Protocol ${run.versions.protocol} · Scoring ${run.versions.scoring} · Stimulus ${run.versions.stimulus} · Integrity SHA-256 ${run.integrity&&run.integrity.hash ? run.integrity.hash.slice(0,12) : 'unavailable'} over test definition and responses (local integrity check, not proof of origin) · Geometry ${g.pxPerCm.toFixed(1)} px/cm (${srcPx}), ${g.distanceCm} cm (${srcD}), ${g.ppd.toFixed(1)} px/°, ${ppc.toFixed(2)} px/cycle at 18 cpd, DPR ${d.devicePixelRatio}${g.renderScale!=null?`, render scale ${g.renderScale}`:''}${run.context?` · Context ${run.context.version}`:''}${run.guidance?` · Guidance ${run.guidance.version}`:''}${src}`;
   // Phase 1 §5: context section only when the run carries a context block (mobile front end); desktop runs are unchanged
   const s8 = run.context ? CONTEXT_PARAGRAPH : null;
   const told = contextToldLines(run);
   const valid = `${swLine} Physical measurement validation: not performed. Clinical validation: not performed; no diagnostic or exposure claim.`;
   const banner = `Right eye ${R.correct} of ${R.presented} patches identified · Left eye ${L.correct} of ${L.presented} · Clinical significance not established`;
   const under = e => `${e.correct} of ${e.presented} presented patches identified; ${e.cantSee} answered can't see; ${e.notPresented} not presented; ${e.isolated.filter(Boolean).length} isolated correct responses.`;
-  return { heading:'Visual contrast test results', banner, s1, s2, s4, s5, s6, s7, s8, told, toldHeading:'What you told us', s8Heading:'8. Environmental context', ident, valid, underRight:under(R), underLeft:under(L),
+  return { heading:'Visual contrast test results', banner, guidance:run.guidance||null, guidanceNote:'How this summary works: it is based on which patches you identified, the test conditions and your own earlier runs. It says what to do next, not what the cause is. Rules '+GUIDANCE_VERSION+'.', s1, s2, s4, s5, s6, s7, s8, told, toldHeading:'What you told us', s8Heading:'8. Environmental context', ident, valid, underRight:under(R), underLeft:under(L),
     storage:'Records are kept in this browser only. They are not permanent, not encrypted and not a clinical record. Export any record you want to keep.',
     chartCaption:'Lowest contrast correctly identified (descriptive; one presentation per level)',
     bandCaption:'Exploratory: computed sub-step amplitude under the assumed rendering model; displayed contrast not measured' };
@@ -675,6 +741,7 @@ function renderResults(){
     ${!unsaved && stor.warn ? `<div class="notice">${stor.count} of ${STORAGE_MAX} local records used. Export your records; the page will stop saving at ${STORAGE_MAX} and never deletes records itself.</div>` : ''}
     <div class="card stack">
       <h2>${T.heading}</h2>
+      ${T.guidance ? `<div class="guide tier-${T.guidance.tier}" id="guideCard"><div class="glabel">${esc(T.guidance.label)}</div><p class="small">${esc(T.guidance.text)}</p><ul class="small">${T.guidance.why.map(w=>`<li>${esc(w)}</li>`).join('')}</ul><div class="small muted">${esc(T.guidanceNote)}</div></div>` : ''}
       <div class="banner neutral">${esc(T.banner)}</div>
       <div class="small muted">${esc(T.storage)}</div>
     </div>
@@ -821,6 +888,11 @@ function buildPdf(run){
   doc.setFillColor(226,241,246); doc.rect(M, y, W-2*M, 8, 'F');
   doc.setTextColor(20); doc.setFont('helvetica','bold'); doc.setFontSize(9.2);
   doc.text(T.banner, W/2, y+5.4, {align:'center'}); y+=11;
+  if(T.guidance){ const G=T.guidance, col = G.tier==='none' ? [11,110,142] : G.tier==='repeat' ? [184,114,10] : [122,62,122];
+    doc.setFont('helvetica','normal'); doc.setFontSize(8); const body = doc.splitTextToSize(G.text + ' ' + G.why.join(' '), W-2*M-10); const h = 9 + body.length*3.5;
+    doc.setFillColor(248,248,248); doc.rect(M, y, W-2*M, h, 'F'); doc.setFillColor(col[0],col[1],col[2]); doc.rect(M, y, 2.2, h, 'F');
+    doc.setFont('helvetica','bold'); doc.setFontSize(10); doc.setTextColor(col[0],col[1],col[2]); doc.text(G.label, M+6, y+5.6);
+    doc.setFont('helvetica','normal'); doc.setFontSize(8); doc.setTextColor(40); doc.text(body, M+6, y+10); y += h + 3; }
   if(run.status==='COMPLETE_UNSAVED'){ doc.setFillColor(253,241,220); doc.rect(M, y, W-2*M, 6, 'F'); doc.setFontSize(8); doc.setTextColor(120,70,0); doc.text('This record was not saved in the browser; keep the exported JSON file.', W/2, y+4, {align:'center'}); y+=8; }
   pdfChart(doc, run, 'left', M, y, (W-2*M)/2-2, 100);
   pdfChart(doc, run, 'right', W/2+2, y, (W-2*M)/2-2, 100);
@@ -927,6 +999,7 @@ if(HAS_DOM){ if(document.readyState==='loading') document.addEventListener('DOMC
 globalThis.MV = { SOFTWARE_VERSION, BLANK_MS, BUILD_TARGET, STORE_KEY, DRAFT_KEY, EXPORTED_KEY, LEGACY_KEY, STORAGE_WARN, STORAGE_MAX, SCORING_VERSION, STIMULUS_VERSION, PROTOCOLS, FREQS, COLS, SENS, CONTRAST, LADDER, HEALTHY, SHOW_REFERENCE_CURVE, FORBIDDEN_LABELS, REFS, INTEGRITY_SCOPE,
   S, startRun, startEye, nextTrial, submitAnswer, finaliseRun, scoreEye, scoreRun, canonical, integrityPayload, computeIntegrity, reportText, chartSVG, buildPdf, exportJson, exportFilename, storedRuns, storageCheck, samplingBand, codeAmplitude, updateCal, loadDraft, renderResults, renderHistory, deliverFile, buildValidation,
   // Phase 1
+  GUIDANCE_VERSION, GUIDANCE_RULES, guidanceForRun, guidanceHistory,
   CONTEXT_VERSION, CONTEXT_PARAGRAPH, CONTEXT_ITEMS, validateContext, setRunContext, contextToldLines, renderScale, renderedPpc, geometry, deviceSnapshot, drawGrating, show, toast, exportRun, exportAll, deleteExportedConfirmed, downloadPdf, saveDraft };
 
 </script>
