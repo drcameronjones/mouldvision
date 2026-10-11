@@ -10,9 +10,9 @@
     "protocol": "full-5x9-v1",
     "scoring": "score-v1-maxcorrect",
     "stimulus": "gauss-0.42R-sRGB-dither-v1",
-    "sourceHash": "c75633bdf4851e40c504fea69357d243366a705d04494399f64daf255ce049c0",
-    "gitCommit": "f09b15066c9d9cf4d8f90e4d1004306330bb46ad",
-    "builtAt": "2026-10-11T06:20:25.448Z"
+    "sourceHash": "77ae8cf276b82298a3de46d2f50ab95965eadd1f2f3161084510682704186f8e",
+    "gitCommit": "19a1d0ded4757533254c15631eb116284cfc9c99",
+    "builtAt": "2026-10-11T06:29:09.705Z"
   },
   "geometry": {
     "pxPerCm": 44.5,
@@ -2153,13 +2153,13 @@
   "validation": {
     "software": {
       "status": "passed",
-      "suite": "phase0-T01-T28+phase1-M01-M13+guidance-G01-G06",
+      "suite": "phase0-T01-T28+phase1-M01-M13+guidance-G01-G06+site-W01-W02",
       "version": "v0.8.0",
       "runAt": "2026-10-11",
-      "passed": 53,
-      "total": 53,
-      "sourceHash": "c75633bdf4851e40c504fea69357d243366a705d04494399f64daf255ce049c0",
-      "gitCommit": "f09b15066c9d9cf4d8f90e4d1004306330bb46ad"
+      "passed": 55,
+      "total": 55,
+      "sourceHash": "77ae8cf276b82298a3de46d2f50ab95965eadd1f2f3161084510682704186f8e",
+      "gitCommit": "19a1d0ded4757533254c15631eb116284cfc9c99"
     },
     "measurement": {
       "status": "not_performed",
