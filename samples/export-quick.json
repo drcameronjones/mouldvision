@@ -11,8 +11,8 @@
     "scoring": "score-v1-maxcorrect",
     "stimulus": "gauss-0.42R-sRGB-dither-v1",
     "sourceHash": "39fbc40aa6acf8f5d13a1edbacc8ec59b4833c1529751b349dc39129d53efbb3",
-    "gitCommit": "daa67d372827c84844f42013248143c7fdd14269",
-    "builtAt": "2026-10-11T00:30:38.361Z"
+    "gitCommit": "517cb18b22fd21b40435b53ec7211380cd3c8a31",
+    "builtAt": "2026-10-11T00:32:03.739Z"
   },
   "geometry": {
     "pxPerCm": 44.5,
@@ -1998,7 +1998,7 @@
       "passed": 47,
       "total": 47,
       "sourceHash": "39fbc40aa6acf8f5d13a1edbacc8ec59b4833c1529751b349dc39129d53efbb3",
-      "gitCommit": "daa67d372827c84844f42013248143c7fdd14269"
+      "gitCommit": "517cb18b22fd21b40435b53ec7211380cd3c8a31"
     },
     "measurement": {
       "status": "not_performed",
