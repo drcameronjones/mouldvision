@@ -1,5 +1,5 @@
 {
-  "sourceHash": "361eeae26728987cf1e57ef1c9a2cb5baa91f6da7fb95712fb2fbdcc59264a06",
+  "sourceHash": "f1e167308bb581005a10571cb18199ca79b85ff0bcf8d6798637d6e61ef8cd7b",
   "sourceFiles": [
     "src/app.js",
     "src/index.html",
@@ -19,13 +19,13 @@
     "src/site/privacy.html",
     "src/mobile/vendor/VENDOR.md"
   ],
-  "gitCommit": "8804b98cbdf2fcf1121788e1e7abe21acdb969d3",
+  "gitCommit": "5703302dd11ff44c9e0227a896a67e20cfd980cd",
   "gitDirty": false,
   "sourceChangedDuringRun": false,
   "suite": "phase0-T01-T28+phase1-M01-M15+guidance-G01-G07+site-W01-W05",
   "version": "v0.8.0",
   "runAt": "2026-10-12",
-  "runAtFull": "2026-10-12T07:52:18.491Z",
+  "runAtFull": "2026-10-12T08:00:13.737Z",
   "node": "v22.22.0",
   "platform": "linux",
   "passed": 61,
