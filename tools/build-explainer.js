@@ -40,6 +40,7 @@ const REFS = [
   'Jones PR, Ungewiss J, Eichinger P, et al. Contrast sensitivity and night driving in older people. <i>Front Hum Neurosci</i>. 2022;16:914459.',
   'Desapriya E, Harjee R, Brubacher J, et al. Vision screening of older drivers for preventing road traffic injuries and fatalities. <i>Cochrane Database Syst Rev</i>. 2014;(2):CD006252.',
   'Austroads, National Transport Commission. <i>Assessing Fitness to Drive for commercial and private vehicle drivers</i>. Sydney: Austroads; 2022.',
+  'Dooley M. Biomarkers over time: from visual contrast sensitivity to transcriptomics in differentiating chronic inflammatory response syndrome and myalgic encephalomyelitis/chronic fatigue syndrome. <i>Int J Mol Sci</i>. 2025;26(15):7284.',
 ];
 let html = `<!doctype html><html lang="en"><head><meta charset="utf-8"><title>MouldVision — the method</title>
 <style>
@@ -287,12 +288,12 @@ th{font-size:7.6pt;letter-spacing:.08em;text-transform:uppercase;color:var(--mut
     </div>
     <div>
       <h3>Validation stated, not implied</h3>
-      <p>Every report carries three lines: software verification (an automated suite of 47 tests, bound to the exact source that produced the build), physical measurement validation, and clinical validation. Today the second and third read <i>not performed</i>, and will until the display contrast of real phones has been measured and a normative sample exists. The rows that an 8-bit screen cannot be assumed to render are marked exploratory rather than scored.</p>
+      <p>Every report carries three lines: software verification (an automated test suite, bound to the exact source that produced the build), physical measurement validation, and clinical validation. Today the second and third read <i>not performed</i>, and will until the display contrast of real phones has been measured and a normative sample exists. The rows that an 8-bit screen cannot be assumed to render are marked exploratory rather than scored.</p>
       <h3>No labels</h3>
       <p>The report never says positive, negative, pass, fail or abnormal, and never attributes a result to mould, mycotoxins or any exposure. It describes what was shown, what was answered, and under what conditions; it tells people when an eye examination is warranted; and it directs questions about a building to building assessment.</p>
       <div class="box">
         <h4>The evidence on VCS and water-damaged buildings, briefly</h4>
-        <p class="small" style="margin:0">A NIOSH study found lower contrast sensitivity at every bar width among staff of a severely water-damaged school than at a comparison school, yet advised against using VCS to evaluate mould-exposed people because the earlier literature was confounded and poorly controlled [12]. A 2026 comparison found the handheld chart did not separate exposed people from controls while digital tests did, and called the digital tools investigational [13]. Toxicology and infectious-disease bodies state that no validated biomarker or diagnostic test for mould-related illness exists [14, 15]. MouldVision takes the position those papers point to: build the digital instrument carefully, collect the data properly, and claim nothing until it has.</p>
+        <p class="small" style="margin:0">A NIOSH study found lower contrast sensitivity at every bar width among staff of a severely water-damaged school than at a comparison school, yet advised against using VCS to evaluate mould-exposed people because the earlier literature was confounded and poorly controlled [12]. A 2026 comparison found the handheld chart did not separate exposed people from controls while digital tests did, and called the digital tools investigational [13]. In the CIRS framework the test is one of six core case-definition biomarkers, a history traced in a 2025 narrative review that reports no new test data [32]. Toxicology and infectious-disease bodies state that no validated biomarker or diagnostic test for mould-related illness exists [14, 15]. MouldVision takes the position those papers point to: build the digital instrument carefully, collect the data properly, and claim nothing until it has.</p>
       </div>
     </div>
   </div>
