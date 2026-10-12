@@ -1,5 +1,5 @@
 {
-  "sourceHash": "a42e5a834ff856d5acdde6b8342a925fc93c41ae1fafff381810a8b68c61db10",
+  "sourceHash": "dcc228c0d2b74049b3969566958718df42784fd709a919de7a92fe893e8d6ccc",
   "sourceFiles": [
     "src/app.js",
     "src/index.html",
@@ -21,13 +21,13 @@
     "src/site/tokens.css",
     "src/mobile/vendor/VENDOR.md"
   ],
-  "gitCommit": "fe3dd183ce05e6ee30b528d3f1b1e66f16c41048",
+  "gitCommit": "dc45955973796b549d5119a81f00b273eea9c5ed",
   "gitDirty": false,
   "sourceChangedDuringRun": false,
   "suite": "phase0-T01-T28+phase1-M01-M15+guidance-G01-G07+site-W01-W06+design-D01-D06",
   "version": "v0.9.0",
   "runAt": "2026-10-12",
-  "runAtFull": "2026-10-12T11:30:59.442Z",
+  "runAtFull": "2026-10-12T11:43:25.747Z",
   "node": "v22.22.0",
   "platform": "linux",
   "passed": 68,
@@ -168,7 +168,7 @@
     },
     {
       "id": "W06",
-      "name": "design tokens: every text colour pairing meets WCAG 2.2 AA (4.5:1) in light and dark themes",
+      "name": "design tokens: one light theme whatever the device setting; every text colour pairing meets WCAG 2.2 AA (4.5:1)",
       "ok": true,
       "kind": "node"
     },

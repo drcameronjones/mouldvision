@@ -1,6 +1,6 @@
 // MouldVision phone edition — service worker. Caches the app shell so the test runs with no network after first load.
 // The cache name carries the build's source hash (injected at build), so a new verified build replaces the old one.
-const BUILD = 'a42e5a834ff856d5-staging';
+const BUILD = 'dcc228c0d2b74049-staging';
 const SHELL = 'mv-shell-' + BUILD;
 const RUNTIME = 'mv-runtime-v1';
 const APP_FILES = ['./', 'index.html', 'test/', 'test/index.html', 'styles.css', 'tokens.css', 'mobile.css', 'build-info.js', 'app.js', 'devices.js', 'distance.js', 'mobile.js', 'manifest.webmanifest', 'bhs-logo.png', 'icons/icon-192.png', 'icons/icon-512.png', 'faq.html', 'evidence.html', 'terms.html', 'privacy.html', 'site.css', 'img/figure-grating.png', 'img/figure-tilts.png', 'img/figure-columns.png', 'vendor/jspdf.umd.min.js', 'vendor/fonts/fonts.css', 'vendor/fonts/newsreader-latin-400-normal.woff2', 'vendor/fonts/newsreader-latin-400-italic.woff2', 'vendor/fonts/newsreader-latin-600-normal.woff2', 'vendor/fonts/public-sans-latin-400-normal.woff2', 'vendor/fonts/public-sans-latin-500-normal.woff2', 'vendor/fonts/public-sans-latin-600-normal.woff2', 'vendor/fonts/public-sans-latin-700-normal.woff2', 'vendor/fonts/ibm-plex-mono-latin-400-normal.woff2', 'vendor/fonts/ibm-plex-mono-latin-500-normal.woff2', 'vendor/fonts/pdf/Newsreader-400.ttf', 'vendor/fonts/pdf/Newsreader-600.ttf', 'vendor/fonts/pdf/PublicSans-400.ttf', 'vendor/fonts/pdf/PublicSans-600.ttf', 'vendor/fonts/pdf/IBMPlexMono-400.ttf'];
