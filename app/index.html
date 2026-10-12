@@ -167,7 +167,7 @@
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script>window.MV_BUILD_TARGET="live";window.MV_VALIDATION={"software":{"status":"passed","suite":"phase0-T01-T28+phase1-M01-M15+guidance-G01-G07+site-W01-W05","version":"v0.8.0","runAt":"2026-10-12","passed":61,"total":61,"sourceHash":"f1e167308bb581005a10571cb18199ca79b85ff0bcf8d6798637d6e61ef8cd7b","gitCommit":"5703302dd11ff44c9e0227a896a67e20cfd980cd"}};window.MV_BUILD={"sourceHash":"f1e167308bb581005a10571cb18199ca79b85ff0bcf8d6798637d6e61ef8cd7b","gitCommit":"5703302dd11ff44c9e0227a896a67e20cfd980cd","gitDirty":false,"builtAt":"2026-10-12T08:00:13.804Z","verificationReason":null};</script>
+<script>window.MV_BUILD_TARGET="live";window.MV_VALIDATION={"software":{"status":"passed","suite":"phase0-T01-T28+phase1-M01-M15+guidance-G01-G07+site-W01-W06+design-D01-D06","version":"v0.9.0","runAt":"2026-10-12","passed":68,"total":68,"sourceHash":"a42e5a834ff856d5acdde6b8342a925fc93c41ae1fafff381810a8b68c61db10","gitCommit":"fe3dd183ce05e6ee30b528d3f1b1e66f16c41048"}};window.MV_BUILD={"sourceHash":"a42e5a834ff856d5acdde6b8342a925fc93c41ae1fafff381810a8b68c61db10","gitCommit":"fe3dd183ce05e6ee30b528d3f1b1e66f16c41048","gitDirty":false,"builtAt":"2026-10-12T11:30:59.537Z","verificationReason":null};</script>
 <script>
 'use strict';
 /* MouldVision / VCS Screen — Phase 0 engine (v0.7.0) with Phase 1 additive extensions (v0.8.0): geometry sources, context module, front-end hooks
@@ -177,7 +177,7 @@
  */
 
 // ---------- Versions and build ----------
-const SOFTWARE_VERSION = 'v0.8.0';
+const SOFTWARE_VERSION = 'v0.9.0';
 const RECORD_SCHEMA = 1;
 const SCORING_VERSION = 'score-v1-maxcorrect';
 const STIMULUS_VERSION = 'gauss-0.42R-sRGB-dither-v1';
@@ -692,7 +692,7 @@ function reportText(run){
 function chartSVG(run, eye){
   const sc = eye==='right' ? run.scoring.right : run.scoring.left;
   const trials = run.trials.filter(t=>t.eye===eye);
-  const W=360, H=340, left=48, right=48, top=18, bottom=60;
+  const W=360, H=362, left=48, right=48, top=18, bottom=80;   // v0.9.0: taller footer so the axis title and legend no longer overlap
   const pw = W-left-right, ph = H-top-bottom;
   const ymin=Math.log10(3), ymax=Math.log10(250);
   const Y = s => top + ph*(1-(Math.log10(s)-ymin)/(ymax-ymin));
@@ -700,15 +700,14 @@ function chartSVG(run, eye){
   let g='';
   // exploratory band rows 7–9
   const bTop = Y(SENS[8])-8, bBot = Y(SENS[6])+8;
-  g += `<defs><pattern id="hatch-${eye}" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><line x1="0" y1="0" x2="0" y2="6" stroke="var(--line)" stroke-width="1"/></pattern></defs>`;
-  g += `<rect x="${left}" y="${bTop}" width="${pw}" height="${bBot-bTop}" fill="url(#hatch-${eye})"/>`;
+  g += `<rect x="${left}" y="${bTop}" width="${pw}" height="${bBot-bTop}" fill="var(--surface-2,#efeee9)" stroke="var(--line)" stroke-width="0.6" stroke-dasharray="3 3"/>`;   // v0.9.0: light band replaces hatching
   g += `<text x="${left+pw/2}" y="${bTop-3}" text-anchor="middle" font-size="8.5" fill="var(--muted)">exploratory rows 7–9: computed sub-step amplitude; displayed contrast not measured</text>`;
   [5,10,20,50,100,200].forEach(s=>{ g+=`<line x1="${left}" x2="${W-right}" y1="${Y(s)}" y2="${Y(s)}" stroke="var(--line)"/><text x="${left-6}" y="${Y(s)+4}" text-anchor="end" font-size="10" fill="var(--muted)">${s}</text>`; });
   [0.5,1,2,5,10,20].forEach(p=>{ const s=100/p; g+=`<text x="${W-right+6}" y="${Y(s)+4}" font-size="10" fill="var(--muted)">${p}</text>`; });
   g += `<text transform="translate(12 ${top+ph/2}) rotate(-90)" text-anchor="middle" font-size="10" fill="var(--muted)">Contrast sensitivity</text>`;
   g += `<text transform="translate(${W-10} ${top+ph/2}) rotate(90)" text-anchor="middle" font-size="10" fill="var(--muted)">Percent contrast</text>`;
   COLS.forEach((c,i)=>{ g+=`<text x="${X(i)}" y="${H-bottom+16}" text-anchor="middle" font-size="11" font-weight="700" fill="var(--fg)">${c}</text><text x="${X(i)}" y="${H-bottom+29}" text-anchor="middle" font-size="9" fill="var(--muted)">(${FREQS[i]})</text>`; });
-  g += `<text x="${left+pw/2}" y="${H-6}" text-anchor="middle" font-size="10" fill="var(--muted)">Cycles per degree (cpd)</text>`;
+  g += `<text x="${left+pw/2}" y="${H-bottom+43}" text-anchor="middle" font-size="10" fill="var(--muted)">Cycles per degree (cpd)</text>`;
   if(SHOW_REFERENCE_CURVE) g += `<polyline fill="none" stroke="var(--muted)" stroke-width="1.5" points="${HEALTHY.map((h,i)=>`${X(i)},${Y(h)}`).join(' ')}"/>`;
   // descriptive line: solid for core rows, dashed when it enters the exploratory band
   const pts = sc.lowestContrastCorrect.map((s,i)=> s? {x:X(i),y:Y(s),expl:s>=SENS[EXPLORATORY_FROM_ROW-1]-1e-9} : null);
@@ -716,20 +715,21 @@ function chartSVG(run, eye){
   // markers
   trials.forEach(t=>{
     const x=X(COLS.indexOf(t.col)), y=Y(t.sensitivity);
-    if(!t.presented){ g += `<circle cx="${x}" cy="${y}" r="4.2" fill="none" stroke="var(--muted)" stroke-width="1.2"/>`; return; }
+    if(!t.presented){ g += `<circle cx="${x}" cy="${y}" r="4.2" fill="none" stroke="var(--muted)" stroke-width="1.2" stroke-dasharray="2 1.6"/>`; return; }
     const ang = t.orient==='left'? -TILT : t.orient==='right'? TILT : 0;
     g += `<line x1="${x}" y1="${y}" x2="${x+9*Math.sin(ang)}" y2="${y-9*Math.cos(ang)}" stroke="var(--fg)" stroke-width="1.5"/>`;
     if(t.correct===false && t.answer!=='none'){ const a2 = t.answer==='left'? -TILT : t.answer==='right'? TILT : 0; g += `<line x1="${x}" y1="${y}" x2="${x+9*Math.sin(a2)}" y2="${y-9*Math.cos(a2)}" stroke="var(--bad)" stroke-width="1.5"/>`; }
     const iso = sc.isolated[COLS.indexOf(t.col)] && t.correct && t.sensitivity===sc.lowestContrastCorrect[COLS.indexOf(t.col)];
     if(iso) g += `<circle cx="${x}" cy="${y}" r="7" fill="none" stroke="var(--warn)" stroke-width="1.5"/>`;
-    g += `<circle cx="${x}" cy="${y}" r="4.2" fill="${t.correct?'var(--good)':'var(--bad)'}" stroke="var(--surface)" stroke-width="1"/>`;
+    if(t.correct) g += `<circle cx="${x}" cy="${y}" r="4.4" fill="var(--good)" stroke="var(--surface)" stroke-width="1"/>`;
+    else g += `<path d="M${x-4} ${y-4}L${x+4} ${y+4}M${x+4} ${y-4}L${x-4} ${y+4}" stroke="var(--bad)" stroke-width="2.2" stroke-linecap="round"/>`;   // v0.9.0: shape, not colour alone
   });
   // legend
-  const ly = H-bottom+42;
+  const ly = H-bottom+58;
   g += `<line x1="${left}" y1="${ly}" x2="${left+18}" y2="${ly}" stroke="var(--bad)" stroke-width="2.5"/><text x="${left+22}" y="${ly+3}" font-size="8.5" fill="var(--fg)">Lowest contrast correctly identified (descriptive; one presentation per level)</text>`;
   g += `<circle cx="${left+6}" cy="${ly+12}" r="3.5" fill="var(--good)"/><text x="${left+13}" y="${ly+15}" font-size="8.5" fill="var(--fg)">identified</text>`;
-  g += `<circle cx="${left+66}" cy="${ly+12}" r="3.5" fill="var(--bad)"/><text x="${left+73}" y="${ly+15}" font-size="8.5" fill="var(--fg)">not identified</text>`;
-  g += `<circle cx="${left+146}" cy="${ly+12}" r="3.5" fill="none" stroke="var(--muted)"/><text x="${left+153}" y="${ly+15}" font-size="8.5" fill="var(--fg)">not presented</text>`;
+  g += `<path d="M${left+63} ${ly+9}L${left+69} ${ly+15}M${left+69} ${ly+9}L${left+63} ${ly+15}" stroke="var(--bad)" stroke-width="1.8" stroke-linecap="round"/><text x="${left+73}" y="${ly+15}" font-size="8.5" fill="var(--fg)">not identified</text>`;
+  g += `<circle cx="${left+146}" cy="${ly+12}" r="3.5" fill="none" stroke="var(--muted)" stroke-dasharray="2 1.5"/><text x="${left+153}" y="${ly+15}" font-size="8.5" fill="var(--fg)">not presented</text>`;
   g += `<circle cx="${left+226}" cy="${ly+12}" r="5" fill="none" stroke="var(--warn)" stroke-width="1.5"/><text x="${left+235}" y="${ly+15}" font-size="8.5" fill="var(--fg)">isolated</text>`;
   return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${eye} eye contrast results">${g}</svg>`;
 }
@@ -822,7 +822,26 @@ function markExported(id){ try{ const ex=exportedIds(); if(!ex.includes(id)){ ex
 async function exportAll(){ const runs=storedRuns(); if(!runs.length) return; try{ await deliverFile(`mouldvision-runs-${new Date().toISOString().slice(0,10)}.json`, JSON.stringify(runs,null,2)); runs.forEach(r=>markExported(r.id)); toast('All records exported'); }catch(e){ toast('Could not export'); } }
 
 // ---------- PDF ----------
-function pdfChart(doc, run, eye, x0, y0, w, h){
+// v0.9.0 report layout (approved by Dr Cameron Jones, 12 Oct 2026): Scientific Editorial typography and spacing.
+// Same text, values and order as v0.8.0 (tests D04); only positions, fonts, colours, marker shapes and the
+// layout labels "Provisional guidance" and "Figure 1" are new. Identified = green filled circle; not identified = red cross;
+// not presented = dashed hollow circle; isolated = amber ring; exploratory rows 7–9 = light hatched band.
+const PDF_INK=[22,22,20], PDF_BODY=[51,51,47], PDF_MUTED=[85,85,79], PDF_RULE=[217,214,207], PDF_ACCENT=[28,63,148], PDF_GOOD=[31,107,69], PDF_BAD=[163,58,22], PDF_ISO=[176,108,10], PDF_BAND=[241,240,235];
+function pdfFonts(doc){
+  const src = (typeof globalThis!=='undefined' && globalThis.MV_PDF_FONTS) || null;
+  const files = ['Newsreader-400.ttf','Newsreader-600.ttf','PublicSans-400.ttf','PublicSans-600.ttf','IBMPlexMono-400.ttf'];
+  if(src && files.every(f=>typeof src[f]==='string' && src[f].length>1000)){
+    try{
+      const add=(file,name,style)=>{ doc.addFileToVFS(file, src[file]); doc.addFont(file, name, style); };
+      add(files[0],'Newsreader','normal'); add(files[1],'Newsreader','bold'); add(files[2],'PublicSans','normal'); add(files[3],'PublicSans','bold'); add(files[4],'PlexMono','normal');
+      add(files[2],'PublicSans','italic'); add(files[4],'PlexMono','bold');
+      return { serif:'Newsreader', sans:'PublicSans', mono:'PlexMono', embedded:true };
+    }catch(e){}
+  }
+  return { serif:'times', sans:'helvetica', mono:'courier', embedded:false };   // standard PDF fonts when the font files are not available (desktop edition, offline first load)
+}
+function pdfChart(doc, run, eye, x0, y0, w, h, F){
+  F = F || { serif:'times', sans:'helvetica', mono:'courier' };
   const sc = eye==='right' ? run.scoring.right : run.scoring.left;
   const trials = run.trials.filter(t=>t.eye===eye);
   const left=x0+12, right=x0+w-12, top=y0+10, bottom=y0+h-16;
@@ -830,44 +849,46 @@ function pdfChart(doc, run, eye, x0, y0, w, h){
   const ymin=Math.log10(3), ymax=Math.log10(250);
   const Y = s => top + ph*(1-(Math.log10(s)-ymin)/(ymax-ymin));
   const X = c => left + pw*(c+0.5)/5;
-  doc.setFont('helvetica','bold'); doc.setFontSize(11); doc.setTextColor(20);
+  const ink = c => doc.setTextColor(c[0],c[1],c[2]);
+  doc.setFont(F.serif,'bold'); doc.setFontSize(12); ink(PDF_INK);
   doc.text(eye==='right'?'Right eye':'Left eye', x0+w/2, y0+3, {align:'center'});
-  // exploratory band
+  // exploratory band: light fill, sparse hatch
   const bTop=Y(SENS[8])-2.4, bBot=Y(SENS[6])+2.4;
-  doc.setFillColor(240,240,240); doc.rect(left, bTop, pw, bBot-bTop, 'F');
-  doc.setDrawColor(200); doc.setLineWidth(0.15); for(let xx=left; xx<right; xx+=2){ doc.line(xx, bBot, Math.min(xx+ (bBot-bTop), right), bTop); }
-  doc.setFontSize(6); doc.setTextColor(90); doc.setFont('helvetica','italic'); doc.text('exploratory rows 7–9: computed sub-step amplitude; displayed contrast not measured', left+pw/2, bTop-1, {align:'center'}); doc.setFont('helvetica','normal');
-  doc.setDrawColor(215,222,227); doc.setLineWidth(0.2); doc.setFontSize(7); doc.setTextColor(90);
+  doc.setFillColor(PDF_BAND[0],PDF_BAND[1],PDF_BAND[2]); doc.rect(left, bTop, pw, bBot-bTop, 'F');
+  doc.setDrawColor(214,212,205); doc.setLineWidth(0.12); for(let xx=left; xx<right; xx+=3.2){ doc.line(xx, bBot, Math.min(xx+ (bBot-bTop), right), bTop); }
+  doc.setFontSize(5.8); ink(PDF_MUTED); doc.setFont(F.sans,'italic'); doc.text('exploratory rows 7–9: computed sub-step amplitude; displayed contrast not measured', left+pw/2, bTop-1.2, {align:'center'}); doc.setFont(F.sans,'normal');
+  doc.setDrawColor(PDF_RULE[0],PDF_RULE[1],PDF_RULE[2]); doc.setLineWidth(0.15); doc.setFontSize(6.6); ink(PDF_MUTED);
   [5,10,20,50,100,200].forEach(s=>{ doc.line(left, Y(s), right, Y(s)); doc.text(String(s), left-1.5, Y(s)+1, {align:'right'}); });
   [0.5,1,2,5,10,20].forEach(p=>{ doc.text(String(p), right+1.5, Y(100/p)+1); });
   doc.text('Contrast sensitivity', x0+3, top+ph/2, {angle:90, align:'center'});
-  doc.text('Percent contrast', x0+w-2, top+ph/2, {angle:-90, align:'center'});
-  COLS.forEach((c,i)=>{ doc.setFont('helvetica','bold'); doc.setTextColor(20); doc.text(c, X(i), bottom+4, {align:'center'}); doc.setFont('helvetica','normal'); doc.setTextColor(90); doc.text(`(${FREQS[i]})`, X(i), bottom+7.5, {align:'center'}); });
+  doc.text('Percent contrast', x0+w+1.5, top+ph/2, {angle:-90, align:'center'});
+  COLS.forEach((c,i)=>{ doc.setFont(F.sans,'bold'); ink(PDF_INK); doc.setFontSize(8); doc.text(c, X(i), bottom+4, {align:'center'}); doc.setFont(F.sans,'normal'); ink(PDF_MUTED); doc.setFontSize(6.6); doc.text(`(${FREQS[i]})`, X(i), bottom+7.5, {align:'center'}); });
   doc.text('Cycles per degree (cpd)', left+pw/2, bottom+12, {align:'center'});
   if(SHOW_REFERENCE_CURVE){ doc.setDrawColor(128); doc.setLineWidth(0.4); for(let i=0;i<4;i++) doc.line(X(i),Y(HEALTHY[i]),X(i+1),Y(HEALTHY[i+1])); }
   const th = sc.lowestContrastCorrect;
-  doc.setDrawColor(196,60,47); doc.setLineWidth(0.7);
+  doc.setDrawColor(PDF_BAD[0],PDF_BAD[1],PDF_BAD[2]); doc.setLineWidth(0.6);
   for(let i=0;i<4;i++){ if(!(th[i]&&th[i+1])) continue; const expl = th[i]>=SENS[6]-1e-9 || th[i+1]>=SENS[6]-1e-9; if(expl) doc.setLineDashPattern([1.5,1.2],0); doc.line(X(i),Y(th[i]),X(i+1),Y(th[i+1])); if(expl) doc.setLineDashPattern([],0); }
+  const cross = (x,y,r) => { doc.line(x-r,y-r,x+r,y+r); doc.line(x+r,y-r,x-r,y+r); };
   trials.forEach(t=>{
     const ci=COLS.indexOf(t.col), x=X(ci), y=Y(t.sensitivity);
-    if(!t.presented){ doc.setDrawColor(150); doc.setLineWidth(0.3); doc.circle(x,y,1.2,'S'); return; }
+    if(!t.presented){ doc.setDrawColor(140); doc.setLineWidth(0.25); doc.setLineDashPattern([0.6,0.5],0); doc.circle(x,y,1.2,'S'); doc.setLineDashPattern([],0); return; }
     const ang = t.orient==='left'? -TILT : t.orient==='right'? TILT : 0;
-    doc.setDrawColor(20); doc.setLineWidth(0.35); doc.line(x, y, x+2.6*Math.sin(ang), y-2.6*Math.cos(ang));
-    if(t.correct===false && t.answer!=='none'){ const a2 = t.answer==='left'? -TILT : t.answer==='right'? TILT : 0; doc.setDrawColor(196,60,47); doc.line(x, y, x+2.6*Math.sin(a2), y-2.6*Math.cos(a2)); }
+    doc.setDrawColor(PDF_INK[0],PDF_INK[1],PDF_INK[2]); doc.setLineWidth(0.3); doc.line(x, y, x+2.6*Math.sin(ang), y-2.6*Math.cos(ang));
+    if(t.correct===false && t.answer!=='none'){ const a2 = t.answer==='left'? -TILT : t.answer==='right'? TILT : 0; doc.setDrawColor(PDF_BAD[0],PDF_BAD[1],PDF_BAD[2]); doc.line(x, y, x+2.6*Math.sin(a2), y-2.6*Math.cos(a2)); }
     const iso = sc.isolated[ci] && t.correct && t.sensitivity===th[ci];
-    if(iso){ doc.setDrawColor(184,114,10); doc.setLineWidth(0.4); doc.circle(x,y,2.0,'S'); }
-    if(t.correct) doc.setFillColor(31,138,76); else doc.setFillColor(196,60,47);
-    doc.setDrawColor(255); doc.setLineWidth(0.2); doc.circle(x, y, 1.2, 'FD');
+    if(iso){ doc.setDrawColor(PDF_ISO[0],PDF_ISO[1],PDF_ISO[2]); doc.setLineWidth(0.4); doc.circle(x,y,2.1,'S'); }
+    if(t.correct){ doc.setFillColor(PDF_GOOD[0],PDF_GOOD[1],PDF_GOOD[2]); doc.setDrawColor(255); doc.setLineWidth(0.2); doc.circle(x, y, 1.25, 'FD'); }
+    else { doc.setDrawColor(PDF_BAD[0],PDF_BAD[1],PDF_BAD[2]); doc.setLineWidth(0.45); cross(x, y, 1.05); }
   });
-  doc.setDrawColor(196,60,47); doc.setLineWidth(0.7); doc.line(left, bottom+16, left+6, bottom+16);
-  doc.setTextColor(20); doc.setFontSize(6.5); doc.text('Lowest contrast correctly identified (descriptive; one presentation per level)', left+8, bottom+17);
-  doc.setFontSize(6.5); doc.setFillColor(31,138,76); doc.circle(left+2, bottom+21, 1, 'F'); doc.text('identified', left+5, bottom+22);
-  doc.setFillColor(196,60,47); doc.circle(left+24, bottom+21, 1, 'F'); doc.text('not identified', left+27, bottom+22);
-  doc.setDrawColor(150); doc.circle(left+50, bottom+21, 1, 'S'); doc.text('not presented', left+53, bottom+22);
-  doc.setDrawColor(184,114,10); doc.circle(left+76, bottom+21, 1.4, 'S'); doc.text('isolated', left+80, bottom+22);
-  doc.setFont('helvetica','bold'); doc.setFontSize(8.5);
+  doc.setDrawColor(PDF_BAD[0],PDF_BAD[1],PDF_BAD[2]); doc.setLineWidth(0.6); doc.line(left, bottom+16, left+6, bottom+16);
+  ink(PDF_BODY); doc.setFontSize(6.2); doc.text('Lowest contrast correctly identified (descriptive; one presentation per level)', left+8, bottom+17);
+  doc.setFillColor(PDF_GOOD[0],PDF_GOOD[1],PDF_GOOD[2]); doc.circle(left+2, bottom+21, 1, 'F'); doc.text('identified', left+5, bottom+22);
+  doc.setDrawColor(PDF_BAD[0],PDF_BAD[1],PDF_BAD[2]); doc.setLineWidth(0.4); cross(left+22, bottom+21, 0.9); doc.text('not identified', left+25, bottom+22);
+  doc.setDrawColor(140); doc.setLineWidth(0.25); doc.setLineDashPattern([0.6,0.5],0); doc.circle(left+46, bottom+21, 1, 'S'); doc.setLineDashPattern([],0); doc.text('not presented', left+49, bottom+22);
+  doc.setDrawColor(PDF_ISO[0],PDF_ISO[1],PDF_ISO[2]); doc.setLineWidth(0.4); doc.circle(left+70, bottom+21, 1.4, 'S'); doc.text('isolated', left+73.5, bottom+22);
+  doc.setFont(F.sans,'bold'); doc.setFontSize(8.2); ink(PDF_INK);
   doc.text(`${sc.correct} of ${sc.presented} presented patches identified`, x0+w/2, bottom+28, {align:'center'});
-  doc.setFont('helvetica','normal'); doc.setFontSize(7.5); doc.setTextColor(90);
+  doc.setFont(F.sans,'normal'); doc.setFontSize(7.2); ink(PDF_MUTED);
   doc.text(`${sc.cantSee} can't see · ${sc.notPresented} not presented · ${sc.isolated.filter(Boolean).length} isolated`, x0+w/2, bottom+32, {align:'center'});
 }
 function logoDataUri(){
@@ -879,49 +900,66 @@ function logoDataUri(){
 function buildPdf(run){
   const { jsPDF } = (typeof window!=='undefined' && window.jspdf) ? window.jspdf : globalThis.jspdf;
   const doc = new jsPDF({unit:'mm', format:'a4', compress:true});
-  const W=210, M=14, T = reportText(run);
+  const F = pdfFonts(doc);
+  const W=210, M=16, T = reportText(run);
+  const ink = c => doc.setTextColor(c[0],c[1],c[2]);
+  const rule = (yy, c, lw) => { doc.setDrawColor(c[0],c[1],c[2]); doc.setLineWidth(lw); doc.line(M, yy, W-M, yy); };
   const LOGO = logoDataUri();
-  if(LOGO){ try{ doc.addImage(LOGO, 'PNG', M, 10, 52, 52*875/3405, undefined, 'FAST'); }catch(e){} }
-  doc.setFont('helvetica','bold'); doc.setFontSize(13); doc.setTextColor(11,110,142);
-  doc.text('MouldVision', M+57, 15.5);
-  doc.setFontSize(8.5); doc.setFont('helvetica','normal'); doc.setTextColor(90);
-  doc.text('Visual contrast test report', M+57, 20);
-  doc.text('Concept: Dr Cameron Jones, PhD  ·  www.biologicalhealthservices.com.au', M+57, 24.5);
-  doc.setFontSize(13); doc.setFont('helvetica','bold'); doc.setTextColor(20);
-  doc.text(T.heading, W-M, 15.5, {align:'right'});
-  if(run.versions.buildTarget==='staging'){ doc.setFontSize(8); doc.setTextColor(184,114,10); doc.text('STAGING BUILD', W-M, 20.5, {align:'right'}); }
-  doc.setFontSize(8.5); doc.setFont('helvetica','normal'); doc.setTextColor(20);
-  let y=34;
+  if(LOGO){ try{ doc.addImage(LOGO, 'PNG', W-M-40, 11, 40, 40*875/3405, undefined, 'FAST'); }catch(e){} }
+  // masthead
+  doc.setFont(F.serif,'bold'); doc.setFontSize(20); ink(PDF_INK);
+  doc.text('MouldVision', M, 19);
+  doc.setFont(F.sans,'normal'); doc.setFontSize(8.2); ink(PDF_MUTED);
+  doc.text('Visual contrast test report', M+44, 18.6);
+  doc.setFontSize(7); doc.text('Concept: Dr Cameron Jones, PhD  ·  www.biologicalhealthservices.com.au', M, 24.5);
+  rule(27.5, PDF_INK, 0.45);
+  doc.setFont(F.serif,'bold'); doc.setFontSize(17); ink(PDF_INK);
+  doc.text(T.heading, M, 36.5);
+  if(run.versions.buildTarget==='staging'){ doc.setFont(F.sans,'bold'); doc.setFontSize(7.5); doc.setTextColor(176,108,10); doc.text('STAGING BUILD', W-M, 36.5, {align:'right'}); }
+  // record details
+  doc.setFontSize(7.6); ink(PDF_INK);
+  let y=43;
   const meta=[['Run:', run.id, 'Completed:', run.completedAt||'—'],['Protocol:', run.versions.protocol+(run.versions.protocol.startsWith('quick')?' (stop after two consecutive misses)':' (every patch presented)'), 'Name:', '______________________'],['Geometry:', `${run.geometry.distanceCm} cm (${run.geometry.distanceSource||'typed'}) · ${run.geometry.pxPerCm} px/cm (${run.geometry.pxPerCmSource||'card'}) · ${run.geometry.ppd} px/deg · ${renderedPpc(run.geometry)} px/cycle at 18 cpd`, 'Status:', run.status]];
-  meta.forEach(r=>{ doc.setFont('helvetica','bold'); doc.text(r[0], M, y); doc.setFont('helvetica','normal'); doc.text(r[1], M+20, y); doc.setFont('helvetica','bold'); doc.text(r[2], 134, y); doc.setFont('helvetica','normal'); doc.text(r[3], 152, y); y+=4.5; });
-  doc.setDrawColor(11,110,142); doc.setLineWidth(0.5); doc.line(M, y, W-M, y); y+=3;
-  doc.setFillColor(226,241,246); doc.rect(M, y, W-2*M, 8, 'F');
-  doc.setTextColor(20); doc.setFont('helvetica','bold'); doc.setFontSize(9.2);
-  doc.text(T.banner, W/2, y+5.4, {align:'center'}); y+=11;
-  if(T.guidance){ const G=T.guidance, col = G.tier==='none' ? [11,110,142] : G.tier==='repeat' ? [184,114,10] : [122,62,122];
-    doc.setFont('helvetica','normal'); doc.setFontSize(8); const body = doc.splitTextToSize(G.text + ' ' + G.why.join(' '), W-2*M-10); const h = 9 + body.length*3.5;
-    doc.setFillColor(248,248,248); doc.rect(M, y, W-2*M, h, 'F'); doc.setFillColor(col[0],col[1],col[2]); doc.rect(M, y, 2.2, h, 'F');
-    doc.setFont('helvetica','bold'); doc.setFontSize(10); doc.setTextColor(col[0],col[1],col[2]); doc.text(G.label, M+6, y+5.6);
-    doc.setFont('helvetica','normal'); doc.setFontSize(8); doc.setTextColor(40); doc.text(body, M+6, y+10); y += h + 3; }
-  if(run.status==='COMPLETE_UNSAVED'){ doc.setFillColor(253,241,220); doc.rect(M, y, W-2*M, 6, 'F'); doc.setFontSize(8); doc.setTextColor(120,70,0); doc.text('This record was not saved in the browser; keep the exported JSON file.', W/2, y+4, {align:'center'}); y+=8; }
-  pdfChart(doc, run, 'left', M, y, (W-2*M)/2-2, 100);
-  pdfChart(doc, run, 'right', W/2+2, y, (W-2*M)/2-2, 100);
-  y+=138;
-  const PAGE_BOTTOM = 276;
+  // positions: Run and Completed share row 1, Protocol and Name row 2, Geometry takes row 3 alone and Status row 4 (drawing order unchanged)
+  const mpos = [[[M,0],[124,0]],[[M,1],[124,1]],[[M,2],[M,3]]];
+  meta.forEach((r,k)=>{ const [[lx,lr],[rx,rr]] = mpos[k];
+    doc.setFont(F.sans,'bold'); ink(PDF_MUTED); doc.text(r[0], lx, y+lr*4.4); doc.setFont(F.mono,'normal'); doc.setFontSize(7); ink(PDF_INK); doc.text(r[1], lx+18, y+lr*4.4); doc.setFontSize(7.6);
+    doc.setFont(F.sans,'bold'); ink(PDF_MUTED); doc.text(r[2], rx, y+rr*4.4); doc.setFont(F.mono,'normal'); doc.setFontSize(7); ink(PDF_INK); doc.text(r[3], rx+18, y+rr*4.4); doc.setFontSize(7.6); });
+  y += 4*4.4;
+  y+=0.6; rule(y, PDF_RULE, 0.25); y+=5;
+  // descriptive banner
+  doc.setFont(F.mono,'normal'); doc.setFontSize(7.8); ink(PDF_INK);
+  doc.text(T.banner, M, y); y+=5;
+  // provisional guidance
+  if(T.guidance){ const G=T.guidance, col = G.tier==='none' ? PDF_ACCENT : G.tier==='repeat' ? [138,82,8] : [109,58,109];
+    const sym = G.tier==='none' ? 'circle' : G.tier==='repeat' ? 'triangle' : 'diamond';
+    doc.setFont(F.sans,'normal'); doc.setFontSize(8); const body = doc.splitTextToSize(G.text + ' ' + G.why.join(' '), W-2*M-8); const h = 15 + body.length*3.6;
+    doc.setFillColor(247,246,242); doc.rect(M, y, W-2*M, h, 'F'); doc.setFillColor(col[0],col[1],col[2]); doc.rect(M, y, W-2*M, 0.9, 'F');
+    doc.setFont(F.sans,'bold'); doc.setFontSize(6.4); ink(PDF_MUTED); doc.text('PROVISIONAL GUIDANCE', M+4, y+5);
+    doc.setFillColor(col[0],col[1],col[2]); const sx=M+5.4, sy=y+9.3;
+    if(sym==='circle') doc.circle(sx, sy, 1.3, 'F'); else if(sym==='triangle') doc.triangle(sx-1.5, sy+1.2, sx+1.5, sy+1.2, sx, sy-1.5, 'F'); else doc.lines([[1.5,1.5],[-1.5,1.5],[-1.5,-1.5],[1.5,-1.5]], sx, sy-1.5, [1,1], 'F', true);
+    doc.setFont(F.serif,'bold'); doc.setFontSize(12.5); ink(col); doc.text(G.label, M+8.5, y+10.6);
+    doc.setFont(F.sans,'normal'); doc.setFontSize(8); ink(PDF_BODY); doc.text(body, M+4, y+15.6); y += h + 4; }
+  if(run.status==='COMPLETE_UNSAVED'){ doc.setFillColor(248,239,223); doc.rect(M, y, W-2*M, 6, 'F'); doc.setFont(F.sans,'normal'); doc.setFontSize(8); doc.setTextColor(120,70,0); doc.text('This record was not saved in the browser; keep the exported JSON file.', W/2, y+4, {align:'center'}); y+=8; }
+  doc.setFont(F.sans,'bold'); doc.setFontSize(6.4); ink(PDF_ACCENT); doc.text('FIGURE 1', M, y+1); y+=2;
+  pdfChart(doc, run, 'left', M, y+2, (W-2*M)/2-3, 100, F);
+  pdfChart(doc, run, 'right', W/2+3, y+2, (W-2*M)/2-3, 100, F);
+  y+=140;
+  const PAGE_BOTTOM = 274;
   const id = run.id;
-  const footer = () => { const n=doc.getNumberOfPages(); for(let i=1;i<=n;i++){ doc.setPage(i); doc.setDrawColor(215,222,227); doc.setLineWidth(0.2); doc.line(M, 283, W-M, 283); doc.setFontSize(7); doc.setTextColor(90); doc.setFont('helvetica','bold'); doc.text('Biological Health Services', M, 287); doc.setFont('helvetica','normal'); doc.text('Level 1, 459 Toorak Road, Toorak VIC 3142  ·  Laboratory: 7/4 Weddel Court, Laverton North VIC 3026', M, 290.3); doc.text('www.biologicalhealthservices.com.au  ·  Concept: Dr Cameron Jones, PhD  ·  environmental microbiology, not a clinical service', M, 293.6); doc.setTextColor(120); doc.text(`MouldVision ${run.versions.software} · ${id.slice(0,8)} · page ${i} of ${n}`, W-M, 287, {align:'right'}); } };
-  const ensure = (h) => { if(y + h > PAGE_BOTTOM){ doc.addPage(); y = 20; } };
-  const para = (text, size=8.2, color=20, gap=2.5) => { doc.setFont('helvetica','normal'); doc.setFontSize(size); doc.setTextColor(color); const lines=doc.splitTextToSize(text, W-2*M); const lh=size*0.44; ensure(lines.length*lh); doc.text(lines, M, y); y += lines.length*lh + gap; };
-  const heading = (text, size=9.5) => { ensure(size*0.5+6); doc.setFont('helvetica','bold'); doc.setFontSize(size); doc.setTextColor(20); doc.text(text, M, y); y += size*0.5+1.5; };
+  const footer = () => { const n=doc.getNumberOfPages(); for(let i=1;i<=n;i++){ doc.setPage(i); rule(281, PDF_RULE, 0.2); doc.setFontSize(6.6); ink(PDF_MUTED); doc.setFont(F.sans,'bold'); doc.text('Biological Health Services', M, 285.5); doc.setFont(F.sans,'normal'); doc.text('Level 1, 459 Toorak Road, Toorak VIC 3142  ·  Laboratory: 7/4 Weddel Court, Laverton North VIC 3026', M, 288.8); doc.text('www.biologicalhealthservices.com.au  ·  Concept: Dr Cameron Jones, PhD  ·  environmental microbiology, not a clinical service', M, 292.1); doc.setFont(F.mono,'normal'); doc.text(`MouldVision ${run.versions.software} · ${id.slice(0,8)} · page ${i} of ${n}`, W-M, 285.5, {align:'right'}); } };
+  const ensure = (h) => { if(y + h > PAGE_BOTTOM){ doc.addPage(); y = 22; } };
+  const para = (text, size=8.2, color=20, gap=2.5, font) => { doc.setFont(font||F.sans,'normal'); doc.setFontSize(size); if(color===20) ink(PDF_INK); else if(color===40) ink(PDF_BODY); else ink(PDF_MUTED); const lines=doc.splitTextToSize(text, W-2*M); const lh=size*0.46; ensure(lines.length*lh); doc.text(lines, M, y); y += lines.length*lh + gap; };
+  const heading = (text, size=9.5) => { ensure(size*0.55+9); y+=1.5; rule(y-3.2, PDF_RULE, 0.2); doc.setFont(F.serif,'bold'); doc.setFontSize(size+2); ink(PDF_INK); doc.text(text, M, y+1); y += size*0.55+2.5; };
   heading('1. What was measured'); para(T.s1);
   heading('2. Test conditions and their reliability'); para(T.s2);
   heading('3. Results per eye and bar width');
   para('Each circle is one patch, placed by its contrast and bar width. Green: tilt identified. Red: not identified; the red tail shows the tilt chosen, the black tail the true tilt. Hollow: not presented (quick protocol). A ring marks an isolated correct response, one with a miss at an easier level. The hatched band covers rows 7–9, which are exploratory. The red line joins the lowest contrast correctly identified in each column and is dashed where it enters the exploratory band.', 7.8, 40, 2);
-  const labelW = 44, cw=(W-2*M-labelW)/6;
+  const labelW = 46, cw=(W-2*M-labelW)/6;
   const colX = i => M+labelW+cw*i+1;
-  const table = (label, e) => { ensure(26); doc.setFont('helvetica','bold'); doc.setFontSize(8); doc.setTextColor(20); doc.text(label, M, y); y+=4; doc.setFontSize(7.5); ['A (1.5)','B (3)','C (6)','D (12)','E (18)','Total'].forEach((h,i)=> doc.text(h, colX(i), y)); y+=1.5; doc.setDrawColor(200); doc.setLineWidth(0.2); doc.line(M,y,W-M,y); y+=3.5; doc.setFont('helvetica','normal');
+  const table = (label, e) => { ensure(28); doc.setFont(F.serif,'bold'); doc.setFontSize(9.5); ink(PDF_INK); doc.text(label, M, y); y+=4.2; doc.setFont(F.sans,'bold'); doc.setFontSize(6.8); ink(PDF_ACCENT); ['A (1.5)','B (3)','C (6)','D (12)','E (18)','Total'].forEach((h,i)=> doc.text(h, colX(i), y)); y+=1.6; rule(y, PDF_INK, 0.25); y+=3.6;
     const rows=[['Presented', e.byColumn.map(b=>b.presented), e.presented],['Identified', e.byColumn.map(b=>b.correct), e.correct],['Lowest contrast identified', e.lowestContrastCorrect.map((v,i)=> v==null?'–':fmtPct(1/v)+(e.isolated[i]?' *':'')), ''],['Same, rows 1–6 only', e.lowestContrastCorrectRows1to6.map(v=> v==null?'–':fmtPct(1/v)), '']];
-    rows.forEach(r=>{ doc.text(r[0], M+1, y); r[1].forEach((v,i)=> doc.text(String(v), colX(i), y)); doc.text(String(r[2]), colX(5), y); y+=4; }); y+=1; };
+    rows.forEach(r=>{ doc.setFont(F.sans,'normal'); doc.setFontSize(7.6); ink(PDF_BODY); doc.text(r[0], M, y); doc.setFont(F.mono,'normal'); doc.setFontSize(7.4); ink(PDF_INK); r[1].forEach((v,i)=> doc.text(String(v), colX(i), y)); doc.text(String(r[2]), colX(5), y); y+=1.3; rule(y, PDF_RULE, 0.15); y+=2.9; }); y+=1.5; };
   table('Right eye', run.scoring.right); table('Left eye', run.scoring.left);
   para('* isolated: the defining correct response has a miss at an easier contrast level.', 7, 90, 3);
   heading('4. Differences between the eyes'); para(T.s4);
@@ -929,13 +967,13 @@ function buildPdf(run){
   heading('6. When to consult someone'); para(T.s6);
   heading('7. What this test does not show'); para(T.s7, 8.2, 20, 4);
   if(T.s8){ heading(T.s8Heading); para(T.s8, 8.2, 20, 2.5); if(T.told.length){ heading(T.toldHeading, 8.5); T.told.forEach(l=> para('• '+l, 7.8, 20, 1)); para('Recorded as context beside the test record. It is not used in any calculation.', 7.2, 90, 4); } }
-  heading('Identification', 9); para(T.ident, 7.4, 40, 1.5); para(T.valid, 7.4, 40, 4);
+  heading('Identification', 9); para(T.ident, 7, 40, 1.5, F.mono); para(T.valid, 7, 40, 4, F.mono);
   heading('Evidence status', 9.5);
   para('Visual contrast sensitivity measures how faint a pattern can be discriminated across spatial frequencies. It depends on both optical factors (refractive error, clarity of the cornea and lens, pupil size, light scatter) and neural factors (retina, optic nerve and visual cortex), so reduced sensitivity can arise from ocular disease such as cataract, glaucoma or macular disease, from uncorrected refractive error, and from neurological conditions, medication, alcohol and fatigue. Shoemaker popularised it as a bedside marker of biotoxin-related illness after exposure to water-damaged buildings. The evidence is mixed and the test is not validated as a diagnostic tool for mould-related illness.', 7.6, 40, 1.8);
   para('A NIOSH study (ref 12) found lower VCS values at every spatial frequency among employees of a severely water-damaged school than at a comparison school, with more rash, respiratory and constitutional symptoms, yet advised against recommending VCS for mould-exposed people because earlier studies used non-representative samples, lacked comparison groups, characterised exposure poorly and were confounded by conditions such as fibromyalgia and chronic fatigue. A 2026 four-method comparison (ref 13) found the handheld Shoemaker chart did not separate exposed people from controls while digital tests did; the digital tools remain investigational and their figures do not apply to this software.', 7.6, 40, 1.8);
   para('The American College of Medical Toxicology (ref 14) states there is no validated biomarker for mould or mycotoxin exposure; a Lancet Infectious Diseases review (ref 15) notes no diagnostic test exists for building-related illness; a proposed framework for dampness and mould hypersensitivity syndrome (ref 16) uses clinical and exposure criteria only. In an Australian clinical context VCS should be treated as non-validated and not a stand-alone diagnostic or monitoring tool.', 7.6, 40, 3);
   heading('References', 9.5);
-  REFS.forEach((r,i)=> para(`${i+1}. ${r}`, 7.4, 40, 1.3));
+  REFS.forEach((r,i)=> para(`${i+1}. ${r}`, 7.2, 40, 1.3));
   footer();
   return doc.output('blob');
 }
@@ -943,7 +981,8 @@ async function downloadPdf(){
   const btn=$('btnPdf'); if(!S.run) return;
   if(!(typeof window!=='undefined' && window.jspdf)){ toast('PDF library did not load; use Export JSON instead.'); return; }
   btn.disabled=true; btn.textContent='Preparing PDF…';
-  try{ const blob=buildPdf(S.run); const r = await deliverFile(`MouldVision-report-${S.run.id.slice(0,8)}.pdf`, blob); if(r!=='no-dom') toast('PDF saved'); }
+  try{ if(typeof window.MV_PDF_FONTS_LOADER==='function'){ try{ await window.MV_PDF_FONTS_LOADER(); }catch(e){} }   // v0.9.0: report fonts (layout only); falls back to standard fonts
+    const blob=buildPdf(S.run); const r = await deliverFile(`MouldVision-report-${S.run.id.slice(0,8)}.pdf`, blob); if(r!=='no-dom') toast('PDF saved'); }
   catch(e){ if(e && e.code==='declined') toast('Download cancelled'); else toast('Could not save the PDF'+(e&&e.message?': '+e.message:'')); }
   finally{ btn.disabled=false; btn.textContent='Download PDF report'; }
 }
