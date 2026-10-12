@@ -63,3 +63,83 @@ footer a{color:var(--accent)}
 #safetyLine{margin:0}
 .sitelinks{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:4px 0 2px}
 .sitelinks a{font-size:.85rem;padding:6px 12px;border-radius:999px;border:1px solid var(--line);color:var(--accent);text-decoration:none;background:var(--surface)}
+
+/* ===== v0.9.0 design: Scientific Editorial type and layout with Clinical Precision controls (approved 12 Oct 2026) =====
+   Chrome only. Nothing below targets .field, #stim, canvas or the test-screen background; the test surround stays #808080. */
+body.mobile{background:var(--bg);color:var(--fg);font-family:var(--sans);font-size:17px;line-height:1.55}
+body.mobile .screen:not(.test){padding-top:calc(8px + env(safe-area-inset-top,0px))}
+body.mobile h1,body.mobile h2,body.mobile h3{font-family:var(--serif);font-weight:600;letter-spacing:-.005em}
+body.mobile h2{font-size:1.6rem;line-height:1.15}
+body.mobile h3{font-size:1.2rem;line-height:1.25}
+body.mobile p{max-width:62ch}
+body.mobile .eyebrow{font-family:var(--sans);font-size:.72rem;letter-spacing:.12em;color:var(--accent);font-weight:600}
+body.mobile .muted{color:var(--muted)}
+body.mobile a{color:var(--accent)}
+.mhead{display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap;border-bottom:1.5px solid var(--rule);padding:10px 0 10px}
+.mhead .wordmark{text-decoration:none;color:var(--fg)}
+.mhead h1{font-family:var(--serif);font-size:1.7rem;font-weight:600;letter-spacing:-.01em}
+/* cards become editorial sections: a rule above, no box */
+body.mobile .card{background:transparent;border:0;border-top:1px solid var(--line);border-radius:0;padding:20px 0 4px}
+body.mobile .mhead+.card,body.mobile .mhead+.notice+.card,body.mobile .screen>.card:first-child{border-top:0;padding-top:12px}
+body.mobile .overlay .card{border-top:0}
+/* controls: Clinical Precision — large, high contrast, unambiguous */
+body.mobile button{min-height:var(--tap);border-radius:var(--radius-control);border:1.5px solid var(--line);background:var(--surface);color:var(--fg);font-family:var(--sans);font-weight:600;padding:12px 18px}
+body.mobile button:hover{border-color:var(--accent)}
+body.mobile button.primary{background:var(--fg);border-color:var(--fg);color:var(--bg)}
+body.mobile button.primary:hover{background:var(--accent);border-color:var(--accent);color:var(--accent-fg)}
+body.mobile button.primary:disabled{background:var(--surface-2);border-color:var(--line);color:var(--muted);opacity:1}
+body.mobile button.ghost{background:transparent;border-color:transparent;color:var(--accent);text-decoration:underline;text-underline-offset:3px}
+body.mobile button.big{min-height:56px;font-size:1.1rem}
+body.mobile .seg span{border:1.5px solid var(--line);border-radius:var(--radius-control);min-height:var(--tap);display:flex;align-items:center;justify-content:center;background:var(--surface)}
+body.mobile .seg input:checked+span{background:var(--fg);border-color:var(--fg);color:var(--bg)}
+body.mobile .seg input:focus-visible+span{outline:3px solid var(--focus);outline-offset:2px}
+body.mobile input[type=number],body.mobile select,body.mobile .qitem input[type=text]{min-height:var(--tap);border:1.5px solid var(--line);border-radius:8px;background:var(--surface);font-family:var(--sans)}
+body.mobile .chk{font-size:1rem;line-height:1.45}
+body.mobile .chk input{width:24px;height:24px;accent-color:var(--fg)}
+body.mobile .notice{border-left:3px solid var(--warn);background:var(--warn-soft);border-radius:0;color:var(--fg)}
+body.mobile .notice.crit{border-left-color:var(--bad)}
+body.mobile #safetyLine{border-left-color:var(--accent);background:var(--accent-soft)}
+body.mobile .ctx summary{color:var(--accent);min-height:var(--tap);display:flex;align-items:center}
+body.mobile .key figcaption{font-family:var(--sans)}
+body.mobile .eyes{color:var(--fg)}
+.ring{border-color:var(--warn)}
+.ring.ok{border-color:var(--accent)}
+.ring span{font-family:var(--mono)}
+.sitelinks{gap:4px 18px;justify-content:flex-start;border-top:1px solid var(--line);padding-top:14px}
+.sitelinks a{border:0;padding:8px 0;background:none;border-radius:0;font-size:.92rem;min-height:40px;display:inline-flex;align-items:center}
+body.mobile footer{font-size:.8rem;line-height:1.55}
+.opts span{border:1.5px solid var(--line);min-height:40px;display:inline-flex;align-items:center;background:var(--surface)}
+.opts input:checked+span{background:var(--fg);border-color:var(--fg);color:var(--bg)}
+.opts input:focus-visible+span{outline:3px solid var(--focus);outline-offset:2px}
+.qitem .q{font-family:var(--sans)}
+.overlay{background:var(--bg)}
+/* test-screen chrome (controls and labels only; same neutral greys as before, larger and clearer) */
+.screen.test .eyebar h2{font-family:var(--sans);font-size:1.15rem;font-weight:600}
+.screen.test .eyebrow{color:#1e1e1e;letter-spacing:.1em}
+.screen.test .pill{font-family:var(--sans)}
+.screen.test .answers button{min-height:84px;border-radius:14px;border:1.5px solid #5e5e5e;font-family:var(--sans);font-weight:600}
+.screen.test .testfoot button{min-height:var(--tap);font-family:var(--sans)}
+.screen.test button.ghost{text-decoration:none;border-color:#6e6e6e}
+.screen.test #trialLabel,.screen.test #liveDist{font-family:var(--mono);color:#1e1e1e}
+/* results: editorial report */
+.results h2{font-size:1.9rem}
+.results .card>h3{font-size:1.25rem;border-bottom:0}
+.results .guide{background:var(--surface);border:0;border-top:3px solid var(--tier-none);border-bottom:1px solid var(--line);border-radius:0;padding:16px 16px 14px}
+.results .guide.tier-repeat{border-top-color:var(--tier-repeat);background:var(--surface)}
+.results .guide.tier-eyecheck{border-top-color:var(--tier-eyecheck);background:var(--surface)}
+.results .guide .glabel{font-family:var(--serif);font-size:1.45rem;line-height:1.2;font-weight:600}
+.guide.tier-none .glabel{color:var(--tier-none)} .guide.tier-repeat .glabel{color:var(--tier-repeat)} .guide.tier-eyecheck .glabel{color:var(--tier-eyecheck)}
+.guide.tier-none .glabel::before{content:'● '} .guide.tier-repeat .glabel::before{content:'▲ '} .guide.tier-eyecheck .glabel::before{content:'◆ '}
+.results .guide::before{content:'Provisional guidance';display:block;font-family:var(--sans);font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:600;margin-bottom:6px}
+.results .banner.neutral{background:transparent;color:var(--fg);font-family:var(--mono);font-weight:500;font-size:.85rem;padding:0;border-radius:0}
+.results .chart h3{font-family:var(--sans);font-size:1rem}
+.results .chart svg text{font-family:var(--sans)}
+.results table{font-variant-numeric:tabular-nums}
+.results th{color:var(--accent);font-size:.68rem}
+.results .tag.na{background:var(--surface-2);color:var(--fg)}
+.results p.mono{font-family:var(--mono);font-size:.78rem;line-height:1.6}
+.results .row{gap:10px}
+.results td.mono{white-space:nowrap}
+.results .chart svg text{letter-spacing:-.01em}
+/* the header above the field keeps rc10's 54 px height so the stimulus sits at exactly the same screen position (test D05) */
+.screen.test .eyebar{height:54px;box-sizing:border-box}

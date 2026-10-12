@@ -48,7 +48,7 @@
 
   // ---------- Browser sensor (camera + FaceLandmarker) ----------
   // Served from our own origin (src/mobile/vendor, see VENDOR.md): no third-party requests, works offline once cached.
-  const here = p => (typeof location !== 'undefined' ? new URL(p, location.href).href : p);
+  const here = p => (typeof document !== 'undefined' && document.baseURI ? new URL(p, document.baseURI).href : typeof location !== 'undefined' ? new URL(p, location.href).href : p);   // v0.9.0: resolve against the page's base (the test page lives at /test/ with <base href="../">); path only, no change to the measurement
   const TASKS_VISION = here('vendor/mediapipe');
   const MODEL_URL = here('vendor/mediapipe/face_landmarker.task');
   class DistanceSensor {

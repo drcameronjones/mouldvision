@@ -291,3 +291,13 @@
   window.MVM.app = { M, mscreen, applyGeometry, answer, beginRun, beginEye, showCover, finishContext, readContextForm, renderMobileResults, afterFinalise, useTyped, startHold };
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', wire); else wire();
 })();
+
+// v0.9.0: report fonts for the PDF (layout only). Loaded on first PDF download from this site; the PDF falls back to standard fonts if any file is missing.
+window.MV_PDF_FONTS_LOADER = async function () {
+  if (window.MV_PDF_FONTS) return window.MV_PDF_FONTS;
+  const files = ['Newsreader-400.ttf', 'Newsreader-600.ttf', 'PublicSans-400.ttf', 'PublicSans-600.ttf', 'IBMPlexMono-400.ttf'];
+  const toB64 = buf => { const b = new Uint8Array(buf); let s = ''; for (let i = 0; i < b.length; i += 0x8000) s += String.fromCharCode.apply(null, b.subarray(i, i + 0x8000)); return btoa(s); };
+  const out = {};
+  for (const f of files) { const r = await fetch(new URL('vendor/fonts/pdf/' + f, document.baseURI)); if (!r.ok) throw new Error('font ' + f); out[f] = toB64(await r.arrayBuffer()); }
+  window.MV_PDF_FONTS = out; return out;
+};

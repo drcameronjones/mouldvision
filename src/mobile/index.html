@@ -2,8 +2,9 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<base href="../">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
-<meta name="theme-color" content="#0b6e8e">
+<meta name="theme-color" content="#fbfaf7">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -14,6 +15,7 @@
 <link rel="icon" href="icons/icon-192.png">
 <link rel="stylesheet" href="vendor/fonts/fonts.css">
 <link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="tokens.css">
 <link rel="stylesheet" href="mobile.css">
 </head>
 <body class="mobile">
@@ -22,8 +24,8 @@
 <!-- START -->
 <section id="m-start" class="screen stack">
   <header class="mhead">
-    <img class="hdrlogo" src="bhs-logo.png" alt="Biological Health Services">
-    <div><h1>MouldVision</h1><div class="small muted">Visual contrast test · phone edition</div></div>
+    <a class="wordmark" href="./"><h1>MouldVision</h1></a>
+    <div class="small muted">Visual contrast test · phone edition</div>
   </header>
   <div class="notice crit" id="draftBanner" hidden></div>
   <div class="card stack">
@@ -52,7 +54,7 @@
     <div class="row"><button id="btnExportAll" hidden>Export all records</button><button class="ghost" id="btnDeleteExported" hidden>Delete exported records…</button></div>
     <div class="notice crit" id="confirmDelete" hidden>Delete the records you have already exported from this phone? This cannot be undone. <button id="btnDeleteYes">Delete them</button> <button class="ghost" id="btnDeleteNo">Keep them</button></div>
   </div>
-  <nav class="sitelinks"><a href="faq.html">Questions</a><a href="evidence.html">Evidence</a><a href="MouldVision-Method.pdf">How it works (PDF)</a><a href="terms.html">Terms</a><a href="privacy.html">Privacy</a></nav>
+  <nav class="sitelinks"><a href="./">Home</a><a href="faq.html">Questions</a><a href="evidence.html">Evidence</a><a href="MouldVision-Method.pdf">How it works (PDF)</a><a href="terms.html">Terms</a><a href="privacy.html">Privacy</a></nav>
   <footer class="small muted">Concept: Dr Cameron Jones, PhD · Biological Health Services · <a href="https://www.biologicalhealthservices.com.au" target="_blank" rel="noopener">biologicalhealthservices.com.au</a> · <a href="https://www.drcameronjones.com" target="_blank" rel="noopener">drcameronjones.com</a><br>Screening only; this app does not diagnose anything. Results stay on this phone unless you export them. <span id="buildLine" class="mono"></span></footer>
 </section>
 

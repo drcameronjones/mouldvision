@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#fbfaf7">
+<title>MouldVision · Visual contrast sensitivity</title>
+<meta name="description" content="MouldVision is a smartphone test of visual contrast sensitivity for personal tracking and research. Investigational; it does not diagnose any condition.">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<link rel="stylesheet" href="vendor/fonts/fonts.css">
+<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="tokens.css">
+<link rel="stylesheet" href="site.css">
+</head>
+<body class="site home">
+<div class="wrap">
+  <nav class="top">
+    <a class="brand" href="./" aria-current="page"><b>MouldVision</b><span>Visual contrast sensitivity · investigational</span></a>
+    <div class="links"><a href="#how">How it works</a><a href="evidence.html">Evidence</a><a href="faq.html">Questions</a><a class="start" href="test/">Start test</a></div>
+  </nav>
+
+  <header class="hero">
+    <div class="hero-text">
+      <p class="kicker">Investigational · for personal tracking and research</p>
+      <h1>See what your eyes can detect.</h1>
+      <p class="lede">Explore visual contrast sensitivity with a smartphone-based test designed for personal tracking and research.</p>
+      <div class="cta"><a class="primary" href="test/">Start visual contrast test</a><a class="textlink" href="evidence.html">Explore the science →</a></div>
+      <p class="meta">About 3 minutes per eye · no account · results stay on your phone</p>
+    </div>
+    <figure class="fig hero-fig">
+      <img src="img/figure-grating.png" width="720" height="720" alt="A circular patch of soft grey bars leaning slightly to the left, fading out at the edges.">
+      <figcaption><b>Figure 1</b> A Gaussian-windowed sine grating leaning 15° left, the kind of pattern the test shows. <em>Illustration, not a test stimulus.</em></figcaption>
+    </figure>
+  </header>
+
+  <section class="band" id="how">
+    <h2>How the test works</h2>
+    <ol class="steps3">
+      <li><span class="num">1</span><b>Hold the phone at reading distance</b><span>The front camera measures eye-to-screen distance from the size of your iris. Images never leave the phone.</span></li>
+      <li><span class="num">2</span><b>Cover one eye, answer the tilt</b><span>Each faint patch leans left, stands upright or leans right. Tap the matching button. 45 patches per eye.</span></li>
+      <li><span class="num">3</span><b>Read your result, keep the record</b><span>One headline says what to do next. Every patch shown and every answer given is kept with the conditions.</span></li>
+    </ol>
+    <figure class="fig wide">
+      <img src="img/figure-tilts.png" width="1080" height="360" alt="Three patches of grey bars: leaning left, upright, and leaning right.">
+      <figcaption><b>Figure 2</b> The three possible answers: left, upright, right. <em>Illustration, not a test stimulus.</em></figcaption>
+    </figure>
+  </section>
+
+  <section class="band three">
+    <h2>What contrast sensitivity measures</h2>
+    <div class="body">
+      <p class="big">How faint a pattern each eye can still see, at five bar widths from coarse (1.5 cycles per degree) to fine (18). It depends on the clarity of the eye and on processing in the retina, optic nerve and brain, and often changes before a standard letter chart does.</p>
+      <figure class="fig">
+        <img src="img/figure-columns.png" width="1500" height="300" alt="Five patches of grey bars, from wide bars on the left to very fine bars on the right.">
+        <div class="collabels" aria-hidden="true"><span>A · 1.5</span><span>B · 3</span><span>C · 6</span><span>D · 12</span><span>E · 18</span></div>
+        <figcaption><b>Figure 3</b> The five bar widths, columns A to E, in cycles per degree at the test distance, drawn here at reduced scale. <em>Illustration, not a test stimulus.</em></figcaption>
+      </figure>
+    </div>
+    <aside class="notes">
+      <p><b>Note 1.</b> Cycles per degree counts light–dark bar pairs within one degree of visual angle, so the phone must be at a known distance; the camera measures it.</p>
+      <p><b>Note 2.</b> Each column has nine contrast levels, from 28.6 % down to 0.5 %. The three faintest are exploratory: whether a phone screen can show them as intended has not yet been measured.</p>
+    </aside>
+  </section>
+
+  <section class="band three">
+    <h2>Why track it</h2>
+    <div class="body">
+      <p><b>Visual function and ageing.</b> Contrast sensitivity declines with age, cataract and other eye conditions, and is linked to falls and night-time driving.</p>
+      <p><b>Environmental health and the exposome.</b> Group studies have reported lower contrast sensitivity in occupants of water-damaged buildings and after some neurotoxic exposures. These are group findings; they do not allow any one person's result to be traced to an exposure.</p>
+      <p><b>Your own baseline.</b> Two runs set it; repeat every few months under the same conditions and see whether anything changes.</p>
+    </div>
+    <aside class="notes"><p><b>Limits.</b> MouldVision cannot detect mould or any exposure, and cannot diagnose any condition. A low result has many ordinary causes. Whether a building has a mould problem is answered by sampling the building itself.</p></aside>
+  </section>
+
+  <section class="band">
+    <h2>Understanding your result</h2>
+    <div class="tierlist">
+      <div class="tier tier-none"><span class="sym" aria-hidden="true">●</span><b>Nothing in this result calls for action</b><span>Keep it as a baseline; repeat in about three months.</span></div>
+      <div class="tier tier-repeat"><span class="sym" aria-hidden="true">▲</span><b>Repeat to confirm</b><span>Conditions or answers were uncertain. Repeat within a week.</span></div>
+      <div class="tier tier-eyecheck"><span class="sym" aria-hidden="true">◆</span><b>Worth an eye check</b><span>See an optometrist and take the report with you.</span></div>
+      <p class="small muted">The headline says what to do next, never what the cause is. Rules guidance-v1-provisional, set before any normative data and open to revision.</p>
+    </div>
+  </section>
+
+  <section class="band cols3">
+    <div><h3>Validation status</h3><p id="valStatus">Software verification: see the test page.<br>Physical measurement: not yet performed.<br>Clinical validation: not yet performed.</p></div>
+    <div><h3>About the scientific lead</h3><p>Dr Cameron Jones, PhD, environmental microbiologist and co-author of the Australian Mould Guideline 2026. Biological Health Services · <a href="https://www.drcameronjones.com" rel="noopener">drcameronjones.com</a></p></div>
+    <div><h3>Privacy</h3><p>No account, no tracking. The camera is processed on the phone and never stored. Results stay on your device unless you share them. <a href="privacy.html">Privacy notice</a></p></div>
+  </section>
+
+  <div class="cta end"><a class="primary" href="test/">Start visual contrast test</a><a href="MouldVision-Method.pdf">Method explainer (PDF)</a></div>
+  <footer>MouldVision is a screening and research instrument. It does not diagnose any condition and is not a substitute for an eye examination or medical advice. <a href="terms.html">Terms</a> · <a href="privacy.html">Privacy</a> · © Biological Health Services · <a href="https://www.biologicalhealthservices.com.au" rel="noopener">biologicalhealthservices.com.au</a></footer>
+</div>
+<script src="build-info.js"></script>
+<script>
+(function(){ try{ var v = window.MV_VALIDATION && window.MV_VALIDATION.software; var el = document.getElementById('valStatus'); if(!el) return;
+  var sw = v && v.status === 'passed' ? 'Software verification: passed (' + v.passed + '/' + v.total + ' tests, ' + v.runAt + ').' : 'Software verification: not verified for this build.';
+  el.innerHTML = sw + '<br>Physical measurement: not yet performed.<br>Clinical validation: not yet performed.'; }catch(e){} })();
+</script>
+</body>
+</html>

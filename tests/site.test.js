@@ -15,12 +15,12 @@ test('W01 evidence page: every [n] citation has a reference and every reference 
 });
 
 test('W02 pages: internal links resolve to built files; scope statement present; no result labels used as claims', () => {
-  for (const f of ['faq.html', 'evidence.html', 'terms.html', 'privacy.html']) {
+  for (const f of ['home.html', 'faq.html', 'evidence.html', 'terms.html', 'privacy.html']) {
     const html = src(f);
     for (const m of html.matchAll(/href="([^"#:]+)(#[^"]*)?"/g)) {
       const target = m[1];
       if (target === './') continue;
-      const ok = ['faq.html', 'evidence.html', 'terms.html', 'privacy.html', 'styles.css', 'site.css', 'MouldVision-Method.pdf', 'vendor/fonts/fonts.css'].includes(target) || target.startsWith('icons/');
+      const ok = ['test/', 'faq.html', 'evidence.html', 'terms.html', 'privacy.html', 'styles.css', 'tokens.css', 'site.css', 'manifest.webmanifest', 'MouldVision-Method.pdf', 'vendor/fonts/fonts.css'].includes(target) || target.startsWith('icons/');
       assert.ok(ok, f + ' links to unknown ' + target);
     }
     assert.match(html, /does not diagnose any condition/);
@@ -37,7 +37,7 @@ test('W02 pages: internal links resolve to built files; scope statement present;
 test('W03 phone edition and pages load nothing from third-party origins; vendored files match VENDOR.md checksums', () => {
   const crypto = require('crypto');
   const root = path.join(__dirname, '..');
-  for (const f of ['src/mobile/index.html', 'src/site/faq.html', 'src/site/evidence.html', 'src/site/terms.html', 'src/site/privacy.html']) {
+  for (const f of ['src/mobile/index.html', 'src/site/home.html', 'src/site/faq.html', 'src/site/evidence.html', 'src/site/terms.html', 'src/site/privacy.html']) {
     const html = fs.readFileSync(path.join(root, f), 'utf8');
     for (const m of html.matchAll(/<(?:script|link)[^>]+(?:src|href)="(https?:[^"]+)"/g)) assert.fail(f + ' loads ' + m[1]);
   }
@@ -76,4 +76,14 @@ test('W05 answer-button icons lean the same way as the stimulus they name (deskt
       }
     }
   }
+});
+
+test('W06 design tokens: every text colour pairing meets WCAG 2.2 AA (4.5:1) in light and dark themes', () => {
+  const css = fs.readFileSync(path.join(__dirname, '..', 'src/site/tokens.css'), 'utf8');
+  const block = sel => { const m = css.split(sel)[1]; return Object.fromEntries([...m.split('}')[0].matchAll(/--([\w-]+):(#[0-9a-f]{6})/gi)].map(x => [x[1], x[2]])); };
+  const light = block(':root{'), dark = block(':root[data-theme="dark"]{');
+  const lum = h => { const c = [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16) / 255).map(v => v <= 0.04045 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4)); return 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2]; };
+  const ratio = (a, b) => { const [x, y] = [lum(a), lum(b)].sort((p, q) => q - p); return (x + 0.05) / (y + 0.05); };
+  const pairs = [['fg', 'bg'], ['body-ink', 'bg'], ['muted', 'bg'], ['muted', 'surface'], ['accent', 'bg'], ['accent', 'surface'], ['accent-fg', 'accent'], ['bg', 'fg'], ['good', 'surface'], ['bad', 'surface'], ['warn', 'bg'], ['tier-none', 'surface'], ['tier-repeat', 'surface'], ['tier-eyecheck', 'surface'], ['fg', 'warn-soft'], ['fg', 'accent-soft'], ['muted', 'surface-2']];
+  for (const [name, t] of [['light', light], ['dark', dark]]) for (const [f, b] of pairs) { const r = ratio(t[f], t[b]); assert.ok(r >= 4.5, `${name}: --${f} on --${b} is ${r.toFixed(2)}:1`); }
 });

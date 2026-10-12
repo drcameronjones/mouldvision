@@ -1,6 +1,6 @@
 {
   "name": "mouldvision",
-  "version": "v0.8.0",
+  "version": "v0.9.0",
   "private": true,
   "description": "MouldVision / VCS Screen — visual contrast test web application (Phase 0 desktop + Phase 1 phone edition)",
   "scripts": {

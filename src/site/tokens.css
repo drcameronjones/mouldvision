@@ -1,0 +1,32 @@
+/* MouldVision design tokens — Scientific Editorial (direction D) with Clinical Precision controls (direction A).
+   Approved by Dr Cameron Jones, 12 Oct 2026. Loaded after styles.css; overrides its variables only.
+   Never applies to the test field: the stimulus surround stays #808080 (mobile.css), and nothing here sets filters,
+   opacity, blend modes, transforms or animation on the test screen. */
+:root{
+  /* colour */
+  --bg:#fbfaf7; --surface:#ffffff; --surface-2:#f3f1ec; --fg:#161614; --body-ink:#33332f; --muted:#55554f; --line:#d9d6cf; --rule:#161614;
+  --accent:#1c3f94; --accent-fg:#ffffff; --accent-soft:#eef1f8; --accent-ink:#152f70;
+  --good:#1f6b45; --bad:#a33a16; --warn:#8a5208; --warn-soft:#f8efdf;
+  --tier-none:#1c3f94; --tier-repeat:#8a5208; --tier-eyecheck:#6d3a6d;
+  --bio:#1c3f94; --bio-soft:#eef1f8;
+  --focus:#1c3f94;
+  /* type */
+  --serif:'Newsreader',Georgia,'Times New Roman',serif; --sans:'Public Sans',system-ui,-apple-system,'Segoe UI',sans-serif; --mono:'IBM Plex Mono',ui-monospace,Menlo,monospace;
+  --display:var(--serif); --body:var(--sans);
+  --step--1:.875rem; --step-0:1rem; --step-1:1.125rem; --step-2:1.375rem; --step-3:1.75rem; --step-4:2.25rem; --step-5:clamp(2.6rem,7vw,5.5rem);
+  /* space and shape */
+  --s1:4px; --s2:8px; --s3:12px; --s4:16px; --s5:24px; --s6:32px; --s7:48px; --s8:72px;
+  --radius-control:10px; --radius-card:4px; --tap:48px;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#141413; --surface:#1c1c1a; --surface-2:#232320; --fg:#f1efe9; --body-ink:#d9d6cf; --muted:#b1aea6; --line:#3a3934; --rule:#f1efe9;
+  --accent:#9db4ff; --accent-fg:#0d1530; --accent-soft:#1d2540; --accent-ink:#c3d0ff;
+  --good:#6fcf97; --bad:#ff9a76; --warn:#f0b65c; --warn-soft:#3a2d13;
+  --tier-none:#9db4ff; --tier-repeat:#f0b65c; --tier-eyecheck:#e4a8e4; --bio:#9db4ff; --bio-soft:#1d2540; --focus:#9db4ff; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#141413; --surface:#1c1c1a; --surface-2:#232320; --fg:#f1efe9; --body-ink:#d9d6cf; --muted:#b1aea6; --line:#3a3934; --rule:#f1efe9;
+  --accent:#9db4ff; --accent-fg:#0d1530; --accent-soft:#1d2540; --accent-ink:#c3d0ff;
+  --good:#6fcf97; --bad:#ff9a76; --warn:#f0b65c; --warn-soft:#3a2d13;
+  --tier-none:#9db4ff; --tier-repeat:#f0b65c; --tier-eyecheck:#e4a8e4; --bio:#9db4ff; --bio-soft:#1d2540; --focus:#9db4ff; color-scheme:dark}
+:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important;animation:none!important;scroll-behavior:auto!important}}

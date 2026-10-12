@@ -1,5 +1,5 @@
 {
-  "sourceHash": "f1e167308bb581005a10571cb18199ca79b85ff0bcf8d6798637d6e61ef8cd7b",
+  "sourceHash": "a42e5a834ff856d5acdde6b8342a925fc93c41ae1fafff381810a8b68c61db10",
   "sourceFiles": [
     "src/app.js",
     "src/index.html",
@@ -17,21 +17,47 @@
     "src/site/site.css",
     "src/site/terms.html",
     "src/site/privacy.html",
+    "src/site/home.html",
+    "src/site/tokens.css",
     "src/mobile/vendor/VENDOR.md"
   ],
-  "gitCommit": "5703302dd11ff44c9e0227a896a67e20cfd980cd",
-  "gitDirty": false,
+  "gitCommit": "bb969f0ce8745e9af3816dd6bd42965f7b37f395",
+  "gitDirty": true,
   "sourceChangedDuringRun": false,
-  "suite": "phase0-T01-T28+phase1-M01-M15+guidance-G01-G07+site-W01-W05",
-  "version": "v0.8.0",
+  "suite": "phase0-T01-T28+phase1-M01-M15+guidance-G01-G07+site-W01-W06+design-D01-D06",
+  "version": "v0.9.0",
   "runAt": "2026-10-12",
-  "runAtFull": "2026-10-12T08:00:13.737Z",
+  "runAtFull": "2026-10-12T11:29:08.349Z",
   "node": "v22.22.0",
   "platform": "linux",
-  "passed": 61,
+  "passed": 68,
   "failed": 0,
   "statement": "Passing these tests establishes software behaviour only. It establishes nothing about measurement accuracy or clinical meaning.",
   "tests": [
+    {
+      "id": "D01",
+      "name": "same seed and answers: identical trial sequence, stimulus parameters, geometry, ladder and scores in rc10 and current engines",
+      "ok": true,
+      "kind": "node"
+    },
+    {
+      "id": "D02",
+      "name": "stimulus pixels: drawGrating output is byte-identical in rc10 and current engines (dpr 1 and 2, all columns, rows, tilts)",
+      "ok": true,
+      "kind": "node"
+    },
+    {
+      "id": "D03",
+      "name": "guidance, report text, data file and integrity payload identical for a phone-edition record (only the software stamp may differ)",
+      "ok": true,
+      "kind": "node"
+    },
+    {
+      "id": "D04",
+      "name": "PDF wording: every word of the rc10 report appears in the same order in the new layout, with standard and embedded fonts",
+      "ok": true,
+      "kind": "node"
+    },
     {
       "id": "G01",
       "name": "healthy-pattern run: tier none, computed at finalise, outside the integrity scope",
@@ -137,6 +163,12 @@
     {
       "id": "W05",
       "name": "answer-button icons lean the same way as the stimulus they name (desktop and phone)",
+      "ok": true,
+      "kind": "node"
+    },
+    {
+      "id": "W06",
+      "name": "design tokens: every text colour pairing meets WCAG 2.2 AA (4.5:1) in light and dark themes",
       "ok": true,
       "kind": "node"
     },
@@ -395,6 +427,18 @@
     {
       "id": "M14",
       "name": "face model loads from our own origin with a camera present; the page makes no third-party requests",
+      "ok": true,
+      "kind": "browser"
+    },
+    {
+      "id": "D05",
+      "name": "test screen: same seeded trials show byte-identical stimulus canvases and identical screenshots of the grey field in rc10 and the redesign",
+      "ok": true,
+      "kind": "browser"
+    },
+    {
+      "id": "D06",
+      "name": "test screen: field and surround are rgb(128, 128, 128); no filter, opacity, blend, transform, backdrop or animation on the stimulus or its ancestors",
       "ok": true,
       "kind": "browser"
     }

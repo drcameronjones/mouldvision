@@ -11,14 +11,14 @@ const MIME = { html: 'text/html; charset=utf-8', js: 'application/javascript', m
 function serve() { return new Promise(res => { const srv = http.createServer((req, u) => { let p = req.url.split('?')[0].replace(/^\//, ''); if (p === '' || p.endsWith('/')) p += 'index.html'; const f = path.join(root, 'app', 'mobile', p); fs.readFile(f, (e, d) => { if (e) { u.writeHead(404); return u.end(); } u.writeHead(200, { 'content-type': MIME[f.split('.').pop()] || 'application/octet-stream' }); u.end(d); }); }); srv.listen(0, () => res(srv)); }); }
 
 (async () => {
-  const srv = await serve(); const port = srv.address().port; const base = `http://127.0.0.1:${port}/`;
+  const srv = await serve(); const port = srv.address().port; const base = `http://127.0.0.1:${port}/`; const app = base + 'test/';   // v0.9.0: the test lives at /test/, the homepage at /
   const browser = await chromium.launch();
   const jspdfUmd = fs.readFileSync(require.resolve('jspdf/dist/jspdf.umd.min.js'));
   const newCtx = async (opts = {}) => { const ctx = await browser.newContext({ ...devices['iPhone 13'], acceptDownloads: true, ...opts }); await ctx.addInitScript(() => { window.MV_BLANK_MS = 5; window.MV_NO_SW = true; if (!/noack/.test(location.search)) try { localStorage.setItem('mv-ack-v1', JSON.stringify({ version: 'ack-v1-draft', acceptedAt: 'test' })); } catch (e) {} try { Object.defineProperty(navigator, 'canShare', { value: undefined }); } catch (e) {} }); /* headless has no share sheet; the download path is exercised */ await ctx.route('**/jspdf.umd.min.js', r => r.fulfill({ status: 200, contentType: 'application/javascript', body: jspdfUmd })); await ctx.route(/fonts\.googleapis|cdn\.jsdelivr|storage\.googleapis/, r => r.abort()); return ctx; };
   const ctx = await newCtx(); const page = await ctx.newPage();
   const errors = []; page.on('pageerror', e => errors.push(e.message));
   const toTrial = async (mode = 'full') => {
-    await page.goto(base); if (mode === 'quick') await page.check('[name="mode"][value="quick"]');
+    await page.goto(app); if (mode === 'quick') await page.check('[name="mode"][value="quick"]');
     await page.click('#btnStart');
     await page.waitForFunction(() => !document.getElementById('btnHoldNext').disabled, null, { timeout: 15000 });
     await page.click('#btnHoldNext'); await page.click('#btnBegin');
@@ -47,7 +47,7 @@ function serve() { return new Promise(res => { const srv = http.createServer((re
   });
 
   await t('M04', 'camera refused: typed distance path, distanceSource typed, section 2 says entered', async () => {
-    await page.goto(base); await page.click('#btnStart');
+    await page.goto(app); await page.click('#btnStart');
     await page.waitForFunction(() => !document.getElementById('camNotice').hidden, null, { timeout: 15000 });
     assert.match(await page.textContent('#camNotice'), /camera could not be used/);
     await page.evaluate(() => document.querySelectorAll('#m-hold details').forEach(d => { d.open = true; })); await page.fill('#typedDist', '45'); await page.click('#btnUseTyped');
@@ -100,17 +100,17 @@ function serve() { return new Promise(res => { const srv = http.createServer((re
   // M09 runs last: once the service worker is registered it answers fetches itself, bypassing the test routes
   await t('M09', 'manifest valid and service worker registers and caches the shell', async () => {
     const man = await (await page.goto(base + 'manifest.webmanifest')).json();
-    assert.equal(man.display, 'standalone'); assert.equal(man.orientation, 'portrait'); assert.ok(man.icons.length >= 2); assert.equal(man.start_url, './');
+    assert.equal(man.display, 'standalone'); assert.equal(man.orientation, 'portrait'); assert.ok(man.icons.length >= 2); assert.equal(man.start_url, 'test/'); assert.equal(man.scope, './');
     for (const f of ['icons/icon-192.png', 'icons/icon-512.png', 'sw.js', 'build-info.js', 'app.js', 'mobile.js']) { const r = await page.goto(base + f); assert.equal(r.status(), 200, f); }
     const sw = await (await page.goto(base + 'sw.js')).text(); assert.ok(!sw.includes('__MV_BUILD_ID__'), 'build id injected'); assert.match(sw, /const BUILD = '[0-9a-f]{16}-staging'/);
     await page.goto(base);
     const reg = await page.evaluate(async () => { const r = await navigator.serviceWorker.register('sw.js'); await navigator.serviceWorker.ready; await new Promise(res => setTimeout(res, 800)); const keys = await caches.keys(); const c = await caches.open(keys.find(k => k.startsWith('mv-shell-'))); const cached = await c.keys(); return { scope: r.scope, keys, cached: cached.map(x => x.url.replace(location.origin + '/', '')) }; });
-    assert.ok(reg.keys.some(k => k.startsWith('mv-shell-'))); ['index.html', 'app.js', 'mobile.js', 'styles.css', 'mobile.css', 'manifest.webmanifest', 'icons/icon-192.png'].forEach(f => assert.ok(reg.cached.includes(f), 'cached ' + f));
+    assert.ok(reg.keys.some(k => k.startsWith('mv-shell-'))); ['index.html', 'test/', 'test/index.html', 'tokens.css', 'app.js', 'mobile.js', 'styles.css', 'mobile.css', 'manifest.webmanifest', 'icons/icon-192.png', 'vendor/fonts/pdf/Newsreader-600.ttf'].forEach(f => assert.ok(reg.cached.includes(f), 'cached ' + f));
   });
 
   await t('M15', 'first test asks for the three acknowledgements; continue is disabled until all are ticked; the acceptance is recorded on the run', async () => {
-    await page.goto(base + '?noack=1'); await page.evaluate(() => localStorage.removeItem('mv-ack-v1'));
-    await page.goto(base + '?noack=2');
+    await page.goto(app + '?noack=1'); await page.evaluate(() => localStorage.removeItem('mv-ack-v1'));
+    await page.goto(app + '?noack=2');
     await page.click('#btnStart');
     assert.equal(await page.isVisible('#m-ack'), true); assert.equal(await page.isVisible('#m-hold'), false);
     assert.equal(await page.isDisabled('#btnAckAgree'), true);
@@ -122,7 +122,7 @@ function serve() { return new Promise(res => { const srv = http.createServer((re
     await page.waitForFunction(() => !document.getElementById('btnHoldNext').disabled, null, { timeout: 15000 });
     await page.click('#btnHoldNext');
     const ack = await page.evaluate(() => window.MV.S.run.mobile.acknowledgement); assert.equal(ack.version, 'ack-v1-draft');
-    await page.goto(base + '?noack=3'); await page.click('#btnStart'); assert.equal(await page.isVisible('#m-ack'), false, 'asked only once per version');
+    await page.goto(app + '?noack=3'); await page.click('#btnStart'); assert.equal(await page.isVisible('#m-ack'), false, 'asked only once per version');
   });
 
   await t('M14', 'face model loads from our own origin with a camera present; the page makes no third-party requests', async () => {
@@ -130,7 +130,7 @@ function serve() { return new Promise(res => { const srv = http.createServer((re
     const c2 = await b2.newContext({ ...devices['iPhone 13'], permissions: ['camera'] }); await c2.addInitScript(() => { window.MV_NO_SW = true; try { localStorage.setItem('mv-ack-v1', JSON.stringify({ version: 'ack-v1-draft', acceptedAt: 'test' })); } catch (e) {} });
     const p2 = await c2.newPage(); const ext = [];
     p2.on('request', r => { const u = r.url(); if (!u.startsWith(base) && !/^(data|blob):/.test(u)) ext.push(u); });
-    await p2.goto(base); await p2.click('#btnStart');
+    await p2.goto(app); await p2.click('#btnStart');
     await p2.waitForFunction(() => { const s = window.MVM.app.M.sensor; return s && (s.running || s.error); }, null, { timeout: 90000 });
     await p2.waitForTimeout(1500);
     const st = await p2.evaluate(() => { const s = window.MVM.app.M.sensor; return { running: s.running, error: s.error, landmarker: !!s.landmarker, frames: s.noFaceFrames + s.readings.length }; });

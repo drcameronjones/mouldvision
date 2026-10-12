@@ -41,7 +41,11 @@ function buildMobile(target) {
   const outDir = path.join(root, 'app', 'mobile');
   fs.rmSync(outDir, { recursive: true, force: true }); fs.mkdirSync(path.join(outDir, 'icons'), { recursive: true });
   const copy = (from, to) => fs.copyFileSync(path.join(root, from), path.join(outDir, to || path.basename(from)));
-  ['src/mobile/index.html', 'src/mobile/mobile.css', 'src/mobile/mobile.js', 'src/mobile/devices.js', 'src/mobile/distance.js', 'src/mobile/manifest.webmanifest', 'src/styles.css', 'src/app.js', 'assets/bhs-logo.png'].forEach(f => copy(f));
+  // v0.9.0 (approved 12 Oct 2026): the homepage is the site root; the test lives at /test/ (its page uses <base href="../"> so every asset stays shared)
+  fs.mkdirSync(path.join(outDir, 'test'), { recursive: true });
+  copy('src/mobile/index.html', 'test/index.html'); copy('src/site/home.html', 'index.html'); copy('src/site/tokens.css');
+  fs.cpSync(path.join(root, 'src/site/img'), path.join(outDir, 'img'), { recursive: true });
+  ['src/mobile/mobile.css', 'src/mobile/mobile.js', 'src/mobile/devices.js', 'src/mobile/distance.js', 'src/mobile/manifest.webmanifest', 'src/styles.css', 'src/app.js', 'assets/bhs-logo.png'].forEach(f => copy(f));
   ['icon-192.png', 'icon-512.png'].forEach(f => copy('src/mobile/icons/' + f, 'icons/' + f));
   ['src/site/faq.html', 'src/site/evidence.html', 'src/site/terms.html', 'src/site/privacy.html', 'src/site/site.css'].forEach(f => copy(f));
   fs.cpSync(path.join(root, 'src/mobile/vendor'), path.join(outDir, 'vendor'), { recursive: true });   // self-hosted third-party files (VENDOR.md)   // information pages served beside the app

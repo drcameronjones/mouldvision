@@ -3,7 +3,7 @@
 const BUILD = '__MV_BUILD_ID__';
 const SHELL = 'mv-shell-' + BUILD;
 const RUNTIME = 'mv-runtime-v1';
-const APP_FILES = ['./', 'index.html', 'styles.css', 'mobile.css', 'build-info.js', 'app.js', 'devices.js', 'distance.js', 'mobile.js', 'manifest.webmanifest', 'bhs-logo.png', 'icons/icon-192.png', 'icons/icon-512.png', 'faq.html', 'evidence.html', 'terms.html', 'privacy.html', 'site.css', 'vendor/jspdf.umd.min.js', 'vendor/fonts/fonts.css', 'vendor/fonts/sora-latin-500-normal.woff2', 'vendor/fonts/sora-latin-600-normal.woff2', 'vendor/fonts/sora-latin-700-normal.woff2', 'vendor/fonts/manrope-latin-400-normal.woff2', 'vendor/fonts/manrope-latin-500-normal.woff2', 'vendor/fonts/manrope-latin-600-normal.woff2', 'vendor/fonts/manrope-latin-700-normal.woff2'];
+const APP_FILES = ['./', 'index.html', 'test/', 'test/index.html', 'styles.css', 'tokens.css', 'mobile.css', 'build-info.js', 'app.js', 'devices.js', 'distance.js', 'mobile.js', 'manifest.webmanifest', 'bhs-logo.png', 'icons/icon-192.png', 'icons/icon-512.png', 'faq.html', 'evidence.html', 'terms.html', 'privacy.html', 'site.css', 'img/figure-grating.png', 'img/figure-tilts.png', 'img/figure-columns.png', 'vendor/jspdf.umd.min.js', 'vendor/fonts/fonts.css', 'vendor/fonts/newsreader-latin-400-normal.woff2', 'vendor/fonts/newsreader-latin-400-italic.woff2', 'vendor/fonts/newsreader-latin-600-normal.woff2', 'vendor/fonts/public-sans-latin-400-normal.woff2', 'vendor/fonts/public-sans-latin-500-normal.woff2', 'vendor/fonts/public-sans-latin-600-normal.woff2', 'vendor/fonts/public-sans-latin-700-normal.woff2', 'vendor/fonts/ibm-plex-mono-latin-400-normal.woff2', 'vendor/fonts/ibm-plex-mono-latin-500-normal.woff2', 'vendor/fonts/pdf/Newsreader-400.ttf', 'vendor/fonts/pdf/Newsreader-600.ttf', 'vendor/fonts/pdf/PublicSans-400.ttf', 'vendor/fonts/pdf/PublicSans-600.ttf', 'vendor/fonts/pdf/IBMPlexMono-400.ttf'];
 const EXTERNAL = [];   // everything is served from this origin
 self.addEventListener('install', e => {
   e.waitUntil((async () => {
@@ -29,6 +29,6 @@ self.addEventListener('fetch', e => {
     const hit = await cache.match(req, { ignoreSearch: isShell });
     if (hit) return hit;
     try { const res = await fetch(req); if (res && (res.ok || res.type === 'opaque')) cache.put(req, res.clone()); return res; }
-    catch (err) { if (isShell && req.mode === 'navigate') return cache.match('index.html'); throw err; }
+    catch (err) { if (isShell && req.mode === 'navigate') return cache.match(/\/test\/?$/.test(url.pathname) ? 'test/index.html' : 'index.html'); throw err; }
   })());
 });

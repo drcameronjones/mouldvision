@@ -12,7 +12,7 @@ const j = x => JSON.parse(JSON.stringify(x));
 function seeded(seed) { let s = seed >>> 0; const m = Object.create(Math); m.random = () => { s = (s + 0x6D2B79F5) >>> 0; let t = s; t = Math.imul(t ^ (t >>> 15), t | 1); t ^= t + Math.imul(t ^ (t >>> 7), t | 61); return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; return m; }
 const TIME_KEYS = new Set(['shownAt', 'answeredAt', 'latencyMs', 'startedAt', 'completedAt', 'computedAt', 'answeredAt', 'builtAt']);
 function strip(o) { if (Array.isArray(o)) return o.map(strip); if (o && typeof o === 'object') { const r = {}; for (const k of Object.keys(o)) { if (TIME_KEYS.has(k) || k === 'id' || k === 'integrity') continue; r[k] = strip(o[k]); } return r; } return o; }
-const normVersion = (s, v) => String(s).split(v).join('<SOFTWARE>');
+const normVersion = (s, v) => [].concat(v).reduce((acc, x) => acc.split(x).join('<SOFTWARE>'), String(s));
 
 async function seededRun(appPath, seed, mode, limits) {
   const MV = load({ appPath, math: seeded(seed) });
@@ -74,7 +74,7 @@ test(tag('D03', 'guidance, report text, data file and integrity payload identica
 });
 
 // Labels the new PDF layout adds around unchanged content (approved layout elements, not report content).
-const PDF_ADDED_LABELS = ['Provisional guidance', 'Figure 1', 'Figure 2', 'Figure 3', 'Report'];
+const PDF_ADDED_LABELS = ['PROVISIONAL GUIDANCE', 'FIGURE 1'];
 const FOOTER_RE = [/Biological Health Services/, /Level 1, 459 Toorak Road/, /www\.biologicalhealthservices\.com\.au\s+·\s+Concept/, /MouldVision v[\d.]+\S* · [0-9a-f]{8} · page \d+ of \d+/];
 function pdfWords(blobBuf, version) {
   const f = path.join(os.tmpdir(), 'mv-golden-' + crypto.randomUUID() + '.pdf'); fs.writeFileSync(f, blobBuf);
@@ -91,12 +91,13 @@ test(tag('D04', 'PDF wording: every word of the rc10 report appears in the same 
   for (const s of [41, 42]) { const h = await seededRun(OLD, s, 'full', { A: 7, B: 7, C: 7, D: 6, E: 4 }); hist.push(h.run); }
   const a = await seededRun(OLD, 43, 'full', { A: 6, B: 7, C: 7, D: 5, E: 3 });
   const run = enrich(a.MV, a.run, hist); run.integrity = { hash: 'a'.repeat(64) };
-  const old = pdfWords(await pdfBuf(a.MV, run), a.MV.SOFTWARE_VERSION);
+  const VERS = [a.MV.SOFTWARE_VERSION, load({ appPath: NEW }).SOFTWARE_VERSION];
+  const old = pdfWords(await pdfBuf(a.MV, run), VERS);
   const fonts = loadPdfFonts();
   for (const withFonts of [false, true]) {
     const B = load({ appPath: NEW }); if (withFonts) B._ctx.MV_PDF_FONTS = fonts;
     const runB = JSON.parse(JSON.stringify(run));
-    const neu = pdfWords(await pdfBuf(B, runB), B.SOFTWARE_VERSION);
+    const neu = pdfWords(await pdfBuf(B, runB), VERS);
     const firstDiff = old.findIndex((w, i) => w !== neu[i]);
     assert.equal(firstDiff === -1 && old.length === neu.length, true, `fonts ${withFonts}: first difference at word ${firstDiff}: rc10 «${old.slice(Math.max(0, firstDiff - 6), firstDiff + 6).join(' ')}» vs new «${neu.slice(Math.max(0, firstDiff - 6), firstDiff + 6).join(' ')}» (lengths ${old.length}/${neu.length})`);
   }
