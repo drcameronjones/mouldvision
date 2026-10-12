@@ -74,3 +74,11 @@ test(tag('G06', 'context never changes the tier; exploratory rows never count; w
   const T = MV.reportText(run); assert.ok(T.guidance && T.guidanceNote.includes('guidance-v1-provisional')); assert.match(T.ident, /Guidance guidance-v1-provisional/);
   assert.ok(MV.buildPdf(run).size > 20000);
 });
+
+test(tag('G07', 'mirrored Left/Right answers (e.g. a reversed button icon) give repeat to confirm, never an eye check'), async () => {
+  const MV = load();
+  const run = await runTest(MV, { mode: 'full', answerFn: ({ orient }) => orient === 'left' ? 'right' : orient === 'right' ? 'left' : 'up' });
+  assert.equal(run.guidance.tier, 'repeat'); assert.ok(run.guidance.reasons.includes('left_right_swapped'));
+  assert.match(run.guidance.why[0], /Left and Right answers look reversed/); assert.equal(run.guidance.leftRightMirrored.swapped, true);
+  const ok = await runTest(load(), { mode: 'full', answerFn: observer(all) }); assert.equal(ok.guidance.leftRightMirrored.swapped, false);
+});

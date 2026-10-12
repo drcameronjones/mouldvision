@@ -59,3 +59,21 @@ test('W04 terms and privacy: draft status, versions, urgent-care advice, adults 
   const mj = fs.readFileSync(path.join(__dirname, '..', 'src/mobile/mobile.js'), 'utf8');
   assert.match(mj, /ACK_VERSION = 'ack-v1-draft'/); assert.match(mj, /acknowledgement: ackRecord\(\)/);
 });
+
+test('W05 answer-button icons lean the same way as the stimulus they name (desktop and phone)', () => {
+  // drawGrating: orient 'left' uses theta = -15deg; bars run along (sin|theta|, cos theta) in screen coordinates, so moving down the
+  // screen they move right: the top of a "left" bar is further left than its bottom (a backslash). 'right' is the mirror (a slash).
+  const theta = -15 * Math.PI / 180, dir = [-Math.sin(theta), Math.cos(theta)];
+  const stimulusLeftTopIsLeft = dir[0] > 0;   // x increases as y increases
+  assert.equal(stimulusLeftTopIsLeft, true);
+  for (const f of ['src/mobile/index.html', 'src/index.html']) {
+    const html = fs.readFileSync(path.join(__dirname, '..', f), 'utf8');
+    for (const [ans, wantTopLeft] of [['left', true], ['right', false]]) {
+      const btn = html.match(new RegExp('<button data-ans="' + ans + '"><svg[^>]*>(.*?)</svg>'))[1];
+      for (const m of btn.matchAll(/<line x1="([\d.]+)" y1="([\d.]+)" x2="([\d.]+)" y2="([\d.]+)"\/>/g)) {
+        const [x1, y1, x2, y2] = m.slice(1).map(Number); const top = y1 < y2 ? x1 : x2, bottom = y1 < y2 ? x2 : x1;
+        assert.equal(top < bottom, wantTopLeft, f + ': ' + ans + ' icon leans the wrong way');
+      }
+    }
+  }
+});
