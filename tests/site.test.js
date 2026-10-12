@@ -78,10 +78,11 @@ test('W05 answer-button icons lean the same way as the stimulus they name (deskt
   }
 });
 
-test('W06 design tokens: every text colour pairing meets WCAG 2.2 AA (4.5:1) in light and dark themes', () => {
+test('W06 design tokens: one light theme whatever the device setting; every text colour pairing meets WCAG 2.2 AA (4.5:1)', () => {
   const css = fs.readFileSync(path.join(__dirname, '..', 'src/site/tokens.css'), 'utf8');
   const block = sel => { const m = css.split(sel)[1]; return Object.fromEntries([...m.split('}')[0].matchAll(/--([\w-]+):(#[0-9a-f]{6})/gi)].map(x => [x[1], x[2]])); };
-  const light = block(':root{'), dark = block(':root[data-theme="dark"]{');
+  const light = block(':root{'), dark = block(':root:not([data-theme="light"]),:root[data-theme="dark"]{');
+  assert.deepEqual(dark, light, 'dark-mode devices get the same light palette'); assert.ok(!/prefers-color-scheme:\s*dark/.test(css));
   const lum = h => { const c = [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16) / 255).map(v => v <= 0.04045 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4)); return 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2]; };
   const ratio = (a, b) => { const [x, y] = [lum(a), lum(b)].sort((p, q) => q - p); return (x + 0.05) / (y + 0.05); };
   const pairs = [['fg', 'bg'], ['body-ink', 'bg'], ['muted', 'bg'], ['muted', 'surface'], ['accent', 'bg'], ['accent', 'surface'], ['accent-fg', 'accent'], ['bg', 'fg'], ['good', 'surface'], ['bad', 'surface'], ['warn', 'bg'], ['tier-none', 'surface'], ['tier-repeat', 'surface'], ['tier-eyecheck', 'surface'], ['fg', 'warn-soft'], ['fg', 'accent-soft'], ['muted', 'surface-2']];
