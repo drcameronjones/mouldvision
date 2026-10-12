@@ -1,5 +1,5 @@
 {
-  "sourceHash": "af9ac598a03fe75a5e978465929f7d6d959dd8f8355667cd7a75934518ddbc84",
+  "sourceHash": "5779d788d8b63d1bfb9caf8d385325807684cd335edda0561507e4d1351be229",
   "sourceFiles": [
     "src/app.js",
     "src/index.html",
@@ -19,16 +19,16 @@
     "src/site/privacy.html",
     "src/mobile/vendor/VENDOR.md"
   ],
-  "gitCommit": "d3c940359c0879f7895a4e494e90be5119439480",
+  "gitCommit": "a6dd6ea734448960fe16a37caa1dac97b8046ebe",
   "gitDirty": false,
   "sourceChangedDuringRun": false,
-  "suite": "phase0-T01-T28+phase1-M01-M15+guidance-G01-G06+site-W01-W04",
+  "suite": "phase0-T01-T28+phase1-M01-M15+guidance-G01-G07+site-W01-W05",
   "version": "v0.8.0",
-  "runAt": "2026-10-11",
-  "runAtFull": "2026-10-11T08:10:30.810Z",
+  "runAt": "2026-10-12",
+  "runAtFull": "2026-10-12T03:40:43.668Z",
   "node": "v22.22.0",
   "platform": "linux",
-  "passed": 59,
+  "passed": 61,
   "failed": 0,
   "statement": "Passing these tests establishes software behaviour only. It establishes nothing about measurement accuracy or clinical meaning.",
   "tests": [
@@ -65,6 +65,12 @@
     {
       "id": "G06",
       "name": "context never changes the tier; exploratory rows never count; wording carries no result labels",
+      "ok": true,
+      "kind": "node"
+    },
+    {
+      "id": "G07",
+      "name": "mirrored Left/Right answers (e.g. a reversed button icon) give repeat to confirm, never an eye check",
       "ok": true,
       "kind": "node"
     },
@@ -125,6 +131,12 @@
     {
       "id": "W04",
       "name": "terms and privacy: draft status, versions, urgent-care advice, adults only, ACL not excluded, camera and health information explained",
+      "ok": true,
+      "kind": "node"
+    },
+    {
+      "id": "W05",
+      "name": "answer-button icons lean the same way as the stimulus they name (desktop and phone)",
       "ok": true,
       "kind": "node"
     },

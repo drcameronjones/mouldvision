@@ -198,7 +198,7 @@ function buildValidation(){
   return {
     software: sw && sw.status==='passed' && sw.sourceHash && sw.sourceHash===BUILD_INFO.sourceHash ? { status:'passed', suite:sw.suite, version:sw.version, runAt:sw.runAt, passed:sw.passed, total:sw.total, sourceHash:sw.sourceHash, gitCommit:sw.gitCommit }
             : sw && sw.status==='failed' ? { status:'failed', suite:sw.suite, version:sw.version, runAt:sw.runAt, passed:sw.passed, total:sw.total, sourceHash:sw.sourceHash, gitCommit:sw.gitCommit }
-            : { status:'not_run', suite:'phase0-T01-T28+phase1-M01-M15+guidance-G01-G06+site-W01-W04', version:SOFTWARE_VERSION, runAt:null, sourceHash:BUILD_INFO.sourceHash, reason: sw && sw.status==='passed' ? 'test results are for a different source hash' : (BUILD_INFO.verificationReason||'no test results for this build') },
+            : { status:'not_run', suite:'phase0-T01-T28+phase1-M01-M15+guidance-G01-G07+site-W01-W05', version:SOFTWARE_VERSION, runAt:null, sourceHash:BUILD_INFO.sourceHash, reason: sw && sw.status==='passed' ? 'test results are for a different source hash' : (BUILD_INFO.verificationReason||'no test results for this build') },
     measurement: { status:'not_performed', method:null, displayRef:null, note:'display luminance and contrast not measured (N3 pending)' },
     clinical: { status:'not_performed', claim:'none', note:'no diagnostic or exposure claim' }
   };
@@ -422,8 +422,14 @@ function guidanceForRun(run, history){
   const drift = (run.geometry && run.geometry.driftEvents) || 0; if(drift > R.driftMax) q.push(`your distance from the screen changed ${drift} times during the test`);
   if(run.device && run.device.zoomChangedDuringRun) q.push('the screen zoom changed during the test');
   if((run.notes||[]).includes('app_backgrounded_during_test')) q.push('the app was left during the test');
+  // answers mirrored: on clearly visible patches (rows 1–3), Left and Right answered as the opposite lean far more often than correctly
+  const lr = run.trials.filter(t=>t.presented && t.row<=3 && (t.orient==='left'||t.orient==='right') && (t.answer==='left'||t.answer==='right'));
+  const mirrored = lr.filter(t=>t.answer!==t.orient).length, lrRight = lr.length - mirrored;
+  const swapped = lr.length >= 8 && mirrored >= 6 && mirrored >= 2*lrRight;
+  if(swapped) q.push(`your Left and Right answers look reversed: on the clearly visible patches, ${mirrored} of ${lr.length} leaning patches were answered with the opposite lean. Check that the button you tap leans the same way as the bars, then repeat`);
+  out.leftRightMirrored = { mirrored, total: lr.length, swapped };
   const reliable = q.length===0;
-  if(!reliable) raise('repeat', 'conditions', 'Test conditions: ' + q.join('; ') + '.');
+  if(!reliable) raise('repeat', swapped ? 'left_right_swapped' : 'conditions', 'Test conditions: ' + q.join('; ') + '.');
   // b. easy-patch check: rows 1–3 of columns A–C, seen by almost any adult with healthy, corrected eyes, on any phone
   ['right','left'].forEach(eye=>{
     const easy = run.trials.filter(t=>t.eye===eye && R.easyCols.includes(t.col) && t.row<=R.easyMaxRow);

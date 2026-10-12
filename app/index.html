@@ -99,9 +99,9 @@
       <div class="progress"><i id="prog"></i></div>
       <div class="field"><canvas id="stim" width="512" height="512"></canvas><div class="fix" id="fix" hidden>+</div></div>
       <div class="answers">
-        <button data-ans="left"><svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="24" y1="6" x2="16" y2="34"/><line x1="15" y1="6" x2="7" y2="34"/><line x1="33" y1="6" x2="25" y2="34"/></svg>Left</button>
+        <button data-ans="left"><svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="16" y1="6" x2="24" y2="34"/><line x1="7" y1="6" x2="15" y2="34"/><line x1="25" y1="6" x2="33" y2="34"/></svg>Left</button>
         <button data-ans="up"><svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="20" y1="6" x2="20" y2="34"/><line x1="11" y1="6" x2="11" y2="34"/><line x1="29" y1="6" x2="29" y2="34"/></svg>Up</button>
-        <button data-ans="right"><svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="16" y1="6" x2="24" y2="34"/><line x1="7" y1="6" x2="15" y2="34"/><line x1="25" y1="6" x2="33" y2="34"/></svg>Right</button>
+        <button data-ans="right"><svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="24" y1="6" x2="16" y2="34"/><line x1="15" y1="6" x2="7" y2="34"/><line x1="33" y1="6" x2="25" y2="34"/></svg>Right</button>
       </div>
       <div class="row" style="justify-content:space-between;width:100%;max-width:560px">
         <button class="ghost" data-ans="none">Can't see a pattern</button>
@@ -167,7 +167,7 @@
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script>window.MV_BUILD_TARGET="live";window.MV_VALIDATION={"software":{"status":"passed","suite":"phase0-T01-T28+phase1-M01-M15+guidance-G01-G06+site-W01-W04","version":"v0.8.0","runAt":"2026-10-11","passed":59,"total":59,"sourceHash":"af9ac598a03fe75a5e978465929f7d6d959dd8f8355667cd7a75934518ddbc84","gitCommit":"d3c940359c0879f7895a4e494e90be5119439480"}};window.MV_BUILD={"sourceHash":"af9ac598a03fe75a5e978465929f7d6d959dd8f8355667cd7a75934518ddbc84","gitCommit":"d3c940359c0879f7895a4e494e90be5119439480","gitDirty":false,"builtAt":"2026-10-11T08:10:43.233Z","verificationReason":null};</script>
+<script>window.MV_BUILD_TARGET="live";window.MV_VALIDATION={"software":{"status":"passed","suite":"phase0-T01-T28+phase1-M01-M15+guidance-G01-G07+site-W01-W05","version":"v0.8.0","runAt":"2026-10-12","passed":61,"total":61,"sourceHash":"5779d788d8b63d1bfb9caf8d385325807684cd335edda0561507e4d1351be229","gitCommit":"a6dd6ea734448960fe16a37caa1dac97b8046ebe"}};window.MV_BUILD={"sourceHash":"5779d788d8b63d1bfb9caf8d385325807684cd335edda0561507e4d1351be229","gitCommit":"a6dd6ea734448960fe16a37caa1dac97b8046ebe","gitDirty":false,"builtAt":"2026-10-12T03:40:43.720Z","verificationReason":null};</script>
 <script>
 'use strict';
 /* MouldVision / VCS Screen — Phase 0 engine (v0.7.0) with Phase 1 additive extensions (v0.8.0): geometry sources, context module, front-end hooks
@@ -369,7 +369,7 @@ function buildValidation(){
   return {
     software: sw && sw.status==='passed' && sw.sourceHash && sw.sourceHash===BUILD_INFO.sourceHash ? { status:'passed', suite:sw.suite, version:sw.version, runAt:sw.runAt, passed:sw.passed, total:sw.total, sourceHash:sw.sourceHash, gitCommit:sw.gitCommit }
             : sw && sw.status==='failed' ? { status:'failed', suite:sw.suite, version:sw.version, runAt:sw.runAt, passed:sw.passed, total:sw.total, sourceHash:sw.sourceHash, gitCommit:sw.gitCommit }
-            : { status:'not_run', suite:'phase0-T01-T28+phase1-M01-M15+guidance-G01-G06+site-W01-W04', version:SOFTWARE_VERSION, runAt:null, sourceHash:BUILD_INFO.sourceHash, reason: sw && sw.status==='passed' ? 'test results are for a different source hash' : (BUILD_INFO.verificationReason||'no test results for this build') },
+            : { status:'not_run', suite:'phase0-T01-T28+phase1-M01-M15+guidance-G01-G07+site-W01-W05', version:SOFTWARE_VERSION, runAt:null, sourceHash:BUILD_INFO.sourceHash, reason: sw && sw.status==='passed' ? 'test results are for a different source hash' : (BUILD_INFO.verificationReason||'no test results for this build') },
     measurement: { status:'not_performed', method:null, displayRef:null, note:'display luminance and contrast not measured (N3 pending)' },
     clinical: { status:'not_performed', claim:'none', note:'no diagnostic or exposure claim' }
   };
@@ -593,8 +593,14 @@ function guidanceForRun(run, history){
   const drift = (run.geometry && run.geometry.driftEvents) || 0; if(drift > R.driftMax) q.push(`your distance from the screen changed ${drift} times during the test`);
   if(run.device && run.device.zoomChangedDuringRun) q.push('the screen zoom changed during the test');
   if((run.notes||[]).includes('app_backgrounded_during_test')) q.push('the app was left during the test');
+  // answers mirrored: on clearly visible patches (rows 1–3), Left and Right answered as the opposite lean far more often than correctly
+  const lr = run.trials.filter(t=>t.presented && t.row<=3 && (t.orient==='left'||t.orient==='right') && (t.answer==='left'||t.answer==='right'));
+  const mirrored = lr.filter(t=>t.answer!==t.orient).length, lrRight = lr.length - mirrored;
+  const swapped = lr.length >= 8 && mirrored >= 6 && mirrored >= 2*lrRight;
+  if(swapped) q.push(`your Left and Right answers look reversed: on the clearly visible patches, ${mirrored} of ${lr.length} leaning patches were answered with the opposite lean. Check that the button you tap leans the same way as the bars, then repeat`);
+  out.leftRightMirrored = { mirrored, total: lr.length, swapped };
   const reliable = q.length===0;
-  if(!reliable) raise('repeat', 'conditions', 'Test conditions: ' + q.join('; ') + '.');
+  if(!reliable) raise('repeat', swapped ? 'left_right_swapped' : 'conditions', 'Test conditions: ' + q.join('; ') + '.');
   // b. easy-patch check: rows 1–3 of columns A–C, seen by almost any adult with healthy, corrected eyes, on any phone
   ['right','left'].forEach(eye=>{
     const easy = run.trials.filter(t=>t.eye===eye && R.easyCols.includes(t.col) && t.row<=R.easyMaxRow);
