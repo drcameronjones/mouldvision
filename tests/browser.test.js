@@ -127,7 +127,7 @@ function wrapped(file) { const body = fs.readFileSync(path.join(root, 'app', fil
     assert.equal(await page.$eval('#unsavedNotice', e => e.getAttribute('role')), 'alert');
     // export now: intercept download
     const [dl] = await Promise.all([page.waitForEvent('download'), page.click('#btnExportNow')]);
-    assert.match(dl.suggestedFilename(), /^mouldvision-run-.*\.json$/);
+    assert.match(dl.suggestedFilename(), /^vcs-run-.*\.json$/);
     const txt = fs.readFileSync(await dl.path(), 'utf8'); const rec = JSON.parse(txt); assert.equal(rec.status, 'COMPLETE_UNSAVED'); assert.equal(rec.trials.length, 90);
     const blocks = await page.evaluate(() => { const e = new Event('beforeunload', { cancelable: true }); window.dispatchEvent(e); return e.defaultPrevented; }); assert.equal(blocks, true);
   });
@@ -162,7 +162,7 @@ function wrapped(file) { const body = fs.readFileSync(path.join(root, 'app', fil
     ['POSITIVE', 'NEGATIVE', 'BIOTOXIN', 'FLAGGED', 'CLEAR'].forEach(w => assert.ok(!text.includes(w), w));
     assert.match(text, /quick protocol stops a column/);
     const [dl] = await Promise.all([page.waitForEvent('download'), page.click('#btnPdf')]);
-    assert.match(dl.suggestedFilename(), /^MouldVision-report-.*\.pdf$/);
+    assert.match(dl.suggestedFilename(), /^VCS-report-.*\.pdf$/);
     const buf = fs.readFileSync(await dl.path()); assert.equal(buf.slice(0, 4).toString(), '%PDF');
   });
 

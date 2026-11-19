@@ -254,7 +254,7 @@ test(tag('T25', 'export round-trip and re-score leave the hash unchanged'), asyn
   const MV = perfect();
   const run = await runTest(MV, { mode: 'full', answerFn: ({ orient }) => orient });
   const back = JSON.parse(MV.exportJson(run)); assert.deepEqual(back, j(run));
-  assert.equal(MV.exportFilename(run), `mouldvision-run-${run.id}.json`);
+  assert.equal(MV.exportFilename(run), `vcs-run-${run.id}.json`);
   const re = JSON.parse(JSON.stringify(run)); re.scoring = { ...MV.scoreRun(re), rescoredFrom: re.scoring.version };
   assert.equal((await MV.computeIntegrity(re)).hash, run.integrity.hash);
 });
