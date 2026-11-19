@@ -1,5 +1,5 @@
 {
-  "sourceHash": "3df1a517d920ec3961d01dfa7cb73745675fca77e0d8163494a34595cab62126",
+  "sourceHash": "4e2b2ba34fd0139c0cf6178830f8b43309bd127886d05ca248e4fe511d4a0f8c",
   "sourceFiles": [
     "src/app.js",
     "src/index.html",
@@ -23,17 +23,17 @@
     "src/site/guide.css",
     "src/mobile/vendor/VENDOR.md"
   ],
-  "gitCommit": "dccf68f3842860a2e17eae44ff112a25609bdca2",
+  "gitCommit": "6484ab18d1278eff7a41ee225cfa7d4bbe38c4f2",
   "gitDirty": false,
   "sourceChangedDuringRun": false,
   "suite": "phase0-T01-T28+phase1-M01-M15+guidance-G01-G07+site-W01-W07+design-D01-D06",
   "version": "v0.10.0",
   "runAt": "2026-11-19",
-  "runAtFull": "2026-11-19T13:05:13.827Z",
+  "runAtFull": "2026-11-19T13:08:21.465Z",
   "node": "v22.23.5",
   "platform": "linux",
-  "passed": 63,
-  "failed": 4,
+  "passed": 69,
+  "failed": 0,
   "statement": "Passing these tests establishes software behaviour only. It establishes nothing about measurement accuracy or clinical meaning.",
   "tests": [
     {
@@ -303,7 +303,7 @@
     {
       "id": "T25",
       "name": "export round-trip and re-score leave the hash unchanged",
-      "ok": false,
+      "ok": true,
       "kind": "node"
     },
     {
@@ -327,7 +327,7 @@
     {
       "id": "T27",
       "name": "rollback: v0.6.0 source still builds its sample report from the v0.6.0 fixture (file-level check)",
-      "ok": false,
+      "ok": true,
       "kind": "node"
     },
     {
@@ -375,9 +375,8 @@
     {
       "id": "T13b+S3",
       "name": "storage disabled: COMPLETE_UNSAVED with immediate export and beforeunload warning",
-      "ok": false,
-      "kind": "browser",
-      "error": "AssertionError [ERR_ASSERTION]: The input did not match the regular expression /^mouldvision-run-.*\\.json$/. Input:\n\n'vcs-run-83585ec3-558f-4857-9812-6c9ec6a6f920.json'\n\n    at /home/claude/mouldvision/tests/browser.test.js:130:12\n    at runNextTicks (node:internal/process/task_queues:64:5)\n    at process.processImmediate (node:internal/timers:452:9)\n    at process.callbackTrampoline (node:internal/async_hooks:130:17)\n    at async t (/home/claude/mouldvision/tests/browser.test.js:7:40)\n    at async /home/claude/mouldvision/tests/browser.test.js:122:3"
+      "ok": true,
+      "kind": "browser"
     },
     {
       "id": "T15b",
@@ -394,9 +393,8 @@
     {
       "id": "T24b",
       "name": "results view: heading, no forbidden labels, PDF download works",
-      "ok": false,
-      "kind": "browser",
-      "error": "AssertionError [ERR_ASSERTION]: The input did not match the regular expression /^MouldVision-report-.*\\.pdf$/. Input:\n\n'VCS-report-ccc49e43.pdf'\n\n    at /home/claude/mouldvision/tests/browser.test.js:165:12\n    at async t (/home/claude/mouldvision/tests/browser.test.js:7:40)\n    at async /home/claude/mouldvision/tests/browser.test.js:158:3"
+      "ok": true,
+      "kind": "browser"
     },
     {
       "id": "M02",
@@ -437,6 +435,18 @@
     {
       "id": "M14",
       "name": "face model loads from our own origin with a camera present; the page makes no third-party requests",
+      "ok": true,
+      "kind": "browser"
+    },
+    {
+      "id": "D05",
+      "name": "test screen: same seeded trials show byte-identical stimulus canvases and identical screenshots of the grey field in rc10 and the redesign",
+      "ok": true,
+      "kind": "browser"
+    },
+    {
+      "id": "D06",
+      "name": "test screen: field and surround are rgb(128, 128, 128); no filter, opacity, blend, transform, backdrop or animation on the stimulus or its ancestors",
       "ok": true,
       "kind": "browser"
     }

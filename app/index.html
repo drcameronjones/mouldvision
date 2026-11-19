@@ -167,7 +167,7 @@
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script>window.MV_BUILD_TARGET="live";window.MV_VALIDATION={"software":{"status":"passed","suite":"phase0-T01-T28+phase1-M01-M15+guidance-G01-G07+site-W01-W06+design-D01-D06","version":"v0.9.0","runAt":"2026-10-12","passed":68,"total":68,"sourceHash":"dcc228c0d2b74049b3969566958718df42784fd709a919de7a92fe893e8d6ccc","gitCommit":"dc45955973796b549d5119a81f00b273eea9c5ed"}};window.MV_BUILD={"sourceHash":"dcc228c0d2b74049b3969566958718df42784fd709a919de7a92fe893e8d6ccc","gitCommit":"dc45955973796b549d5119a81f00b273eea9c5ed","gitDirty":false,"builtAt":"2026-10-12T11:43:25.855Z","verificationReason":null};</script>
+<script>window.MV_BUILD_TARGET="live";window.MV_VALIDATION={"software":{"status":"passed","suite":"phase0-T01-T28+phase1-M01-M15+guidance-G01-G07+site-W01-W07+design-D01-D06","version":"v0.10.0","runAt":"2026-11-19","passed":69,"total":69,"sourceHash":"4e2b2ba34fd0139c0cf6178830f8b43309bd127886d05ca248e4fe511d4a0f8c","gitCommit":"6484ab18d1278eff7a41ee225cfa7d4bbe38c4f2"}};window.MV_BUILD={"sourceHash":"4e2b2ba34fd0139c0cf6178830f8b43309bd127886d05ca248e4fe511d4a0f8c","gitCommit":"6484ab18d1278eff7a41ee225cfa7d4bbe38c4f2","gitDirty":false,"builtAt":"2026-11-19T13:08:27.865Z","verificationReason":null};</script>
 <script>
 'use strict';
 /* MouldVision / VCS Screen — Phase 0 engine (v0.7.0) with Phase 1 additive extensions (v0.8.0): geometry sources, context module, front-end hooks
@@ -177,7 +177,8 @@
  */
 
 // ---------- Versions and build ----------
-const SOFTWARE_VERSION = 'v0.9.0';
+const SOFTWARE_VERSION = 'v0.10.0';
+const PRODUCT_NAME = 'Visual Contrast Sensitivity';   // the product name shown to people (v0.10.0); internal identifiers (MV, storage keys) are unchanged so saved results carry over
 const RECORD_SCHEMA = 1;
 const SCORING_VERSION = 'score-v1-maxcorrect';
 const STIMULUS_VERSION = 'gauss-0.42R-sRGB-dither-v1';
@@ -523,7 +524,7 @@ function scoreRun(run){
 
 // ---------- Toxin-context module (Phase 1 §5): context and data, never a result; never read by scoring ----------
 const CONTEXT_VERSION = 'context-v2';   // v1 approved 11 Oct 2026; v2 adds night/glare driving and diabetes, and the cadmium evidence (approved same day)
-const CONTEXT_PARAGRAPH = 'Why environmental toxin exposure matters to this test. Contrast sensitivity, the ability to see faint patterns, is one of the visual functions reported to change with exposure to a range of toxic agents. Published work has linked reduced contrast sensitivity at the middle spatial frequencies to living or working in water-damaged buildings [7, 8, 12], to exposure to toxins from cyanobacteria and dinoflagellates [4, 5, 6], and to solvents and other volatile organic compounds. In a ten-year study of middle-aged adults, higher cadmium levels, largely from tobacco smoke, predicted new loss of contrast sensitivity [17]. The same function declines with age and alcohol, and changes with cataract, refractive error, glaucoma, macular disease, diabetes, medication and some neurological conditions [10, 11, 18], which is why a result on its own cannot identify a cause [13, 14, 15]. MouldVision records your contrast function and, if you choose, the exposures and conditions you tell us about, so that changes over time can be read alongside what is happening in your environment. Testing the building itself (air and surface sampling) is the way to find out whether mould is present.';
+const CONTEXT_PARAGRAPH = 'Why environmental toxin exposure matters to this test. Contrast sensitivity, the ability to see faint patterns, is one of the visual functions reported to change with exposure to a range of toxic agents. Published work has linked reduced contrast sensitivity at the middle spatial frequencies to living or working in water-damaged buildings [7, 8, 12], to exposure to toxins from cyanobacteria and dinoflagellates [4, 5, 6], and to solvents and other volatile organic compounds. In a ten-year study of middle-aged adults, higher cadmium levels, largely from tobacco smoke, predicted new loss of contrast sensitivity [17]. The same function declines with age and alcohol, and changes with cataract, refractive error, glaucoma, macular disease, diabetes, medication and some neurological conditions [10, 11, 18], which is why a result on its own cannot identify a cause [13, 14, 15]. This test records your contrast function and, if you choose, the exposures and conditions you tell us about, so that changes over time can be read alongside what is happening in your environment. Testing the building itself (air and surface sampling) is the way to find out whether mould is present.';
 const CONTEXT_ITEMS = [
   { id:'mouldSmell',   q:'Visible mould or a musty smell at home or work in the last 12 months', type:'choice', options:['none','some','substantial'] },
   { id:'waterDamage',  q:'Water damage, flooding or persistent damp in the last 12 months', type:'choice', options:['no','yes'] },
@@ -812,14 +813,14 @@ async function deliverFile(name, data){
   const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=name; document.body.appendChild(a); a.click(); a.remove();
   setTimeout(()=>URL.revokeObjectURL(a.href), 5000); return 'downloaded';
 }
-function exportFilename(run){ return `mouldvision-run-${run.id}.json`; }
+function exportFilename(run){ return `vcs-run-${run.id}.json`; }
 function exportJson(run){ return JSON.stringify(run, null, 2); }
 async function exportRun(run){
   try{ const r = await deliverFile(exportFilename(run), exportJson(run)); if(r!=='no-dom'){ markExported(run.id); toast('Record exported'); } }
   catch(e){ if(e && e.code==='declined') toast('Export cancelled'); else toast('Could not export'+(e&&e.message?': '+e.message:'')); }
 }
 function markExported(id){ try{ const ex=exportedIds(); if(!ex.includes(id)){ ex.push(id); safeStore.set(EXPORTED_KEY, JSON.stringify(ex)); } }catch(e){} renderHistory(); }
-async function exportAll(){ const runs=storedRuns(); if(!runs.length) return; try{ await deliverFile(`mouldvision-runs-${new Date().toISOString().slice(0,10)}.json`, JSON.stringify(runs,null,2)); runs.forEach(r=>markExported(r.id)); toast('All records exported'); }catch(e){ toast('Could not export'); } }
+async function exportAll(){ const runs=storedRuns(); if(!runs.length) return; try{ await deliverFile(`vcs-runs-${new Date().toISOString().slice(0,10)}.json`, JSON.stringify(runs,null,2)); runs.forEach(r=>markExported(r.id)); toast('All records exported'); }catch(e){ toast('Could not export'); } }
 
 // ---------- PDF ----------
 // v0.9.0 report layout (approved by Dr Cameron Jones, 12 Oct 2026): Scientific Editorial typography and spacing.
@@ -908,9 +909,10 @@ function buildPdf(run){
   if(LOGO){ try{ doc.addImage(LOGO, 'PNG', W-M-40, 11, 40, 40*875/3405, undefined, 'FAST'); }catch(e){} }
   // masthead
   doc.setFont(F.serif,'bold'); doc.setFontSize(20); ink(PDF_INK);
-  doc.text('MouldVision', M, 19);
+  doc.text(PRODUCT_NAME, M, 19);   // v0.10.0: renamed from MouldVision (approved 19 Nov 2026)
+  const nameW = doc.getTextWidth(PRODUCT_NAME);
   doc.setFont(F.sans,'normal'); doc.setFontSize(8.2); ink(PDF_MUTED);
-  doc.text('Visual contrast test report', M+44, 18.6);
+  doc.text('Visual contrast test report', M+nameW+4, 18.6);
   doc.setFontSize(7); doc.text('Concept: Dr Cameron Jones, PhD  ·  www.biologicalhealthservices.com.au', M, 24.5);
   rule(27.5, PDF_INK, 0.45);
   doc.setFont(F.serif,'bold'); doc.setFontSize(17); ink(PDF_INK);
@@ -947,7 +949,7 @@ function buildPdf(run){
   y+=140;
   const PAGE_BOTTOM = 274;
   const id = run.id;
-  const footer = () => { const n=doc.getNumberOfPages(); for(let i=1;i<=n;i++){ doc.setPage(i); rule(281, PDF_RULE, 0.2); doc.setFontSize(6.6); ink(PDF_MUTED); doc.setFont(F.sans,'bold'); doc.text('Biological Health Services', M, 285.5); doc.setFont(F.sans,'normal'); doc.text('Level 1, 459 Toorak Road, Toorak VIC 3142  ·  Laboratory: 7/4 Weddel Court, Laverton North VIC 3026', M, 288.8); doc.text('www.biologicalhealthservices.com.au  ·  Concept: Dr Cameron Jones, PhD  ·  environmental microbiology, not a clinical service', M, 292.1); doc.setFont(F.mono,'normal'); doc.text(`MouldVision ${run.versions.software} · ${id.slice(0,8)} · page ${i} of ${n}`, W-M, 285.5, {align:'right'}); } };
+  const footer = () => { const n=doc.getNumberOfPages(); for(let i=1;i<=n;i++){ doc.setPage(i); rule(281, PDF_RULE, 0.2); doc.setFontSize(6.6); ink(PDF_MUTED); doc.setFont(F.sans,'bold'); doc.text('Biological Health Services', M, 285.5); doc.setFont(F.sans,'normal'); doc.text('Level 1, 459 Toorak Road, Toorak VIC 3142  ·  Laboratory: 7/4 Weddel Court, Laverton North VIC 3026', M, 288.8); doc.text('www.biologicalhealthservices.com.au  ·  Concept: Dr Cameron Jones, PhD  ·  environmental microbiology, not a clinical service', M, 292.1); doc.setFont(F.mono,'normal'); doc.text(`VCS ${run.versions.software} · ${id.slice(0,8)} · page ${i} of ${n}`, W-M, 285.5, {align:'right'}); } };
   const ensure = (h) => { if(y + h > PAGE_BOTTOM){ doc.addPage(); y = 22; } };
   const para = (text, size=8.2, color=20, gap=2.5, font) => { doc.setFont(font||F.sans,'normal'); doc.setFontSize(size); if(color===20) ink(PDF_INK); else if(color===40) ink(PDF_BODY); else ink(PDF_MUTED); const lines=doc.splitTextToSize(text, W-2*M); const lh=size*0.46; ensure(lines.length*lh); doc.text(lines, M, y); y += lines.length*lh + gap; };
   const heading = (text, size=9.5) => { ensure(size*0.55+9); y+=1.5; rule(y-3.2, PDF_RULE, 0.2); doc.setFont(F.serif,'bold'); doc.setFontSize(size+2); ink(PDF_INK); doc.text(text, M, y+1); y += size*0.55+2.5; };
@@ -982,7 +984,7 @@ async function downloadPdf(){
   if(!(typeof window!=='undefined' && window.jspdf)){ toast('PDF library did not load; use Export JSON instead.'); return; }
   btn.disabled=true; btn.textContent='Preparing PDF…';
   try{ if(typeof window.MV_PDF_FONTS_LOADER==='function'){ try{ await window.MV_PDF_FONTS_LOADER(); }catch(e){} }   // v0.9.0: report fonts (layout only); falls back to standard fonts
-    const blob=buildPdf(S.run); const r = await deliverFile(`MouldVision-report-${S.run.id.slice(0,8)}.pdf`, blob); if(r!=='no-dom') toast('PDF saved'); }
+    const blob=buildPdf(S.run); const r = await deliverFile(`VCS-report-${S.run.id.slice(0,8)}.pdf`, blob); if(r!=='no-dom') toast('PDF saved'); }
   catch(e){ if(e && e.code==='declined') toast('Download cancelled'); else toast('Could not save the PDF'+(e&&e.message?': '+e.message:'')); }
   finally{ btn.disabled=false; btn.textContent='Download PDF report'; }
 }
