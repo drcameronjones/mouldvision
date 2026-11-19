@@ -1,4 +1,4 @@
-// Builds the MouldVision method explainer PDF (A4) from an HTML layout, with the captured phone screens and the engine's own charts.
+// Builds the Visual Contrast Sensitivity method explainer PDF (A4) from an HTML layout, with the captured phone screens and the engine's own charts.
 const fs = require('fs'); const path = require('path');
 const { chromium } = require('playwright');
 const root = path.join(__dirname, '..'), S = path.join(root, 'samples'), shots = path.join(root, 'docs/explainer-shots');
@@ -42,7 +42,7 @@ const REFS = [
   'Austroads, National Transport Commission. <i>Assessing Fitness to Drive for commercial and private vehicle drivers</i>. Sydney: Austroads; 2022.',
   'Dooley M. Biomarkers over time: from visual contrast sensitivity to transcriptomics in differentiating chronic inflammatory response syndrome and myalgic encephalomyelitis/chronic fatigue syndrome. <i>Int J Mol Sci</i>. 2025;26(15):7284.',
 ];
-let html = `<!doctype html><html lang="en"><head><meta charset="utf-8"><title>MouldVision — the method</title>
+let html = `<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Visual Contrast Sensitivity — the method</title>
 <style>
 @page{size:A4;margin:0}
 :root{--ink:#13202b;--muted:#5b6b78;--line:#d6dde3;--teal:#0b6e8e;--teal-soft:#e2f1f6;--cream:#f6f3ee;--good:#1f8a4c;--bad:#c43c2f;--warn:#b8720a}
@@ -112,9 +112,9 @@ th{font-size:7.6pt;letter-spacing:.08em;text-transform:uppercase;color:var(--mut
 <section class="page cover">
   <div class="inner">
     <div class="logo"><img src="${logo}" alt="Biological Health Services"></div>
-    <div class="draft">Method explainer · October 2026</div>
-    <h1>MouldVision</h1>
-    <div class="sub">A three-minute visual contrast test on your own phone, built to be read alongside the air you breathe: a functional measure for mould, indoor air quality, longevity and the exposome.</div>
+    <div class="draft">Method explainer · November 2026</div>
+    <h1>Visual Contrast Sensitivity</h1>
+    <div class="sub">Track your contrast vision over time. A three-minute test on your own phone, to read alongside indoor air quality, building assessment, healthy ageing and the exposome. A vision tracker, not a mould test.</div>
     <div class="art"><img src="${img('cover-art.png')}" alt=""></div>
     <div class="strip">
       <div><b>What it measures</b>How faint a striped pattern each eye can still identify, at five bar widths, two eyes, 90 patches.</div>
@@ -141,7 +141,7 @@ th{font-size:7.6pt;letter-spacing:.08em;text-transform:uppercase;color:var(--mut
       <p>Healthspan is shaped by cumulative, low-grade environmental load that no single clinical visit captures. The tests that matter for longevity are the ones people will actually repeat: cheap, short, at home, and sensitive to change. Contrast sensitivity is an established marker of visual ageing [3, 11], linked to falls [28], night-time hazard detection [29] and people's own rating of their vision [25]. Measured on a phone, it becomes a quarterly data point rather than a once-a-decade clinic measurement.</p>
       <div class="box teal">
         <h4>One marker, honestly framed</h4>
-        <p style="margin:0">Reduced contrast sensitivity is non-specific. On its own it cannot tell a damp house from an early cataract. Its value comes from being tracked over time, in the same person, under recorded conditions, and read alongside what is known about the building and the person. MouldVision is built around that principle: every result carries its conditions, and no result carries a label.</p>
+        <p style="margin:0">Reduced contrast sensitivity is non-specific. On its own it cannot tell a damp house from an early cataract. Its value comes from being tracked over time, in the same person, under recorded conditions, and read alongside what is known about the building and the person. The test is built around that principle: every result carries its conditions, and no result carries a label.</p>
       </div>
       <div class="kpi">
         <div><b>~90 %</b><span>of time spent indoors in developed-country activity surveys [19]</span></div>
@@ -150,7 +150,7 @@ th{font-size:7.6pt;letter-spacing:.08em;text-transform:uppercase;color:var(--mut
       </div>
     </div>
   </div>
-  <div class="foot"><span>MouldVision · Biological Health Services · Concept: Dr Cameron Jones, PhD · drcameronjones.com</span><span>Page 2</span></div>
+  <div class="foot"><span>Visual Contrast Sensitivity · Biological Health Services · Concept: Dr Cameron Jones, PhD · drcameronjones.com</span><span>Page 2</span></div>
 </section>
 
 <!-- 2 WHAT CS IS -->
@@ -181,10 +181,10 @@ th{font-size:7.6pt;letter-spacing:.08em;text-transform:uppercase;color:var(--mut
     </div>
     <div class="box" style="margin-top:9pt">
       <h4>Why "cycles per degree" and not pixels</h4>
-      <p style="margin:0;font-size:9.4pt">Bar width only has meaning at a known distance. MouldVision converts pixels to degrees of visual angle from the phone's pixel density and the measured eye-to-screen distance, so 6 cpd is 6 cpd on any phone.</p>
+      <p style="margin:0;font-size:9.4pt">Bar width only has meaning at a known distance. The test converts pixels to degrees of visual angle from the phone's pixel density and the measured eye-to-screen distance, so 6 cpd is 6 cpd on any phone.</p>
     </div>
   </div>
-  <div class="foot"><span>MouldVision · Biological Health Services · Concept: Dr Cameron Jones, PhD · drcameronjones.com</span><span>Page 3</span></div>
+  <div class="foot"><span>Visual Contrast Sensitivity · Biological Health Services · Concept: Dr Cameron Jones, PhD · drcameronjones.com</span><span>Page 3</span></div>
 </section>
 
 <!-- 3 THE PHONE METHOD -->
@@ -201,7 +201,7 @@ th{font-size:7.6pt;letter-spacing:.08em;text-transform:uppercase;color:var(--mut
     <div class="shot"><span class="n">5</span><img class="phone" src="${img('s5-context.png')}" alt=""><div class="cap"><b>Context (optional).</b> Fourteen one-tap questions about the building, exposures, eye history, diabetes, night-time driving and age band. Stored beside the result and shown back in the report; never used in any calculation.</div></div>
     <div class="shot"><span class="n">6</span><img class="phone" src="${img('s6-results.png')}" alt=""><div class="cap"><b>Results.</b> A seven-section report with both eyes' charts, saved on the phone, shareable as PDF or as the full machine-readable record.</div></div>
   </div>
-  <div class="foot"><span>MouldVision · Biological Health Services · Concept: Dr Cameron Jones, PhD · drcameronjones.com</span><span>Page 4</span></div>
+  <div class="foot"><span>Visual Contrast Sensitivity · Biological Health Services · Concept: Dr Cameron Jones, PhD · drcameronjones.com</span><span>Page 4</span></div>
 </section>
 
 <!-- 4 READING THE REPORT -->
@@ -237,7 +237,7 @@ th{font-size:7.6pt;letter-spacing:.08em;text-transform:uppercase;color:var(--mut
       </table>
     </div>
   </div>
-  <div class="foot"><span>MouldVision · Biological Health Services · Concept: Dr Cameron Jones, PhD · drcameronjones.com</span><span>Page 5</span></div>
+  <div class="foot"><span>Visual Contrast Sensitivity · Biological Health Services · Concept: Dr Cameron Jones, PhD · drcameronjones.com</span><span>Page 5</span></div>
 </section>
 
 <!-- 4b WHAT YOUR RESULT TELLS YOU -->
@@ -270,7 +270,7 @@ th{font-size:7.6pt;letter-spacing:.08em;text-transform:uppercase;color:var(--mut
       <div class="box teal"><h4>Other uses, same instrument</h4><p class="small" style="margin:0">Falls [28], night and glare driving [29] (no licensing cut-off; Australian standards assess acuity and fields [30, 31]), metals and tobacco [24], eye and neurological health [25–27]. See the Evidence page at visualcontrastsensitivity.com.</p></div>
     </div>
   </div>
-  <div class="foot"><span>MouldVision · Biological Health Services · Concept: Dr Cameron Jones, PhD · drcameronjones.com</span><span>Page 0</span></div>
+  <div class="foot"><span>Visual Contrast Sensitivity · Biological Health Services · Concept: Dr Cameron Jones, PhD · drcameronjones.com</span><span>Page 0</span></div>
 </section>
 
 <!-- 5 WHAT MAKES IT DEFENSIBLE -->
@@ -293,18 +293,18 @@ th{font-size:7.6pt;letter-spacing:.08em;text-transform:uppercase;color:var(--mut
       <p>The report never says positive, negative, pass, fail or abnormal, and never attributes a result to mould, mycotoxins or any exposure. It describes what was shown, what was answered, and under what conditions; it tells people when an eye examination is warranted; and it directs questions about a building to building assessment.</p>
       <div class="box">
         <h4>The evidence on VCS and water-damaged buildings, briefly</h4>
-        <p class="small" style="margin:0">A NIOSH study found lower contrast sensitivity at every bar width among staff of a severely water-damaged school than at a comparison school, yet advised against using VCS to evaluate mould-exposed people because the earlier literature was confounded and poorly controlled [12]. A 2026 comparison found the handheld chart did not separate exposed people from controls while digital tests did, and called the digital tools investigational [13]. In the CIRS framework the test is one of six core case-definition biomarkers, a history traced in a 2025 narrative review that reports no new test data [32]. Toxicology and infectious-disease bodies state that no validated biomarker or diagnostic test for mould-related illness exists [14, 15]. MouldVision takes the position those papers point to: build the digital instrument carefully, collect the data properly, and claim nothing until it has.</p>
+        <p class="small" style="margin:0">A NIOSH study found lower contrast sensitivity at every bar width among staff of a severely water-damaged school than at a comparison school, yet advised against using VCS to evaluate mould-exposed people because the earlier literature was confounded and poorly controlled [12]. A 2026 comparison found the handheld chart did not separate exposed people from controls while digital tests did, and called the digital tools investigational [13]. In the CIRS framework the test is one of six core case-definition biomarkers, a history traced in a 2025 narrative review that reports no new test data [32]. Toxicology and infectious-disease bodies state that no validated biomarker or diagnostic test for mould-related illness exists [14, 15]. This test takes the position those papers point to: build the digital instrument carefully, collect the data properly, and claim nothing until it has.</p>
       </div>
     </div>
   </div>
-  <div class="foot"><span>MouldVision · Biological Health Services · Concept: Dr Cameron Jones, PhD · drcameronjones.com</span><span>Page 6</span></div>
+  <div class="foot"><span>Visual Contrast Sensitivity · Biological Health Services · Concept: Dr Cameron Jones, PhD · drcameronjones.com</span><span>Page 6</span></div>
 </section>
 
 <!-- 6 RESEARCH PROGRAMME -->
 <section class="page">
   <div class="eyebrow">7 · The research programme and how to take part</div>
   <h2>From a measurement to a reference range</h2>
-  <p class="lead">"Normal" for MouldVision will be a measured distribution, not a formula borrowed from a chart printed in 1984. Until it exists, the only comparison the app makes is each person against their own earlier runs.</p>
+  <p class="lead">"Normal" for This test will be a measured distribution, not a formula borrowed from a chart printed in 1984. Until it exists, the only comparison the app makes is each person against their own earlier runs.</p>
   <div class="cols">
     <div>
       <h3>Phase A — colleagues and existing BHS clients (now)</h3>
@@ -335,7 +335,7 @@ th{font-size:7.6pt;letter-spacing:.08em;text-transform:uppercase;color:var(--mut
       <p>visualcontrastsensitivity.com, installable from the browser on iPhone and Android, working offline after the first visit, with plain-language Questions and Evidence pages beside the test. The source is version-controlled and every build is tied to the test results that verified it.</p>
     </div>
   </div>
-  <div class="foot"><span>MouldVision · Biological Health Services · Concept: Dr Cameron Jones, PhD · drcameronjones.com</span><span>Page 7</span></div>
+  <div class="foot"><span>Visual Contrast Sensitivity · Biological Health Services · Concept: Dr Cameron Jones, PhD · drcameronjones.com</span><span>Page 7</span></div>
 </section>
 
 <!-- 7 REFERENCES -->
@@ -350,10 +350,10 @@ th{font-size:7.6pt;letter-spacing:.08em;text-transform:uppercase;color:var(--mut
     </div>
     <div class="small">
       <p><b>Concept and scientific lead:</b> Dr Cameron Jones, PhD, Principal Environmental Microbiologist; co-author of the Australian Mould Guideline 2026 [22]. Publications and talks: drcameronjones.com.</p>
-      <p>MouldVision is a screening and research instrument. It does not diagnose any condition, does not detect mould or mycotoxins in a person, and is not a substitute for an eye examination or medical advice. Questions about a building are answered by environmental assessment; questions about health by a medical practitioner. Software verification status, measurement validation status and clinical validation status are printed on every report. This document describes the method as built in October 2026 (v0.8.0) and will be revised as the validation work reports.</p>
+      <p>This test is a screening and research instrument. It does not diagnose any condition, does not detect mould or mycotoxins in a person, and is not a substitute for an eye examination or medical advice. Questions about a building are answered by environmental assessment; questions about health by a medical practitioner. Software verification status, measurement validation status and clinical validation status are printed on every report. This document describes the method as built in October 2026 (v0.8.0) and will be revised as the validation work reports.</p>
     </div>
   </div>
-  <div class="foot"><span>MouldVision · Biological Health Services · Concept: Dr Cameron Jones, PhD · drcameronjones.com</span><span>Page 8</span></div>
+  <div class="foot"><span>Visual Contrast Sensitivity · Biological Health Services · Concept: Dr Cameron Jones, PhD · drcameronjones.com</span><span>Page 8</span></div>
 </section>
 </body></html>`;
 let pn = 1; html = html.replace(/<span>Page \d+<\/span>/g, () => `<span>Page ${++pn}</span>`);
@@ -361,7 +361,7 @@ fs.writeFileSync(path.join(S, 'explainer.html'), html);
 (async () => {
   const browser = await chromium.launch(); const page = await browser.newPage();
   await page.setContent(html, { waitUntil: 'load' }); await page.evaluate(() => document.fonts.ready);
-  const out = path.join(S, 'MouldVision-Method-Explainer.pdf');
+  const out = path.join(S, 'VCS-Method-Explainer.pdf');
   await page.pdf({ path: out, format: 'A4', printBackground: true, preferCSSPageSize: true, margin: { top: 0, bottom: 0, left: 0, right: 0 } });
   await browser.close(); console.log('wrote', out, fs.statSync(out).size);
 })();

@@ -15,12 +15,12 @@ test('W01 evidence page: every [n] citation has a reference and every reference 
 });
 
 test('W02 pages: internal links resolve to built files; scope statement present; no result labels used as claims', () => {
-  for (const f of ['home.html', 'faq.html', 'evidence.html', 'terms.html', 'privacy.html']) {
+  for (const f of ['home.html', 'faq.html', 'evidence.html', 'terms.html', 'privacy.html', 'guide.html']) {
     const html = src(f);
     for (const m of html.matchAll(/href="([^"#:]+)(#[^"]*)?"/g)) {
       const target = m[1];
       if (target === './') continue;
-      const ok = ['test/', 'faq.html', 'evidence.html', 'terms.html', 'privacy.html', 'styles.css', 'tokens.css', 'site.css', 'manifest.webmanifest', 'MouldVision-Method.pdf', 'vendor/fonts/fonts.css'].includes(target) || target.startsWith('icons/');
+      const ok = ['test/', 'faq.html', 'evidence.html', 'terms.html', 'privacy.html', 'styles.css', 'tokens.css', 'site.css', 'manifest.webmanifest', 'guide.html', 'guide.css', 'VCS-Method.pdf', 'VCS-Evidence-Guide.pdf', 'vendor/fonts/fonts.css'].includes(target) || target.startsWith('icons/');
       assert.ok(ok, f + ' links to unknown ' + target);
     }
     assert.match(html, /does not diagnose any condition/);
@@ -37,7 +37,7 @@ test('W02 pages: internal links resolve to built files; scope statement present;
 test('W03 phone edition and pages load nothing from third-party origins; vendored files match VENDOR.md checksums', () => {
   const crypto = require('crypto');
   const root = path.join(__dirname, '..');
-  for (const f of ['src/mobile/index.html', 'src/site/home.html', 'src/site/faq.html', 'src/site/evidence.html', 'src/site/terms.html', 'src/site/privacy.html']) {
+  for (const f of ['src/mobile/index.html', 'src/site/home.html', 'src/site/guide.html', 'src/site/faq.html', 'src/site/evidence.html', 'src/site/terms.html', 'src/site/privacy.html']) {
     const html = fs.readFileSync(path.join(root, f), 'utf8');
     for (const m of html.matchAll(/<(?:script|link)[^>]+(?:src|href)="(https?:[^"]+)"/g)) assert.fail(f + ' loads ' + m[1]);
   }
@@ -87,4 +87,15 @@ test('W06 design tokens: one light theme whatever the device setting; every text
   const ratio = (a, b) => { const [x, y] = [lum(a), lum(b)].sort((p, q) => q - p); return (x + 0.05) / (y + 0.05); };
   const pairs = [['fg', 'bg'], ['body-ink', 'bg'], ['muted', 'bg'], ['muted', 'surface'], ['accent', 'bg'], ['accent', 'surface'], ['accent-fg', 'accent'], ['bg', 'fg'], ['good', 'surface'], ['bad', 'surface'], ['warn', 'bg'], ['tier-none', 'surface'], ['tier-repeat', 'surface'], ['tier-eyecheck', 'surface'], ['fg', 'warn-soft'], ['fg', 'accent-soft'], ['muted', 'surface-2']];
   for (const [name, t] of [['light', light], ['dark', dark]]) for (const [f, b] of pairs) { const r = ratio(t[f], t[b]); assert.ok(r >= 4.5, `${name}: --${f} on --${b} is ${r.toFixed(2)}:1`); }
+});
+
+test('W07 renamed to Visual Contrast Sensitivity: the old product name appears nowhere people can read it (pages, app, manifest, report wording)', () => {
+  const root = path.join(__dirname, '..');
+  const visible = f => fs.readFileSync(path.join(root, f), 'utf8').replace(/<!--[\s\S]*?-->/g, '').replace(/<style[\s\S]*?<\/style>/g, '').replace(/<script[\s\S]*?<\/script>/g, '');
+  for (const f of ['src/mobile/index.html', 'src/mobile/manifest.webmanifest', 'src/site/home.html', 'src/site/guide.html', 'src/site/faq.html', 'src/site/evidence.html', 'src/site/terms.html', 'src/site/privacy.html'])
+    assert.ok(!/MouldVision/i.test(visible(f)), f + ' still shows the old name');
+  const app = fs.readFileSync(path.join(root, 'src/app.js'), 'utf8');
+  const strings = [...app.matchAll(/(['`])((?:\\.|(?!\1).)*?)\1/g)].map(m => m[2]).filter(s => /MouldVision/.test(s));
+  assert.deepEqual(strings, [], 'report or file-name strings still use the old name');
+  assert.match(fs.readFileSync(path.join(root, 'src/site/home.html'), 'utf8'), /not a mould test/);
 });

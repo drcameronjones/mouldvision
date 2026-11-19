@@ -13,6 +13,10 @@ function seeded(seed) { let s = seed >>> 0; const m = Object.create(Math); m.ran
 const TIME_KEYS = new Set(['shownAt', 'answeredAt', 'latencyMs', 'startedAt', 'completedAt', 'computedAt', 'answeredAt', 'builtAt']);
 function strip(o) { if (Array.isArray(o)) return o.map(strip); if (o && typeof o === 'object') { const r = {}; for (const k of Object.keys(o)) { if (TIME_KEYS.has(k) || k === 'id' || k === 'integrity') continue; r[k] = strip(o[k]); } return r; } return o; }
 const normVersion = (s, v) => [].concat(v).reduce((acc, x) => acc.split(x).join('<SOFTWARE>'), String(s));
+// v0.10.0 rename (approved by Dr Cameron Jones, 19 Nov 2026): the product name is the only wording allowed to differ from rc10.
+const RENAMES = [['MouldVision records your contrast function', 'This test records your contrast function'], ['MouldVision Visual contrast test report', 'Visual Contrast Sensitivity Visual contrast test report']];
+const renamed = s => RENAMES.reduce((acc, [a, b]) => acc.split(a).join(b), String(s));
+const renamedDeep = o => JSON.parse(renamed(JSON.stringify(o)));
 
 async function seededRun(appPath, seed, mode, limits) {
   const MV = load({ appPath, math: seeded(seed) });
@@ -36,7 +40,7 @@ test(tag('D01', 'same seed and answers: identical trial sequence, stimulus param
     assert.deepEqual(j(vb), j(va), 'version stamps other than software');
     assert.deepEqual(j(b.MV.LADDER), j(a.MV.LADDER)); assert.deepEqual(j(b.MV.SENS), j(a.MV.SENS)); assert.deepEqual(j(b.MV.FREQS), j(a.MV.FREQS));
     assert.equal(b.MV.SCORING_VERSION, a.MV.SCORING_VERSION); assert.equal(b.MV.STIMULUS_VERSION, a.MV.STIMULUS_VERSION); assert.equal(b.MV.GUIDANCE_VERSION, a.MV.GUIDANCE_VERSION); assert.equal(b.MV.CONTEXT_VERSION, a.MV.CONTEXT_VERSION);
-    assert.deepEqual(j(b.MV.INTEGRITY_SCOPE), j(a.MV.INTEGRITY_SCOPE)); assert.deepEqual(j(b.MV.CONTEXT_ITEMS), j(a.MV.CONTEXT_ITEMS)); assert.equal(b.MV.CONTEXT_PARAGRAPH, a.MV.CONTEXT_PARAGRAPH);
+    assert.deepEqual(j(b.MV.INTEGRITY_SCOPE), j(a.MV.INTEGRITY_SCOPE)); assert.deepEqual(j(b.MV.CONTEXT_ITEMS), j(a.MV.CONTEXT_ITEMS)); assert.equal(b.MV.CONTEXT_PARAGRAPH, renamed(a.MV.CONTEXT_PARAGRAPH));
     assert.deepEqual(j(b.MV.GUIDANCE_RULES), j(a.MV.GUIDANCE_RULES)); assert.deepEqual(j(b.MV.REFS), j(a.MV.REFS)); assert.deepEqual(j(b.MV.FORBIDDEN_LABELS), j(a.MV.FORBIDDEN_LABELS));
   }
 });
@@ -66,7 +70,7 @@ test(tag('D03', 'guidance, report text, data file and integrity payload identica
     assert.deepEqual(gB, gA, 'guidance ' + seed);
     assert.deepEqual(j(B.scoreRun(runB)), j(a.MV.scoreRun(runA)), 'scores');
     const tA = a.MV.reportText(runA), tB = B.reportText(runB);
-    assert.deepEqual(j(tB), j(tA), 'report text ' + seed);
+    assert.deepEqual(j(tB), renamedDeep(j(tA)), 'report text ' + seed);
     assert.equal(B.exportJson(runB), a.MV.exportJson(runA), 'data file');
     assert.equal(B.integrityPayload(runB), a.MV.integrityPayload(runA), 'integrity payload');
     assert.deepEqual(j(B.contextToldLines(runB)), j(a.MV.contextToldLines(runA)));
@@ -75,12 +79,12 @@ test(tag('D03', 'guidance, report text, data file and integrity payload identica
 
 // Labels the new PDF layout adds around unchanged content (approved layout elements, not report content).
 const PDF_ADDED_LABELS = ['PROVISIONAL GUIDANCE', 'FIGURE 1'];
-const FOOTER_RE = [/Biological Health Services/, /Level 1, 459 Toorak Road/, /www\.biologicalhealthservices\.com\.au\s+·\s+Concept/, /MouldVision v[\d.]+\S* · [0-9a-f]{8} · page \d+ of \d+/];
+const FOOTER_RE = [/Biological Health Services/, /Level 1, 459 Toorak Road/, /www\.biologicalhealthservices\.com\.au\s+·\s+Concept/, /(MouldVision|VCS) v[\d.]+\S* · [0-9a-f]{8} · page \d+ of \d+/];
 function pdfWords(blobBuf, version) {
   const f = path.join(os.tmpdir(), 'mv-golden-' + crypto.randomUUID() + '.pdf'); fs.writeFileSync(f, blobBuf);
   const txt = execFileSync('pdftotext', ['-raw', '-enc', 'UTF-8', f, '-'], { encoding: 'utf8' }); fs.unlinkSync(f);
   let lines = txt.split(/\n|\f/).map(l => l.trim()).filter(Boolean).filter(l => !FOOTER_RE.some(r => r.test(l)));
-  let s = normVersion(lines.join(' '), version).replace(/\s+/g, ' ');
+  let s = renamed(normVersion(lines.join(' '), version).replace(/\s+/g, ' '));
   for (const l of PDF_ADDED_LABELS) s = s.split(l).join(' ');
   return s.replace(/-\s+/g, '-').replace(/\s+/g, ' ').trim().split(' ');
 }

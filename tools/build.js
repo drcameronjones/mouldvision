@@ -47,9 +47,10 @@ function buildMobile(target) {
   fs.cpSync(path.join(root, 'src/site/img'), path.join(outDir, 'img'), { recursive: true });
   ['src/mobile/mobile.css', 'src/mobile/mobile.js', 'src/mobile/devices.js', 'src/mobile/distance.js', 'src/mobile/manifest.webmanifest', 'src/styles.css', 'src/app.js', 'assets/bhs-logo.png'].forEach(f => copy(f));
   ['icon-192.png', 'icon-512.png'].forEach(f => copy('src/mobile/icons/' + f, 'icons/' + f));
-  ['src/site/faq.html', 'src/site/evidence.html', 'src/site/terms.html', 'src/site/privacy.html', 'src/site/site.css'].forEach(f => copy(f));
+  ['src/site/faq.html', 'src/site/evidence.html', 'src/site/terms.html', 'src/site/privacy.html', 'src/site/guide.html', 'src/site/site.css', 'src/site/guide.css'].forEach(f => copy(f));
+  if (fs.existsSync(path.join(root, 'samples/VCS-Evidence-Guide.pdf'))) copy('samples/VCS-Evidence-Guide.pdf', 'VCS-Evidence-Guide.pdf');   // v0.10.0: free evidence guide (made by tools/build-guide.js)
   fs.cpSync(path.join(root, 'src/mobile/vendor'), path.join(outDir, 'vendor'), { recursive: true });   // self-hosted third-party files (VENDOR.md)   // information pages served beside the app
-  if (fs.existsSync(path.join(root, 'samples/MouldVision-Method-Explainer.pdf'))) copy('samples/MouldVision-Method-Explainer.pdf', 'MouldVision-Method.pdf');
+  if (fs.existsSync(path.join(root, 'samples/VCS-Method-Explainer.pdf'))) { copy('samples/VCS-Method-Explainer.pdf', 'VCS-Method.pdf'); copy('samples/VCS-Method-Explainer.pdf', 'MouldVision-Method.pdf'); }   // v0.10.0: old file name kept so existing links still work
   fs.writeFileSync(path.join(outDir, 'build-info.js'), `window.MV_BUILD_TARGET=${JSON.stringify(target)};window.MV_VALIDATION=${JSON.stringify(validation)};window.MV_BUILD=${JSON.stringify(buildInfo)};\n`);
   fs.writeFileSync(path.join(outDir, 'sw.js'), read('src/mobile/sw.js').replace('__MV_BUILD_ID__', currentHash.slice(0, 16) + '-' + target));
   fs.writeFileSync(path.join(outDir, '.nojekyll'), '');

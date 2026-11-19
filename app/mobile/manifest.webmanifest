@@ -1,6 +1,6 @@
 {
-  "name": "MouldVision visual contrast test",
-  "short_name": "MouldVision",
+  "name": "Visual Contrast Sensitivity test",
+  "short_name": "VCS Test",
   "description": "Visual contrast test, phone edition. Biological Health Services. Screening only; not a diagnosis.",
   "start_url": "test/",
   "scope": "./",
